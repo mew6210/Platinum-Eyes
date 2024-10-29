@@ -16,7 +16,18 @@
 #include <cpr/cpr.h>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <ranges>
+#include "trim.cpp"
+
 using json = nlohmann::json;
+
+
+//CONSTANTS
+
+const std::string CONFIG_FILENAME = "tool_config.txt";
+const std::string configProperties[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight" };
+
+
 
 
 
@@ -90,6 +101,73 @@ public:
 
 
 
+class ToolConfig {
+public:
+
+
+
+	std::string ocrIp;
+	std::string ocrPort;
+	std::string screenShotFilePath;
+	Point coordinatesOfScreenShotCenter = Point(0, 0);
+	int screenShotWidth;
+	int screenShotHeight;
+
+
+
+
+
+
+
+	void setOcrIp(std::string s) {
+		trim(s);
+		ocrIp = s;
+	}
+
+	void setOcrPort(std::string s) {
+		trim(s);
+		ocrPort = s;
+	}
+
+	void setScreenShotFilePath(std::string s) {
+		trim(s);
+		screenShotFilePath = s;
+	}
+
+	void setCoordinatesOfScreenShotCenter(std::string s) {
+
+		int middlePos=s.find(",");
+
+		std::string x = s.substr(0, middlePos);
+		std::string y = s.substr(middlePos+1, s.length() - x.length());
+
+		coordinatesOfScreenShotCenter = Point(std::stoi(x), std::stoi(y));
+
+	}
+
+	void setScreenShotWidth(std::string s) {
+		screenShotWidth = stoi(s);
+	}
+
+	void setScreenShotHeight(std::string s) {
+		screenShotHeight = stoi(s);
+	}
+
+	
+
+
+	ToolConfig() {
+		ocrIp = '0';
+		 ocrPort = '0';
+		 screenShotFilePath = '0';
+		 coordinatesOfScreenShotCenter = Point(0,0);
+		 screenShotWidth = '0';
+		 screenShotHeight = '0';
+	}
+};
+
+
+
 
 BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
 
@@ -119,7 +197,12 @@ void printItemPrices(std::map<std::string, ProductPricing>& itemPrices);
 
 
 
-std::map<std::string, ProductPricing> readItemsFromScreen(); 
+std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config); 
 
 
+bool checkIfConfigFileExists();
 
+
+void createConfigFile();
+
+ToolConfig readConfigFile();

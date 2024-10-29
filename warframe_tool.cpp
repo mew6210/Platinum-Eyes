@@ -9,6 +9,17 @@
 using json = nlohmann::json;
 int main()
 {
+    
+
+    if (!checkIfConfigFileExists()) {
+        createConfigFile();
+        std::cout << "Config file successfully created. For program to work, configure the config file named tool_config.txt \nFor tips check github repo.";
+        return 0;
+    }
+
+    ToolConfig toolConfig = readConfigFile();
+
+
 
 
     if (RegisterHotKey(
@@ -28,7 +39,7 @@ int main()
         if (msg.message == WM_HOTKEY)
         {
             std::cout << "hotkey pressed";
-            readItemsFromScreen();
+            readItemsFromScreen(toolConfig);
         }
 
 

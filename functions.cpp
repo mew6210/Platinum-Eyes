@@ -192,7 +192,6 @@ std::vector<std::string> extractItemsFromServer(std::string s) {
 
     int starting_point=s.find("return_table");
 
- 
 
     starting_point = starting_point + 15;
 
@@ -476,27 +475,23 @@ void printItemPrices(std::map<std::string, ProductPricing>& itemPrices) {
 
 
 
-std::map<std::string, ProductPricing> readItemsFromScreen(){
+std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config){
 
     Timer timer;
     
-   std::cout << "sleeping";
-   Sleep(2000);
-   std::cout << "waking up..";
 
-
-   Point p = Point(1720,570);
+   Point p = Point(config.coordinatesOfScreenShotCenter.x,config.coordinatesOfScreenShotCenter.y);
 
 
    timer.start_time();
-   HBITMAP bitmap = takeScreenshot(1290, 90, p);        //previously 1290,70
+   HBITMAP bitmap = takeScreenshot(config.screenShotWidth, config.screenShotHeight, p);        //previously 1290,70
    timer.end_time();
    timer.say_time("take screenshot");
 
 
 
    timer.start_time();
-   LPCTSTR file_name = "C:/Users/M&M/Documents/ddd/warframe_tool/warframe_tool/screenshot.bmp";
+   LPCTSTR file_name =config.screenShotFilePath.c_str();
    SaveHBITMAPToFile(bitmap, file_name);
    timer.end_time();
    timer.say_time("saving to file");
@@ -508,7 +503,9 @@ std::map<std::string, ProductPricing> readItemsFromScreen(){
     //IMAGEHEIGHT: 70
     //CENTERPOINT: 1720,570
     timer.start_time();
-    cpr::Response r = cpr::Get(cpr::Url{ "192.168.0.248:5055/ocr" },
+    std::string address = config.ocrIp + ":" + config.ocrPort+ "/ocr";
+    std::cout << std::endl << "address: " << address<<std::endl;
+    cpr::Response r = cpr::Get(cpr::Url{ address },
 
         cpr::Parameters{ {"filepath", file_name} });
     r.status_code;                  // 200
@@ -542,3 +539,85 @@ std::map<std::string, ProductPricing> readItemsFromScreen(){
 
     return itemPrices;
 }
+
+
+
+
+bool checkIfConfigFileExists() {
+
+    ifstream file;
+
+    file.open(CONFIG_FILENAME);
+
+    if (file) return true;
+    else return false;
+
+
+
+}
+
+
+
+
+void createConfigFile() {
+
+    ofstream config(CONFIG_FILENAME);
+
+
+    for (std::string configProperty : configProperties) {
+        config << configProperty << ": \n";
+    }
+
+    config.close();
+
+
+}
+
+
+void resolveConfigLine(ToolConfig& toolConfig, std::string& line,int it) {
+
+    int startingPoint = 0;
+
+    
+    startingPoint = configProperties[it].length() + 1;
+
+    int whereEnds = line.find_last_of("\n");
+
+    std::string configProperty = line.substr(startingPoint, whereEnds - 1);
+    std::cout << "configProperty: " << configProperty << std::endl;
+
+    switch (it) {
+
+    case 0: toolConfig.setOcrIp(configProperty); break;
+    case 1: toolConfig.setOcrPort(configProperty); break;
+    case 2: toolConfig.setScreenShotFilePath(configProperty); break;
+    case 3: toolConfig.setCoordinatesOfScreenShotCenter(configProperty); break;
+    case 4: toolConfig.setScreenShotWidth(configProperty); break;
+    case 5: toolConfig.setScreenShotHeight(configProperty); break;
+
+    }
+
+
+   
+
+}
+
+
+ToolConfig readConfigFile() {
+
+    ToolConfig toolConfig = ToolConfig();
+
+
+    ifstream configFile(CONFIG_FILENAME);
+    std::string line;
+    int it= 0;
+    while (getline(configFile, line)) {
+        resolveConfigLine(toolConfig, line,it);
+        it+= 1;
+    }
+
+    return toolConfig;
+
+
+}
+

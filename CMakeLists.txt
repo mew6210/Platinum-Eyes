@@ -21,7 +21,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 
 # Dodaj źródło do pliku wykonywalnego tego projektu.
-add_executable (warframe_tool "warframe_tool.cpp" "warframe_tool.h" "functions.cpp")
+add_executable (warframe_tool "warframe_tool.cpp" "warframe_tool.h" "functions.cpp" "trim.cpp")
 target_link_libraries(warframe_tool PRIVATE cpr::cpr)
 
 
