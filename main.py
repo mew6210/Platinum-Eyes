@@ -23,14 +23,6 @@ database_get_args= reqparse.RequestParser()
 database_get_args.add_argument("filepath",type=str, help="path to file is required. . .", required=True,location='args')
 
 
-
-#database_post_args=reqparse.RequestParser()
-
-#database_post_args.add_argument("class",type=int, help="class is required", required=True )
-#database_post_args.add_argument("grade",type=int, help="grade is required", required=True )
-
-
-
 class HelloWorld(Resource):
     def get(self):
 
@@ -56,26 +48,6 @@ class HelloWorld(Resource):
     
 
 
-
-
-"""
-    def post(self):
-
-        
-
-
-        args=database_post_args.parse_args()
-        klasa=args['class']
-        ocena=args['grade']
-
-        print(f"GRADE RECEIVED klasa: {klasa} ocena: {ocena}")
-       
-
-
-
-        return {"data": "posted"}
-
-"""
 api.add_resource(HelloWorld,"/ocr")
 
 
@@ -96,13 +68,3 @@ if __name__=="__main__":
             
             continue
             
-            
-        
-     
-       
-    
-    #app.run(host='192.168.0.248',port=5055,debug=False)
-
-
-
-

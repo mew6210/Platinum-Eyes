@@ -91,12 +91,6 @@ public:
 
 
 
-// TODO: W tym miejscu przywołaj dodatkowe nagłówki wymagane przez program.
-
-
-
-
-
 BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
 
 HBITMAP takeScreenshot(int imageWidth = 1200, int imageHeight = 800, int offsetX = 200, int offsetY = 200);

@@ -274,8 +274,6 @@ std::vector<std::string> prepareItems(std::vector<std::string>& list) {
         }
 
 
-
-
         newlist.push_back(newstring);
     }
 
@@ -304,43 +302,6 @@ std::string replaceChar(std::string s,char a,std::string b) {
     return newstring;
 
 }
-
-
-
-/*
-float getAveragePrice(json list) {
-
-
-    float sum = 0;
-    int count = 0;
-    for (json& product : list) {
-
-
-
-        if (product["user"]["status"] == "ingame") {
-
-            int price = product["platinum"];
-            //int amount = stoi(price);
-            sum += price;
-            count++;
-        }
-        else {
-            continue;
-        }
-
-    }
-
-    if (count == 0) {
-        return 0;
-    }
-
-
-    return (float)(sum / count);
-
-
-}
-*/
-
 
 
 ProductPricing getAveragePrice(const json& list) {
@@ -396,7 +357,6 @@ ProductPricing fetchItemPrice(const std::string& item) {
 
 
     cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v1/items/" + item + "/orders" }
-        //,cpr::Parameters{ {"include", item} }
 
     );
     r.status_code;                  // 200
