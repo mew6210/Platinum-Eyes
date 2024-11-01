@@ -38,7 +38,7 @@ int main()
     {
         if (msg.message == WM_HOTKEY)
         {
-            std::cout << "hotkey pressed";
+            std::cout << "hotkey detected"<<std::endl;
             readItemsFromScreen(toolConfig);
         }
 

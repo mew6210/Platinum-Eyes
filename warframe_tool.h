@@ -25,9 +25,10 @@ using json = nlohmann::json;
 //CONSTANTS
 
 const std::string CONFIG_FILENAME = "tool_config.txt";
-const std::string configProperties[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight" };
+const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight" };
 
 
+void errorLog(std::string s);
 
 
 
@@ -66,7 +67,7 @@ public:
 	}
 
 	void say_time(std::string s) {
-		std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "milliseconds " <<" Element: " <<s << std::endl;
+		std::cout << s<<": " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "milliseconds "<< std::endl;
 	}
 
 
@@ -102,68 +103,57 @@ public:
 
 
 class ToolConfig {
-public:
 
 
 
-	std::string ocrIp;
-	std::string ocrPort;
-	std::string screenShotFilePath;
-	Point coordinatesOfScreenShotCenter = Point(0, 0);
-	int screenShotWidth;
-	int screenShotHeight;
+	std::map<std::string, std::string> properties;
+	std::string getPropertyValue(std::string key) {
 
 
+		if (properties.count(key) > 0) {
+			
+			std::string propertyValue = properties[key];
+			trim(propertyValue);
+			return propertyValue;
+		}
+		else {
+			return "not found";
+		}
 
 
-
-
-
-	void setOcrIp(std::string s) {
-		trim(s);
-		ocrIp = s;
-	}
-
-	void setOcrPort(std::string s) {
-		trim(s);
-		ocrPort = s;
-	}
-
-	void setScreenShotFilePath(std::string s) {
-		trim(s);
-		screenShotFilePath = s;
-	}
-
-	void setCoordinatesOfScreenShotCenter(std::string s) {
-
-		int middlePos=s.find(",");
-
-		std::string x = s.substr(0, middlePos);
-		std::string y = s.substr(middlePos+1, s.length() - x.length());
-
-		coordinatesOfScreenShotCenter = Point(std::stoi(x), std::stoi(y));
-
-	}
-
-	void setScreenShotWidth(std::string s) {
-		screenShotWidth = stoi(s);
-	}
-
-	void setScreenShotHeight(std::string s) {
-		screenShotHeight = stoi(s);
 	}
 
 	
 
+public:
+
+	void setPropertyValue(std::string key, std::string value) {
+
+		if (properties.count(key) > 0) {
+			trim(value);
+
+			properties[key] = value;
+
+
+		}
+		else {
+			errorLog("Couldnt find " + key + " key in ToolConfig");
+			return;
+		}
+
+	}
+
 
 	ToolConfig() {
-		ocrIp = '0';
-		 ocrPort = '0';
-		 screenShotFilePath = '0';
-		 coordinatesOfScreenShotCenter = Point(0,0);
-		 screenShotWidth = '0';
-		 screenShotHeight = '0';
+		for (std::string property_key : CONFIGPROPERTIES) {
+			properties.insert(std::pair<std::string, std::string>(property_key, "undefined"));
+		}
 	}
+
+	std::string operator[](std::string s) {
+		return getPropertyValue(s);
+	}
+	
 };
 
 
@@ -199,6 +189,7 @@ void printItemPrices(std::map<std::string, ProductPricing>& itemPrices);
 
 std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config); 
 
+std::map<std::string, ProductPricing> readItemsFromScreenWithoutScreenshot(ToolConfig& config);
 
 bool checkIfConfigFileExists();
 
@@ -206,3 +197,9 @@ bool checkIfConfigFileExists();
 void createConfigFile();
 
 ToolConfig readConfigFile();
+
+
+
+
+
+Point stringToCoordinates(std::string s);

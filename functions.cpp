@@ -66,8 +66,9 @@ HBITMAP takeScreenshot(int imageWidth, int imageHeight, Point p)
     int width = GetDeviceCaps(hScreen, HORZRES);
     int height = GetDeviceCaps(hScreen, VERTRES);
 
-    std::cout << "\nWidth: " << width << endl;
-    std::cout << "\nHeight: " << height << endl;
+    std::cout << "\nScreenParameters: " << std::endl;
+    std::cout << "Width: " << width << endl;
+    std::cout << "Height: " << height << endl;
 
 
 
@@ -187,7 +188,30 @@ void saveScreenshotToClipboard(HBITMAP bitmap) {
 
 std::vector<std::string> extractItemsFromServer(std::string s) {
 
+    
+
     std::vector<std::string> itemList;
+
+
+    //is return string empty
+    if (strcmp(s.c_str(), "")==0) {
+        errorLog("return string is empty");
+        itemList = {};
+        return itemList;
+    }
+
+
+
+    //if "Internal Server Error exists in given string"
+    if (s.find("Internal Server Error") != std::string::npos) {
+        
+        errorLog("Internal Server Error");
+        itemList = {};
+        return itemList;
+
+    }
+
+
 
 
     int starting_point=s.find("return_table");
@@ -339,12 +363,6 @@ ProductPricing getAveragePrice(const json& list) {
     }
     std::sort(lowestPricesVec.begin(), lowestPricesVec.end());
 
-    std::cout << "Five lowest prices: ";
-    for (int price : lowestPricesVec) {
-        std::cout << price << " ";
-    }
-    std::cout << std::endl;
-
 
     ProductPricing pricing = ProductPricing((sum / count), lowestPricesVec);
 
@@ -365,7 +383,7 @@ ProductPricing fetchItemPrice(const std::string& item) {
 
     json data = json::parse(r.text);
 
-    std::cout << item << std::endl;
+    
     json products = data["payload"]["orders"];
 
     ProductPricing price = getAveragePrice(products);
@@ -455,22 +473,29 @@ std::string getFormatedAveragePrices(std::vector<int>& lowestPrices) {
 
 
 
-
-
 void printItemPrices(std::map<std::string, ProductPricing>& itemPrices) {
-
+    std::cout << "Item prices: " << std::endl;
+    std::cout << "<------------------------------------------------------------------------->" << std::endl;
+   
     for (std::pair<std::string, ProductPricing> pair : itemPrices) {
 
         ProductPricing prices = pair.second;
         std::vector<int> lowestPrices = prices.lowestPrices;
         float averagePrice = prices.averagePrice;
 
-        std::cout << pair.first << ": " << averagePrice << getFormatedAveragePrices(lowestPrices) << std::endl;
+
+        std::vector<int> emptyVector = { 0,0,0,0,0 };
+        if (averagePrice == 0 && lowestPrices == emptyVector) {
+            std::cout << pair.first << ": " << "COULDNT FIND ITEM ON THE MARKET" << std::endl;
+        }
+        else {
+            std::cout << pair.first << ": " << averagePrice << getFormatedAveragePrices(lowestPrices) << std::endl;
+        }
+
+        
     }
 
 }
-
-
 
 
 
@@ -480,48 +505,50 @@ std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config){
     Timer timer;
     
 
-   Point p = Point(config.coordinatesOfScreenShotCenter.x,config.coordinatesOfScreenShotCenter.y);
+
+    Point p=stringToCoordinates(config["coordinatesOfScreenShotCenter"]);
+
+    timer.start_time();
+    HBITMAP bitmap = takeScreenshot(stoi(config["screenShotWidth"]), stoi(config["screenShotHeight"]), p);        
+    timer.end_time();
+    timer.say_time("take screenshot");
 
 
-   timer.start_time();
-   HBITMAP bitmap = takeScreenshot(config.screenShotWidth, config.screenShotHeight, p);        //previously 1290,70
-   timer.end_time();
-   timer.say_time("take screenshot");
 
+    timer.start_time();
+    
+    std::string file_name_to_send = config["screenShotFilePath"];
+    LPCTSTR file_name = file_name_to_send.c_str();
+    SaveHBITMAPToFile(bitmap, file_name);
+    timer.end_time();
+    timer.say_time("saving to file");
+    DeleteObject(bitmap);
 
-
-   timer.start_time();
-   LPCTSTR file_name =config.screenShotFilePath.c_str();
-   SaveHBITMAPToFile(bitmap, file_name);
-   timer.end_time();
-   timer.say_time("saving to file");
-   DeleteObject(bitmap);
-   
 
     //VARIABLES FOR 3440/1440:
     //IMAGEWIDTH:1290
     //IMAGEHEIGHT: 70
     //CENTERPOINT: 1720,570
     timer.start_time();
-    std::string address = config.ocrIp + ":" + config.ocrPort+ "/ocr";
+    std::string address = config["ocrIp"] + ":" + config["ocrPort"]+ "/ocr";
     std::cout << std::endl << "address: " << address<<std::endl;
-    cpr::Response r = cpr::Get(cpr::Url{ address },
 
-        cpr::Parameters{ {"filepath", file_name} });
-    r.status_code;                  // 200
-    r.header["content-type"];       // application/json; charset=utf-8
-    r.text;                         // JSON text string
-    std::cout << r.text << std::endl;
+ 
+
+        cpr::Response r = cpr::Get(cpr::Url{ address },
+            cpr::Parameters{ {"filepath", file_name_to_send} });
+        r.status_code;                  // 200
+        r.header["content-type"];       // application/json; charset=utf-8
+        r.text;                         // JSON text string
+        std::cout << r.text << std::endl;
+        
+
+    
 
     timer.end_time();
     timer.say_time("getting response from a server");
 
     std::vector<std::string> items = extractItemsFromServer(r.text);
-
-    for (std::string product : items) {
-
-        std::cout << product << "\n";
-    }
 
     std::vector<std::string> preparedItems = prepareItems(items);
 
@@ -541,7 +568,59 @@ std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config){
 }
 
 
+std::map<std::string, ProductPricing> readItemsFromScreenWithoutScreenshot(ToolConfig& config) {
 
+    
+    Timer timer;
+    
+
+
+    std::string file_name_to_send = config["screenShotFilePath"];
+    LPCTSTR file_name = file_name_to_send.c_str();
+
+    //VARIABLES FOR 3440/1440:
+    //IMAGEWIDTH:1290
+    //IMAGEHEIGHT: 70
+    //CENTERPOINT: 1720,570
+    timer.start_time();
+    std::string address = config["ocrIp"] + ":" + config["ocrPort"]+ "/ocr";
+    //std::cout << std::endl << "address: " << address<<std::endl;
+
+ 
+
+        cpr::Response r = cpr::Get(cpr::Url{ address },
+            cpr::Parameters{ {"filepath", file_name_to_send} });
+        r.status_code;                 
+        r.header["content-type"];       
+        r.text;                         
+        std::cout << r.text << std::endl;
+        
+
+    
+
+    timer.end_time();
+    timer.say_time("getting response from a server");
+
+    std::vector<std::string> items = extractItemsFromServer(r.text);
+
+    std::vector<std::string> preparedItems = prepareItems(items);
+
+
+
+    timer.start_time();
+    std::map<std::string, ProductPricing> itemPrices = getItemPricesMap(preparedItems);
+
+    timer.end_time();
+    timer.say_time("FETCHING ORDERS");
+
+
+    printItemPrices(itemPrices);
+
+
+    return itemPrices;
+
+
+}
 
 bool checkIfConfigFileExists() {
 
@@ -564,7 +643,7 @@ void createConfigFile() {
     ofstream config(CONFIG_FILENAME);
 
 
-    for (std::string configProperty : configProperties) {
+    for (std::string configProperty : CONFIGPROPERTIES) {
         config << configProperty << ": \n";
     }
 
@@ -579,23 +658,18 @@ void resolveConfigLine(ToolConfig& toolConfig, std::string& line,int it) {
     int startingPoint = 0;
 
     
-    startingPoint = configProperties[it].length() + 1;
+    startingPoint = CONFIGPROPERTIES[it].length() + 1;
 
     int whereEnds = line.find_last_of("\n");
 
     std::string configProperty = line.substr(startingPoint, whereEnds - 1);
-    std::cout << "configProperty: " << configProperty << std::endl;
 
-    switch (it) {
 
-    case 0: toolConfig.setOcrIp(configProperty); break;
-    case 1: toolConfig.setOcrPort(configProperty); break;
-    case 2: toolConfig.setScreenShotFilePath(configProperty); break;
-    case 3: toolConfig.setCoordinatesOfScreenShotCenter(configProperty); break;
-    case 4: toolConfig.setScreenShotWidth(configProperty); break;
-    case 5: toolConfig.setScreenShotHeight(configProperty); break;
 
-    }
+
+
+    std::string key = CONFIGPROPERTIES[it];
+    toolConfig.setPropertyValue(key, configProperty);
 
 
    
@@ -620,4 +694,27 @@ ToolConfig readConfigFile() {
 
 
 }
+
+void errorLog(std::string s) {
+    std::cout << "Error: " <<s<< "\n";
+}
+
+
+
+Point stringToCoordinates(std::string s) {
+
+    int middlePos = s.find(",");
+
+    std::string x = s.substr(0, middlePos);
+    std::string y = s.substr(middlePos + 1, s.length() - x.length());
+
+
+
+
+    return Point(std::stoi(x), std::stoi(y));
+
+}
+
+
+
 

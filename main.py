@@ -3,6 +3,7 @@
 import easyocr
 from flask import Flask
 from flask_restful import Api, Resource, reqparse
+import os
 
 def read_text(path):
     
@@ -13,7 +14,7 @@ def read_text(path):
         print(detection[1])
 
 
-print("ODPALONE")
+print("Ocr resources loaded")
 reader = easyocr.Reader(['en'],gpu=True)
 app =Flask(__name__)
 api = Api(app)
@@ -28,7 +29,7 @@ class HelloWorld(Resource):
 
         args=database_get_args.parse_args()
         path = args['filepath']
-
+    
 
         result=reader.readtext(path,paragraph=True,x_ths=0.5,y_ths=90)
         
@@ -54,15 +55,30 @@ api.add_resource(HelloWorld,"/ocr")
 if __name__=="__main__":
     from waitress import serve
 
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, 'out\\build\\x64-debug\\tool_config.txt')
+    
+    ocrIp=str()
+    ocrPort=str()
+    
+    
+    with open(filename,"r") as file:
+        for line in file:
+            if "ocrIp:" in line:
+                ocrIp=line[6:-1]
+            if "ocrPort" in line:    
+                ocrPort=line[8:-1]
+    
+    ocrIp=ocrIp.strip()
+    ocrPort=ocrPort.strip()
+    
+    
 
-
-    ip_address=input("ip: ")
-    user_port=str(input("\nport(above 5000): "))
-
-    while ip_address:
+    while ocrIp:
         try:  
             while True:
-                serve(app,host=ip_address,port=user_port)
+                print("Server hosted successfully")
+                serve(app,host=ocrIp,port=ocrPort)
         except:
             print("error lol")
             
