@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <io.h>
+
+#define NOMINMAX
+
 #include <Windows.h>
 #include <string>
 #include <vector>
@@ -18,6 +21,12 @@
 #include <nlohmann/json.hpp>
 #include <ranges>
 #include "trim.cpp"
+#include <SFML/Window.hpp>
+#include <SFML/OpenGl.hpp>
+#include<SFML/Graphics/RenderWindow.hpp>
+#include "imgui.h"
+#include "imgui-SFML.h"
+#include <dwmapi.h>
 
 using json = nlohmann::json;
 
@@ -85,6 +94,8 @@ public:
 	std::vector<int> lowestPrices;
 
 
+	ProductPricing() : averagePrice(0), lowestPrices({ 0, 0, 0, 0, 0 }) {}
+
 	ProductPricing(float avg,std::vector<int> lowestprices) {
 		averagePrice = avg;
 		lowestPrices = lowestprices;
@@ -97,6 +108,7 @@ public:
 		0,0,0,0,0
 		};
 	}
+
 
 };
 
@@ -203,3 +215,13 @@ ToolConfig readConfigFile();
 
 
 Point stringToCoordinates(std::string s);
+
+
+
+void generateImGuiTable(std::map<std::string, ProductPricing>& items);
+
+
+HRESULT setTransparency(HWND hWnd);
+
+void registerHotkeys();
+void checkKeyPressed(MSG& msg, std::map<std::string, ProductPricing>& currentItems, ToolConfig& config,bool& runningState);

@@ -15,14 +15,27 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
+find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
+find_package(OpenGl REQUIRED)
+find_package(imgui CONFIG REQUIRED)
+find_package(ImGui-SFML CONFIG REQUIRED)
+
 
 
 
 
 
 # Dodaj źródło do pliku wykonywalnego tego projektu.
-add_executable (warframe_tool "warframe_tool.cpp" "warframe_tool.h" "functions.cpp" "trim.cpp")
-target_link_libraries(warframe_tool PRIVATE cpr::cpr)
+add_executable (${PROJECT_NAME} "warframe_tool.cpp" "warframe_tool.h" "functions.cpp" "trim.cpp" "utilities/guiUtilities.cpp" "utilities/keyBindings.cpp")
+target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
+target_link_libraries(${PROJECT_NAME} PRIVATE ImGui-SFML::ImGui-SFML)
+target_link_libraries( ${PROJECT_NAME} PRIVATE "Dwmapi.lib") 
+
+
+
 
 
 
