@@ -271,6 +271,15 @@ std::vector<std::string> extractItemsFromServer(std::string s) {
 }
 
 
+void replaceAnds(std::string& s) {
+
+    int pos = s.find("&");
+
+    if (pos != string::npos)
+        s.replace(pos, 1, "and");
+}
+
+
 
 int getItem(std::string s,std::vector<std::string>& list,int iterator) {
 
@@ -292,6 +301,7 @@ std::vector<std::string> prepareItems(std::vector<std::string>& list) {
 
         
         std::string newstring = replaceChar(item,' ', "_");
+        replaceAnds(newstring);
         for (auto& x : newstring) {
             x = tolower(x);
         }
@@ -505,6 +515,8 @@ std::map<std::string, ProductPricing> prepareItemsForRead(std::map<std::string,P
 
     for (auto& item : items) {
         std::string newstring=replaceChar(item.first, '_', " ");
+        replaceAnds(newstring);
+
 
         newstring[0] = std::toupper(newstring[0]);
         newList.insert(std::pair<std::string,ProductPricing>(newstring,item.second));
