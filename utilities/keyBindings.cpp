@@ -1,11 +1,35 @@
 #include "../warframe_tool.h"
 
 
-std::map<int, int> keyBindings = {
-    {1,0x42},   //b
-    {2,VK_ESCAPE},  //escape duh
-    {3,0x5a}    //z
+
+class KeyBind {
+
+    int key;
+    std::string description;
+
+public: 
+    KeyBind(int k, std::string s) {
+        key = k;
+        description = s;
+    }
+
+    int getKey() {
+        return key;
+    }
+    std::string getDescription() {
+        return description;
+    }
+
+
 };
+
+std::map<int, KeyBind> keyBindings = {
+    {1,KeyBind(0x42,"Take Screenshot")},   //b
+    {2,KeyBind(VK_ESCAPE,"Escape program")},  //escape duh
+    {3,KeyBind(0x58,"Read previously made screenshot")},    //x
+    {4,KeyBind(0x43,"Toggle window visibility")}    //c
+};
+
 
 
 std::string VirtualKeyCodeToString(UCHAR virtualKey)
@@ -40,21 +64,22 @@ std::string VirtualKeyCodeToString(UCHAR virtualKey)
 void registerHotkeys() {
     //every registered hotkey is assumed to be: alt+(hotkey)
 
-
+    
     //loop through every declared hotkey
-    for (std::pair<int, int> p : keyBindings) {
+    for (auto& p : keyBindings) {
     
 
         if (RegisterHotKey(
             NULL,
             p.first,
             MOD_ALT | MOD_NOREPEAT,
-            p.second))  //alt + b
+            p.second.getKey()))  
         {
-            std::cout << "Succesfully registered hotkey: "<<VirtualKeyCodeToString(p.second)<<std::endl;
+            std::cout << "Succesfully registered hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
         }
         else {
-            std::cout << "Failed to register hotkey: "<<VirtualKeyCodeToString(p.second)<<std::endl;
+            std::cout << "Failed to register hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
+           
         }
         
 
@@ -67,7 +92,7 @@ void registerHotkeys() {
 
 
 
-void checkKeyPressed(MSG& msg,std::map<std::string,ProductPricing>& currentItems,ToolConfig& config,bool& running) {
+void checkKeyPressed(MSG& msg,std::map<std::string,ProductPricing>& currentItems,ToolConfig& config,bool& running,bool& visible, sf::RenderWindow& windowState) {
 
     if (msg.message == WM_HOTKEY && msg.wParam == 1) {
         std::cout << "Global hotkey detected.\n";
@@ -80,6 +105,19 @@ void checkKeyPressed(MSG& msg,std::map<std::string,ProductPricing>& currentItems
     if (msg.message == WM_HOTKEY && msg.wParam == 3) {
         std::cout << "Global hotkey detected.\n";
         currentItems = readItemsFromScreenWithoutScreenshot(config);
+    }
+    if (msg.message == WM_HOTKEY && msg.wParam == 4) {
+        if (visible == 0) {
+            visible = 1;
+            windowState.setVisible(visible);
+            std::cout << "visible";
+        }
+        else {
+            visible = 0;
+            windowState.setVisible(visible);
+            std::cout << "hidden";
+        }
+        
     }
 
 }

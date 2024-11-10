@@ -26,7 +26,7 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 
 
 # Dodaj źródło do pliku wykonywalnego tego projektu.
-add_executable (${PROJECT_NAME} "warframe_tool.cpp" "warframe_tool.h" "functions.cpp" "trim.cpp" "utilities/guiUtilities.cpp" "utilities/keyBindings.cpp")
+add_executable (${PROJECT_NAME} "warframe_tool.cpp" "warframe_tool.h" "functions.cpp" "trim.cpp" "utilities/guiUtilities.cpp" "utilities/keyBindings.cpp" "utilities/configUtilities.cpp")
 target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr)
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARY})

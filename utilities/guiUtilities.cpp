@@ -4,93 +4,99 @@
 
 HRESULT setTransparency(HWND hWnd)
 {
-    
-
-    HRESULT hr = S_OK;
-
-    
-    DWM_BLURBEHIND bb = { 0 };
-
-    
-    bb.dwFlags = DWM_BB_ENABLE;
-    bb.fEnable = true;
-    bb.hRgnBlur = NULL;
 
 
-    hr = DwmEnableBlurBehindWindow(hWnd, &bb);
-    return hr;
+	HRESULT hr = S_OK;
+
+
+	DWM_BLURBEHIND bb = { 0 };
+
+
+	bb.dwFlags = DWM_BB_ENABLE;
+	bb.fEnable = true;
+	bb.hRgnBlur = NULL;
+
+
+	hr = DwmEnableBlurBehindWindow(hWnd, &bb);
+	return hr;
 }
 
 
 
 std::map<int, std::string> createIntStringMap(std::map<std::string, ProductPricing> items) {
 
-    std::map<int, std::string> intstringmap;
+	std::map<int, std::string> intstringmap;
 
-    int it = 0;
-    for (auto& p : items) {
-        intstringmap.insert(std::pair<int,std::string>(it,p.first));
-        it++;
-    }
+	int it = 0;
+	for (auto& p : items) {
+		intstringmap.insert(std::pair<int, std::string>(it, p.first));
+		it++;
+	}
 
-    return intstringmap;
+	return intstringmap;
 }
+
+
+
+void createItemBox(std::pair<std::string,ProductPricing> item) {
+
+	const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(item.first.c_str()).x;
+
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+	window_flags |= ImGuiWindowFlags_MenuBar;
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+	ImGui::BeginChild(item.first.c_str(), ImVec2(TEXT_BASE_WIDTH + 50, 100), ImGuiChildFlags_Border, window_flags);
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu(item.first.c_str()))
+		{
+
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+	ImGui::Text("Average price: ");
+	ImGui::SameLine();
+
+
+	std::string formattedPrice = std::format("{:.2f}", item.second.averagePrice); // s == "3.14"
+	ImGui::Text(formattedPrice.c_str());
+	ImGui::Text(getFormatedAveragePrices(item.second.lowestPrices).c_str());
+
+	ImGui::EndChild();
+	ImGui::PopStyleVar();
+}
+
 
 
 
 void generateImGuiTable(std::map<std::string, ProductPricing>& items) {
 
-    if (items.size() != 0) {
+
+
+	ImGui::Dummy(ImVec2(50.0, 0.0));
+
+	int it = 0;
+	for (auto& item : items) {
+
+
+		createItemBox(item);
+
+
+		ImGui::SameLine();
+
+		if (it != items.size() - 1) {
+			ImGui::Dummy(ImVec2(50.0, 0.0));
+			ImGui::SameLine();
+		}
 
 
 
-        std::map<int, std::string> indexedMap = createIntStringMap(items);
 
-       
-        if (ImGui::BeginTable("table1", items.size()))
-        {
-            for (int row = 0; row < 4; row++)
-            {
-                ImGui::TableNextRow();
-                for (int column = 0; column < 4; column++)
-                {
+		it++;
+	}
 
-                    std::string itemName = indexedMap[column];
-                    ProductPricing pricing = items[itemName];
-                    const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(itemName.c_str()).x;
-
-                    sf::FloatRect rect;
-                    rect.height = 200;
-                    rect.width = TEXT_BASE_WIDTH+20;
-
-
-                    ImGui::TableSetColumnIndex(column);
-
-                    switch (row) {
-                    case 0: ImGui::DrawRectFilled(rect, sf::Color(78, 96, 99, 255), 20, ImDrawFlags_RoundCornersAll); break;
-                        
-                    case 1: ImGui::TextWrapped(itemName.c_str()); break;
-                    case 2: ImGui::TextWrapped(std::to_string(pricing.averagePrice).c_str()); break;
-                    case 3: ImGui::TextWrapped(getFormatedAveragePrices(pricing.lowestPrices).c_str()); break;
-
-
-
-                    }
-
-
-
-                }
-            }
-        }
-
-
-        
-        ImGui::EndTable();
-        return;
-    }
-    else {
-        return;
-    }
 
 
 

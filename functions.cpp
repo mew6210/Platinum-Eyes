@@ -499,6 +499,21 @@ void printItemPrices(std::map<std::string, ProductPricing>& itemPrices) {
 
 
 
+std::map<std::string, ProductPricing> prepareItemsForRead(std::map<std::string,ProductPricing>& items) {
+
+    std::map<std::string, ProductPricing> newList = {};
+
+    for (auto& item : items) {
+        std::string newstring=replaceChar(item.first, '_', " ");
+
+        newstring[0] = std::toupper(newstring[0]);
+        newList.insert(std::pair<std::string,ProductPricing>(newstring,item.second));
+    }
+
+    return newList;
+
+}
+
 
 std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config){
 
@@ -561,6 +576,7 @@ std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config){
     timer.say_time("FETCHING ORDERS");
 
 
+    prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
 
 
@@ -613,84 +629,11 @@ std::map<std::string, ProductPricing> readItemsFromScreenWithoutScreenshot(ToolC
     timer.end_time();
     timer.say_time("FETCHING ORDERS");
 
-
+    itemPrices=prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
 
 
     return itemPrices;
-
-
-}
-
-bool checkIfConfigFileExists() {
-
-    ifstream file;
-
-    file.open(CONFIG_FILENAME);
-
-    if (file) return true;
-    else return false;
-
-
-
-}
-
-
-
-
-void createConfigFile() {
-
-    ofstream config(CONFIG_FILENAME);
-
-
-    for (std::string configProperty : CONFIGPROPERTIES) {
-        config << configProperty << ": \n";
-    }
-
-    config.close();
-
-
-}
-
-
-void resolveConfigLine(ToolConfig& toolConfig, std::string& line,int it) {
-
-    int startingPoint = 0;
-
-    
-    startingPoint = CONFIGPROPERTIES[it].length() + 1;
-
-    int whereEnds = line.find_last_of("\n");
-
-    std::string configProperty = line.substr(startingPoint, whereEnds - 1);
-
-
-
-
-
-    std::string key = CONFIGPROPERTIES[it];
-    toolConfig.setPropertyValue(key, configProperty);
-
-
-   
-
-}
-
-
-ToolConfig readConfigFile() {
-
-    ToolConfig toolConfig = ToolConfig();
-
-
-    ifstream configFile(CONFIG_FILENAME);
-    std::string line;
-    int it= 0;
-    while (getline(configFile, line)) {
-        resolveConfigLine(toolConfig, line,it);
-        it+= 1;
-    }
-
-    return toolConfig;
 
 
 }
@@ -714,10 +657,5 @@ Point stringToCoordinates(std::string s) {
     return Point(std::stoi(x), std::stoi(y));
 
 }
-
-
-
-
-
 
 

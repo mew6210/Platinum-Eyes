@@ -32,7 +32,6 @@ using json = nlohmann::json;
 
 
 //CONSTANTS
-
 const std::string CONFIG_FILENAME = "tool_config.txt";
 const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight" };
 
@@ -224,4 +223,6 @@ void generateImGuiTable(std::map<std::string, ProductPricing>& items);
 HRESULT setTransparency(HWND hWnd);
 
 void registerHotkeys();
-void checkKeyPressed(MSG& msg, std::map<std::string, ProductPricing>& currentItems, ToolConfig& config,bool& runningState);
+void checkKeyPressed(MSG& msg, std::map<std::string, ProductPricing>& currentItems, ToolConfig& config,bool& runningState,bool& visibilityState, sf::RenderWindow& windowState);
+
+std::map<std::string, ProductPricing> prepareItemsForRead(std::map<std::string, ProductPricing>& items);
