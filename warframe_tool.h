@@ -39,6 +39,14 @@ const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath",
 void errorLog(std::string s);
 
 
+enum Rarity {
+	Common,
+	Uncommon,
+	Rare,
+	Undefined
+};
+
+
 
 class Point {
 public:
@@ -85,27 +93,28 @@ public:
 
 
 
-class ProductPricing{
+class ItemDetails{
 
 public:
 
 	float averagePrice = 0;
 	std::vector<int> lowestPrices;
+	Rarity rarity;
 
+	ItemDetails() : averagePrice(0), lowestPrices({ 0, 0, 0, 0, 0 }),rarity(Undefined) {}
 
-	ProductPricing() : averagePrice(0), lowestPrices({ 0, 0, 0, 0, 0 }) {}
-
-	ProductPricing(float avg,std::vector<int> lowestprices) {
+	ItemDetails(float avg,std::vector<int> lowestprices,Rarity r) {
 		averagePrice = avg;
 		lowestPrices = lowestprices;
-
+		rarity = r;
 
 	}
-	ProductPricing(float avg, int lowestprices) {
+	ItemDetails(float avg, int lowestprices) {
 		averagePrice = 0;
 		lowestPrices = std::vector<int>{
 		0,0,0,0,0
 		};
+		rarity = Undefined;
 	}
 
 
@@ -185,22 +194,22 @@ std::vector<std::string> prepareItems(std::vector<std::string>&);
 std::string replaceChar(std::string s, char a, std::string b);
 
 
-ProductPricing getAveragePrice(const json& list);
+ItemDetails getAveragePrice(const json& list);
 
 
 
-std::map<std::string, ProductPricing> getItemPricesMap(std::vector<std::string>& preparedItems);
+std::map<std::string, ItemDetails> getItemPricesMap(std::vector<std::string>& preparedItems);
 std::string getFormatedAveragePrices(std::vector<int>& lowestPrices);
 
 
-void printItemPrices(std::map<std::string, ProductPricing>& itemPrices);
+void printItemPrices(std::map<std::string, ItemDetails>& itemPrices);
 
 
 
 
-std::map<std::string, ProductPricing> readItemsFromScreen(ToolConfig& config); 
+std::map<std::string, ItemDetails> readItemsFromScreen(ToolConfig& config); 
 
-std::map<std::string, ProductPricing> readItemsFromScreenWithoutScreenshot(ToolConfig& config);
+std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshot(ToolConfig& config);
 
 bool checkIfConfigFileExists();
 
@@ -217,12 +226,12 @@ Point stringToCoordinates(std::string s);
 
 
 
-void generateImGuiTable(std::map<std::string, ProductPricing>& items);
+void generateImGuiTable(std::map<std::string, ItemDetails>& items);
 
 
 HRESULT setTransparency(HWND hWnd);
 
 void registerHotkeys();
-void checkKeyPressed(MSG& msg, std::map<std::string, ProductPricing>& currentItems, ToolConfig& config,bool& runningState,bool& visibilityState, sf::RenderWindow& windowState);
+void checkKeyPressed(MSG& msg, std::map<std::string, ItemDetails>& currentItems, ToolConfig& config,bool& runningState,bool& visibilityState, sf::RenderWindow& windowState);
 
-std::map<std::string, ProductPricing> prepareItemsForRead(std::map<std::string, ProductPricing>& items);
+std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items);

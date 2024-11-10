@@ -23,7 +23,7 @@ HRESULT setTransparency(HWND hWnd)
 
 
 
-std::map<int, std::string> createIntStringMap(std::map<std::string, ProductPricing> items) {
+std::map<int, std::string> createIntStringMap(std::map<std::string, ItemDetails> items) {
 
 	std::map<int, std::string> intstringmap;
 
@@ -38,13 +38,24 @@ std::map<int, std::string> createIntStringMap(std::map<std::string, ProductPrici
 
 
 
-void createItemBox(std::pair<std::string,ProductPricing> item) {
+void createItemBox(std::pair<std::string,ItemDetails> item) {
 
 	const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(item.first.c_str()).x;
 
 
+	ImVec4 bgColor = { 0,0,0,1 };
+	switch (item.second.rarity) {
+	case Common:bgColor = {189,145,119,255}; break;
+	case Uncommon: bgColor = {209,208,209,128}; break;
+	case Rare: bgColor = {236,225,117,255}; break;
+	default: bgColor = { 0,0,0,255 }; break;
+	}
+	
+
+
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 	window_flags |= ImGuiWindowFlags_MenuBar;
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 	ImGui::BeginChild(item.first.c_str(), ImVec2(TEXT_BASE_WIDTH + 50, 100), ImGuiChildFlags_Border, window_flags);
 	if (ImGui::BeginMenuBar())
@@ -65,13 +76,15 @@ void createItemBox(std::pair<std::string,ProductPricing> item) {
 	ImGui::Text(getFormatedAveragePrices(item.second.lowestPrices).c_str());
 
 	ImGui::EndChild();
+	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
+	
 }
 
 
 
 
-void generateImGuiTable(std::map<std::string, ProductPricing>& items) {
+void generateImGuiTable(std::map<std::string, ItemDetails>& items) {
 
 
 

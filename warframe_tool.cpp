@@ -14,7 +14,7 @@
 using json = nlohmann::json;
 int main()
 {
-    std::map<std::string, ProductPricing> currentItems;
+    std::map<std::string, ItemDetails> currentItems;
 
     if (!checkIfConfigFileExists()) {
         createConfigFile();

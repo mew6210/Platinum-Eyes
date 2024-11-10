@@ -92,7 +92,7 @@ void registerHotkeys() {
 
 
 
-void checkKeyPressed(MSG& msg,std::map<std::string,ProductPricing>& currentItems,ToolConfig& config,bool& running,bool& visible, sf::RenderWindow& windowState) {
+void checkKeyPressed(MSG& msg,std::map<std::string,ItemDetails>& currentItems,ToolConfig& config,bool& running,bool& visible, sf::RenderWindow& windowState) {
 
     if (msg.message == WM_HOTKEY && msg.wParam == 1) {
         std::cout << "Global hotkey detected.\n";
