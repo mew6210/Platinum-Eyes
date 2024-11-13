@@ -77,7 +77,6 @@ public:
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
 
-
 	void start_time() {
 		begin = std::chrono::steady_clock::now();
 	}
@@ -88,9 +87,6 @@ public:
 	void say_time(std::string s) {
 		std::cout << s<<": " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "milliseconds "<< std::endl;
 	}
-
-
-
 
 };
 
@@ -180,7 +176,25 @@ public:
 };
 
 
+struct AppState {
 
+	std::map<std::string, ItemDetails>& items;
+	ToolConfig& config;
+	sf::RenderWindow& window;
+	bool& running;
+	bool& isVisible;
+	MSG& msg;
+
+	AppState(
+		std::map<std::string, ItemDetails>& i,
+		ToolConfig& c,
+		sf::RenderWindow& w,
+		bool& r,
+		bool& v,
+		MSG& m
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m) {};
+
+};
 
 
 
@@ -239,6 +253,10 @@ HRESULT setTransparency(HWND hWnd);
 
 void registerHotkeys();
 void checkKeyPressed(MSG& msg, std::map<std::string, ItemDetails>& currentItems, ToolConfig& config,bool& runningState,bool& visibilityState, sf::RenderWindow& windowState);
+
+void checkKeyPressedThroughState(AppState state);
+
+
 
 std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items);
 

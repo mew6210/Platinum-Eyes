@@ -120,7 +120,7 @@ void determineRarity(ItemDetails& details, const json& text) {
         }
     }
 
-    std::cout << ducatsPrice;
+    
 
     switch (ducatsPrice) {
     case 15: r = Common; break;

@@ -23,17 +23,23 @@ int main()
     customizeWindow(window);
 
     sf::Clock deltaClock;
-    // run the main loop
+    
     bool running = true;
     bool visible = true;
+    MSG msg = { 0 };
+
+    AppState state(currentItems,toolConfig,window,running,visible,msg);
+    
+
+
     while (running)
     {
         //handle keybinds
-        MSG msg = { 0 };
+       
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             
-            checkKeyPressed(msg,currentItems,toolConfig,running,visible,window);
-
+            //checkKeyPressed(msg,currentItems,toolConfig,running,visible,window);
+            checkKeyPressedThroughState(state);
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }

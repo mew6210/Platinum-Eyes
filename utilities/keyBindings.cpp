@@ -94,6 +94,9 @@ void registerHotkeys() {
 
 void checkKeyPressed(MSG& msg,std::map<std::string,ItemDetails>& currentItems,ToolConfig& config,bool& running,bool& visible, sf::RenderWindow& windowState) {
 
+
+
+
     if (msg.message == WM_HOTKEY && msg.wParam == 1) {
         std::cout << "Global hotkey detected.\n";
         currentItems = readItemsFromScreen(config);  // Close the SFML window when Escape is pressed globally
@@ -122,3 +125,37 @@ void checkKeyPressed(MSG& msg,std::map<std::string,ItemDetails>& currentItems,To
 
 }
 
+
+
+void checkKeyPressedThroughState(AppState state) {
+
+
+
+
+    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 1) {
+        std::cout << "Global hotkey detected.\n";
+        state.items= readItemsFromScreen(state.config);  // Close the SFML window when Escape is pressed globally
+    }
+    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 2) {
+        std::cout << "Global hotkey detected.\n";
+        state.running = false;  // Close the SFML window when Escape is pressed globally
+    }
+    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 3) {
+        std::cout << "Global hotkey detected.\n";
+        state.items = readItemsFromScreenWithoutScreenshot(state.config);
+    }
+    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 4) {
+        if (state.isVisible == 0) {
+            state.isVisible = 1;
+            state.window.setVisible(state.isVisible);
+            std::cout << "visible";
+        }
+        else {
+            state.isVisible = 0;
+            state.window.setVisible(state.isVisible);
+            std::cout << "hidden";
+        }
+
+    }
+
+}
