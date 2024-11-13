@@ -39,6 +39,9 @@ const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath",
 void errorLog(std::string s);
 
 
+
+
+
 enum Rarity {
 	Common,
 	Uncommon,
@@ -179,6 +182,9 @@ public:
 
 
 
+
+
+
 BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
 
 HBITMAP takeScreenshot(int imageWidth = 1200, int imageHeight = 800, int offsetX = 200, int offsetY = 200);
@@ -235,3 +241,8 @@ void registerHotkeys();
 void checkKeyPressed(MSG& msg, std::map<std::string, ItemDetails>& currentItems, ToolConfig& config,bool& runningState,bool& visibilityState, sf::RenderWindow& windowState);
 
 std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items);
+
+
+void customizeWindow(sf::RenderWindow& w);
+
+void createImGuiWindow(bool& isRunning);

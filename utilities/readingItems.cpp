@@ -381,6 +381,23 @@ std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, Ite
 }
 
 
+std::string fetchResultTable(std::string serverAddress,std::string fileToSend) {
+
+
+    cpr::Response r = cpr::Get(cpr::Url{ serverAddress },
+        cpr::Parameters{ {"filepath", fileToSend } });
+    r.status_code;                  // 200
+    r.header["content-type"];       // application/json; charset=utf-8
+    r.text;                         // JSON text string
+    std::cout << r.text << std::endl;
+
+    return r.text;
+
+
+
+}
+
+
 std::map<std::string, ItemDetails> readItemsFromScreen(ToolConfig& config) {
 
     Timer timer;
@@ -405,31 +422,20 @@ std::map<std::string, ItemDetails> readItemsFromScreen(ToolConfig& config) {
     timer.say_time("saving to file");
     DeleteObject(bitmap);
 
-
-    //VARIABLES FOR 3440/1440:
-    //IMAGEWIDTH:1290
-    //IMAGEHEIGHT: 70
-    //CENTERPOINT: 1720,570
+    
     timer.start_time();
     std::string address = config["ocrIp"] + ":" + config["ocrPort"] + "/ocr";
     std::cout << std::endl << "address: " << address << std::endl;
 
-
-
-    cpr::Response r = cpr::Get(cpr::Url{ address },
-        cpr::Parameters{ {"filepath", file_name_to_send} });
-    r.status_code;                  // 200
-    r.header["content-type"];       // application/json; charset=utf-8
-    r.text;                         // JSON text string
-    std::cout << r.text << std::endl;
-
+    
+    std::string resultTable = fetchResultTable(address, file_name_to_send);
 
 
 
     timer.end_time();
     timer.say_time("getting response from a server");
 
-    std::vector<std::string> items = extractItemsFromServer(r.text);
+    std::vector<std::string> items = extractItemsFromServer(resultTable);
 
     std::vector<std::string> preparedItems = prepareItems(items);
 
@@ -460,30 +466,18 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshot(ToolConf
     std::string file_name_to_send = config["screenShotFilePath"];
     LPCTSTR file_name = file_name_to_send.c_str();
 
-    //VARIABLES FOR 3440/1440:
-    //IMAGEWIDTH:1290
-    //IMAGEHEIGHT: 70
-    //CENTERPOINT: 1720,570
+
     timer.start_time();
     std::string address = config["ocrIp"] + ":" + config["ocrPort"] + "/ocr";
-    //std::cout << std::endl << "address: " << address<<std::endl;
 
 
-
-    cpr::Response r = cpr::Get(cpr::Url{ address },
-        cpr::Parameters{ {"filepath", file_name_to_send} });
-    r.status_code;
-    r.header["content-type"];
-    r.text;
-    std::cout << r.text << std::endl;
-
-
+    std::string resultTable = fetchResultTable(address,file_name_to_send);
 
 
     timer.end_time();
     timer.say_time("getting response from a server");
 
-    std::vector<std::string> items = extractItemsFromServer(r.text);
+    std::vector<std::string> items = extractItemsFromServer(resultTable);
 
     std::vector<std::string> preparedItems = prepareItems(items);
 

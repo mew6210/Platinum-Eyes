@@ -45,9 +45,9 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 
 	ImVec4 bgColor = { 0,0,0,1 };
 	switch (item.second.rarity) {
-	case Common:bgColor = {189,145,119,255}; break;
+	case Common:bgColor = {189,145,119,128}; break;
 	case Uncommon: bgColor = {209,208,209,128}; break;
-	case Rare: bgColor = {236,225,117,255}; break;
+	case Rare: bgColor = {236,225,117,128}; break;
 	default: bgColor = { 0,0,0,255 }; break;
 	}
 	
@@ -58,6 +58,8 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 	ImGui::BeginChild(item.first.c_str(), ImVec2(TEXT_BASE_WIDTH + 50, 100), ImGuiChildFlags_Border, window_flags);
+
+	
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu(item.first.c_str()))
@@ -67,6 +69,9 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 		}
 		ImGui::EndMenuBar();
 	}
+	
+
+
 	ImGui::Text("Average price: ");
 	ImGui::SameLine();
 
@@ -114,4 +119,50 @@ void generateImGuiTable(std::map<std::string, ItemDetails>& items) {
 
 
 
+}
+
+
+
+
+
+
+void customizeWindow(sf::RenderWindow& w) {
+	HWND hwnd = w.getSystemHandle();
+
+	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - 1225, 25));
+	w.setFramerateLimit(60);
+	ImGui::SFML::Init(w);
+
+	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
+	style |= WS_EX_TOOLWINDOW;
+	SetWindowLongPtr(hwnd, GWL_EXSTYLE, style);
+	setTransparency(hwnd);
+
+
+
+}
+
+void setImGuiStyle() {
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowRounding = 20.0f;
+	style.ChildRounding = 20.0f;
+	style.WindowBorderSize = 1.0f;
+	style.ChildBorderSize = 0.0f;
+
+
+}
+
+void createImGuiWindow(bool& isRunning) {
+
+	setImGuiStyle();
+	
+
+	ImGuiWindowFlags flags = 1 || 128;
+	ImGuiCond cond = ImGuiCond_Once;
+	ImGui::SetNextWindowBgAlpha(0.7);
+	ImGui::SetNextWindowSize(ImVec2(1100, 200), cond);
+	ImGui::SetNextWindowPos(ImVec2(50, 50), cond);
+	
+	ImGui::Begin("Hello, world!", &isRunning, flags);
 }
