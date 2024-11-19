@@ -23,11 +23,14 @@ public:
 
 };
 
+static int counter = 1;
+
 std::map<int, KeyBind> keyBindings = {
-    {1,KeyBind(0x42,"Take Screenshot")},   //b
-    {2,KeyBind(VK_ESCAPE,"Escape program")},  //escape duh
-    {3,KeyBind(0x58,"Read previously made screenshot")},    //x
-    {4,KeyBind(0x43,"Toggle window visibility")}    //c
+    {counter++,KeyBind(0x42,"Take Screenshot")},   //b
+    {counter++,KeyBind(VK_ESCAPE,"Escape program")},  //escape duh
+    {counter++,KeyBind(0x58,"Read previously made screenshot")},    //x
+    {counter++,KeyBind(0x43,"Toggle window visibility")},    //c
+    {counter++,KeyBind(0x41,"Save current config to copy file")} // a
 };
 
 
@@ -79,7 +82,6 @@ void registerHotkeys() {
         }
         else {
             std::cout << "Failed to register hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
-           
         }
         
 
@@ -90,72 +92,66 @@ void registerHotkeys() {
 
 }
 
+void unregisterHotkeys() {
 
-
-void checkKeyPressed(MSG& msg,std::map<std::string,ItemDetails>& currentItems,ToolConfig& config,bool& running,bool& visible, sf::RenderWindow& windowState) {
-
-
-
-
-    if (msg.message == WM_HOTKEY && msg.wParam == 1) {
-        std::cout << "Global hotkey detected.\n";
-        currentItems = readItemsFromScreen(config);  // Close the SFML window when Escape is pressed globally
-    }
-    if (msg.message == WM_HOTKEY && msg.wParam == 2) {
-        std::cout << "Global hotkey detected.\n";
-        running = false;  // Close the SFML window when Escape is pressed globally
-    }
-    if (msg.message == WM_HOTKEY && msg.wParam == 3) {
-        std::cout << "Global hotkey detected.\n";
-        currentItems = readItemsFromScreenWithoutScreenshot(config);
-    }
-    if (msg.message == WM_HOTKEY && msg.wParam == 4) {
-        if (visible == 0) {
-            visible = 1;
-            windowState.setVisible(visible);
-            std::cout << "visible";
+    for (auto& p : keyBindings) {
+        if (UnregisterHotKey(NULL, p.first)) {
+            std::cout << "Succesfully unregistered Alt + " << VirtualKeyCodeToString(p.second.getKey())<<"\n";
         }
         else {
-            visible = 0;
-            windowState.setVisible(visible);
-            std::cout << "hidden";
+            std::cout << "Failed to unregister Alt + " << VirtualKeyCodeToString(p.second.getKey()) << "\n";
         }
-        
     }
 
 }
 
 
 
-void checkKeyPressedThroughState(AppState state) {
 
 
+void checkKeyPressed(AppState state) {
+    
 
-
-    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 1) {
-        std::cout << "Global hotkey detected.\n";
-        state.items= readItemsFromScreen(state.config);  // Close the SFML window when Escape is pressed globally
-    }
-    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 2) {
-        std::cout << "Global hotkey detected.\n";
-        state.running = false;  // Close the SFML window when Escape is pressed globally
-    }
-    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 3) {
-        std::cout << "Global hotkey detected.\n";
-        state.items = readItemsFromScreenWithoutScreenshot(state.config);
-    }
-    if (state.msg.message == WM_HOTKEY && state.msg.wParam == 4) {
-        if (state.isVisible == 0) {
-            state.isVisible = 1;
-            state.window.setVisible(state.isVisible);
-            std::cout << "visible";
+    if (state.msg.message == WM_HOTKEY) {
+        
+        try {
+            KeyBind keybind = keyBindings.at(state.msg.wParam);
+            std::cout << "Alt + " << VirtualKeyCodeToString(keybind.getKey())<<"\n";
         }
-        else {
-            state.isVisible = 0;
-            state.window.setVisible(state.isVisible);
-            std::cout << "hidden";
+        catch (std::out_of_range e) {
+            std::cout << "didnt find this hotkey :3 \n";
         }
+        
+        
+        switch (state.msg.wParam) {
+            
+        case 1: state.items = readItemsFromScreen(state.config);  
+            break;
+        case 2: state.running = false;  
+            break;
+        case 3: state.items = readItemsFromScreenWithoutScreenshot(state.config); 
+            break;
+        case 4: 
+            /*
+            if (state.isVisible == 0) {
+                state.isVisible = 1;
+                state.window.setVisible(state.isVisible);
+            }
+            else {
+                state.isVisible = 0;
+                state.window.setVisible(state.isVisible);
+            }
+            */
+            state.isVisible = !state.isVisible;
+            state.window.setVisible(state.isVisible);
+            break;
+        case 5: copyConfigToOldFile(); break;
+        }
+    
+
 
     }
+
+
 
 }

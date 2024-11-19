@@ -1,7 +1,4 @@
-﻿// warframe_tool.h: plik dołączany dla standardowych systemowych plików dołączanych,
-// lub pliki dołączane specyficzne dla projektu.
-
-#pragma once
+﻿#pragma once
 
 #include <iostream>
 #include <iostream>
@@ -31,12 +28,16 @@
 using json = nlohmann::json;
 
 
-//CONSTANTS
-const std::string CONFIG_FILENAME = "tool_config.txt";
-const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight" };
-
-
 void errorLog(std::string s);
+
+const std::string CONFIG_FILENAME = "tool_config.txt";
+const std::string COPY_FILENAME = "tool_config_old.txt";
+const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight","eeLogPath"};
+const int SFMLWINDOWSIZEX = 1200;
+const int SFMLWINDOWSIZEY = 300;
+
+const int IMGUIWINDOWSIZEX = SFMLWINDOWSIZEX - 100;
+const int IMGUIWINDOWSIZEY = SFMLWINDOWSIZEY - 100;
 
 
 
@@ -176,6 +177,17 @@ public:
 };
 
 
+struct WindowParameters {
+
+	int width;
+	int height;
+
+	WindowParameters(int width, int height) :width(width), height(height) {};
+
+};
+
+
+
 struct AppState {
 
 	std::map<std::string, ItemDetails>& items;
@@ -184,6 +196,9 @@ struct AppState {
 	bool& running;
 	bool& isVisible;
 	MSG& msg;
+	WindowParameters& sfmlSize;
+	WindowParameters& imguiSize;
+
 
 	AppState(
 		std::map<std::string, ItemDetails>& i,
@@ -191,10 +206,38 @@ struct AppState {
 		sf::RenderWindow& w,
 		bool& r,
 		bool& v,
-		MSG& m
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m) {};
+		MSG& m,
+		WindowParameters& sfmlS,
+		WindowParameters& imguiS
+
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS) {};
 
 };
+
+
+
+
+
+const std::map<std::string, ItemDetails> exampleItems = {
+	std::pair<std::string,ItemDetails>("someItem1",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem2",ItemDetails(5,std::vector<int>(),Uncommon)),
+	std::pair<std::string,ItemDetails>("someItem3",ItemDetails(5,std::vector<int>(),Rare)),
+	std::pair<std::string,ItemDetails>("someItem4",ItemDetails(5,std::vector<int>(),Undefined)),
+	std::pair<std::string,ItemDetails>("someItem5",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem6",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem7",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem8",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem9",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem10",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem11",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem12",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem13",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem14",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem15",ItemDetails(5,std::vector<int>(),Common)),
+	std::pair<std::string,ItemDetails>("someItem16",ItemDetails(5,std::vector<int>(),Common)),
+};
+
+
 
 
 
@@ -252,15 +295,16 @@ void generateImGuiTable(std::map<std::string, ItemDetails>& items);
 HRESULT setTransparency(HWND hWnd);
 
 void registerHotkeys();
-void checkKeyPressed(MSG& msg, std::map<std::string, ItemDetails>& currentItems, ToolConfig& config,bool& runningState,bool& visibilityState, sf::RenderWindow& windowState);
 
-void checkKeyPressedThroughState(AppState state);
+void checkKeyPressed(AppState state);
 
 
 
 std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items);
 
 
-void customizeWindow(sf::RenderWindow& w);
+void customizeWindow(sf::RenderWindow& w,WindowParameters& state );
 
-void createImGuiWindow(bool& isRunning);
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters);
+void unregisterHotkeys();
+void copyConfigToOldFile();

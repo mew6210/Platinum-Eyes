@@ -4,18 +4,13 @@
 
 HRESULT setTransparency(HWND hWnd)
 {
-
-
 	HRESULT hr = S_OK;
 
-
 	DWM_BLURBEHIND bb = { 0 };
-
 
 	bb.dwFlags = DWM_BB_ENABLE;
 	bb.fEnable = true;
 	bb.hRgnBlur = NULL;
-
 
 	hr = DwmEnableBlurBehindWindow(hWnd, &bb);
 	return hr;
@@ -92,16 +87,12 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 void generateImGuiTable(std::map<std::string, ItemDetails>& items) {
 
 
-
+	int itemCount = items.size();
 	ImGui::Dummy(ImVec2(50.0, 0.0));
-
+	
 	int it = 0;
 	for (auto& item : items) {
-
-
 		createItemBox(item);
-
-
 		ImGui::SameLine();
 
 		if (it != items.size() - 1) {
@@ -109,15 +100,8 @@ void generateImGuiTable(std::map<std::string, ItemDetails>& items) {
 			ImGui::SameLine();
 		}
 
-
-
-
 		it++;
 	}
-
-
-
-
 
 }
 
@@ -126,10 +110,10 @@ void generateImGuiTable(std::map<std::string, ItemDetails>& items) {
 
 
 
-void customizeWindow(sf::RenderWindow& w) {
+void customizeWindow(sf::RenderWindow& w,WindowParameters& sfmlParameters) {
 	HWND hwnd = w.getSystemHandle();
 
-	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - 1225, 25));
+	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - (sfmlParameters.width+25), 25));
 	w.setFramerateLimit(60);
 	ImGui::SFML::Init(w);
 
@@ -153,16 +137,17 @@ void setImGuiStyle() {
 
 }
 
-void createImGuiWindow(bool& isRunning) {
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters) {
 
 	setImGuiStyle();
 	
 
-	ImGuiWindowFlags flags = 1 || 128;
+	ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar;
+	flags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGuiCond cond = ImGuiCond_Once;
 	ImGui::SetNextWindowBgAlpha(0.7);
-	ImGui::SetNextWindowSize(ImVec2(1100, 200), cond);
+	ImGui::SetNextWindowSize(ImVec2(imguiParameters.width,imguiParameters.height), cond);
 	ImGui::SetNextWindowPos(ImVec2(50, 50), cond);
 	
-	ImGui::Begin("Hello, world!", &isRunning, flags);
+	ImGui::Begin("Warframe tool-main", &isRunning, flags);
 }

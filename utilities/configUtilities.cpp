@@ -75,3 +75,20 @@ ToolConfig readConfigFile() {
 
 
 }
+
+
+void copyConfigToOldFile() {
+
+     std::ifstream fileCurrent(CONFIG_FILENAME);
+
+     std::ofstream fileCopy(COPY_FILENAME);
+
+     std::string line;
+     while (std::getline(fileCurrent,line)) {
+
+         fileCopy << line << "\n";
+
+     }
+
+}
+

@@ -18,18 +18,23 @@ int main()
 
     registerHotkeys();
 
-    sf::RenderWindow window(sf::VideoMode(1200, 300), "OpenGL", sf::Style::None, sf::ContextSettings(32));
+    WindowParameters sfmlSize = WindowParameters(1200, 300);
+    WindowParameters imguiSize = WindowParameters(sfmlSize.width - 100, sfmlSize.height - 100);
     
-    customizeWindow(window);
-
+    sf::RenderWindow window(sf::VideoMode(sfmlSize.width, sfmlSize.height), "Warframe tool", sf::Style::None, sf::ContextSettings(32));
+    
     sf::Clock deltaClock;
     
     bool running = true;
     bool visible = true;
     MSG msg = { 0 };
 
-    AppState state(currentItems,toolConfig,window,running,visible,msg);
+    AppState state(currentItems,toolConfig,window,running,visible,msg,sfmlSize,imguiSize);
     
+
+
+    customizeWindow(window,state.sfmlSize);
+
 
 
     while (running)
@@ -38,8 +43,7 @@ int main()
        
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             
-            //checkKeyPressed(msg,currentItems,toolConfig,running,visible,window);
-            checkKeyPressedThroughState(state);
+            checkKeyPressed(state);
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
@@ -70,7 +74,7 @@ int main()
         ImGui::SFML::Update(window, deltaClock.restart());
 
         
-        createImGuiWindow(running);
+        createImGuiWindow(running,state.imguiSize);
         generateImGuiTable(currentItems);
         //ImGui::ShowDemoWindow(&running);
 
@@ -85,7 +89,7 @@ int main()
     }
 
 
-
+    unregisterHotkeys();
 
 
     return 0;
