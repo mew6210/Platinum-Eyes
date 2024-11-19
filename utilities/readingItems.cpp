@@ -113,7 +113,7 @@ void determineRarity(ItemDetails& details, const json& text) {
 
     std::string id = text["id"];
     int ducatsPrice = 0;
-    Rarity r = Undefined;
+    Rarity::level r = Rarity::level::Undefined;
     for (auto& item : text["items_in_set"]) {
         if (item["id"] == id) {
             ducatsPrice = item["ducats"];
@@ -123,12 +123,12 @@ void determineRarity(ItemDetails& details, const json& text) {
     
 
     switch (ducatsPrice) {
-    case 15: r = Common; break;
-    case 25: r = Common; break;
-    case 45: r = Uncommon; break;
-    case 65: r = Uncommon; break;
-    case 100: r = Rare; break;
-    default: r = Undefined; break;
+    case 15: r = Rarity::level::Common; break;
+    case 25: r = Rarity::level::Common; break;
+    case 45: r = Rarity::level::Uncommon; break;
+    case 65: r = Rarity::level::Uncommon; break;
+    case 100: r = Rarity::level::Rare; break;
+    default: r = Rarity::level::Undefined; break;
     }
 
 
@@ -184,7 +184,7 @@ std::string replaceChar(std::string s, char a, std::string b) {
 ItemDetails getAveragePrice(const json& list) {
     float sum = 0;
     int count = 0;
-    Rarity rarity = Undefined;
+    Rarity::level rarity = Rarity::level::Undefined;
 
     // Use a max-heap priority queue to keep track of the 5 smallest prices
     std::priority_queue<int> lowestPrices;

@@ -40,9 +40,9 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 
 	ImVec4 bgColor = { 0,0,0,1 };
 	switch (item.second.rarity) {
-	case Common:bgColor = {189,145,119,128}; break;
-	case Uncommon: bgColor = {209,208,209,128}; break;
-	case Rare: bgColor = {236,225,117,128}; break;
+	case Rarity::level::Common:bgColor = {189,145,119,128}; break;
+	case Rarity::level::Uncommon: bgColor = {209,208,209,128}; break;
+	case Rarity::level::Rare: bgColor = {236,225,117,128}; break;
 	default: bgColor = { 0,0,0,255 }; break;
 	}
 	

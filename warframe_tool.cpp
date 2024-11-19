@@ -5,7 +5,6 @@ using json = nlohmann::json;
 int main()
 {
 
-
     std::map<std::string, ItemDetails> currentItems;
 
     if (!checkIfConfigFileExists()) {
@@ -17,7 +16,6 @@ int main()
     ToolConfig toolConfig = readConfigFile();
 
     registerHotkeys();
-
     WindowParameters sfmlSize = WindowParameters(1200, 300);
     WindowParameters imguiSize = WindowParameters(sfmlSize.width - 100, sfmlSize.height - 100);
     

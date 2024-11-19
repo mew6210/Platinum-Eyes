@@ -1,7 +1,6 @@
 #include "../warframe_tool.h"
 
 
-
 class KeyBind {
 
     int key;
@@ -23,14 +22,34 @@ public:
 
 };
 
-static int counter = 1;
 
+int StringToVirtualKeyCode(std::string s) {
+
+    for (auto& c : s) {
+        c = std::tolower(c);
+    }
+
+
+    if (s == "esc") {
+        return VK_ESCAPE;
+    }
+
+
+    HKL keyboard = LoadKeyboardLayoutA("00000415", KLF_ACTIVATE);        //polish programmer keyboard layout
+
+    return VkKeyScanEx(s[0], keyboard);
+}
+
+
+
+static int counter = 1;
 std::map<int, KeyBind> keyBindings = {
-    {counter++,KeyBind(0x42,"Take Screenshot")},   //b
-    {counter++,KeyBind(VK_ESCAPE,"Escape program")},  //escape duh
-    {counter++,KeyBind(0x58,"Read previously made screenshot")},    //x
-    {counter++,KeyBind(0x43,"Toggle window visibility")},    //c
-    {counter++,KeyBind(0x41,"Save current config to copy file")} // a
+    {counter++,KeyBind(StringToVirtualKeyCode("b"),"Read items from current screen")},  
+    {counter++,KeyBind(StringToVirtualKeyCode("esc"),"Escape program")},  
+    {counter++,KeyBind(StringToVirtualKeyCode("x"),"Read previously shown items")},    
+    {counter++,KeyBind(StringToVirtualKeyCode("c"),"Toggle window visibility")},    
+    {counter++,KeyBind(StringToVirtualKeyCode("a"),"Save current config to copy file")}, 
+    {counter++,KeyBind(StringToVirtualKeyCode("s"),"Show example items")}  
 };
 
 
@@ -122,7 +141,7 @@ void checkKeyPressed(AppState state) {
             std::cout << "didnt find this hotkey :3 \n";
         }
         
-        
+        //keybind logic
         switch (state.msg.wParam) {
             
         case 1: state.items = readItemsFromScreen(state.config);  
@@ -146,6 +165,7 @@ void checkKeyPressed(AppState state) {
             state.window.setVisible(state.isVisible);
             break;
         case 5: copyConfigToOldFile(); break;
+        case 6: state.items = exampleItems; break;
         }
     
 
