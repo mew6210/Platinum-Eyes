@@ -403,8 +403,10 @@ std::map<std::string, ItemDetails> readItemsFromScreen(ToolConfig& config) {
     Timer timer;
 
 
-
-    Point p = stringToCoordinates(config["coordinatesOfScreenShotCenter"]);
+    std::pair<int, int > coordinates= stringToIntPair(config["coordinatesOfScreenShotCenter"]);
+    Point p;
+    p.x = coordinates.first;
+    p.y = coordinates.second;
 
     timer.start_time();
     HBITMAP bitmap = takeScreenshot(stoi(config["screenShotWidth"]), stoi(config["screenShotHeight"]), p);

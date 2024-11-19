@@ -32,7 +32,7 @@ void errorLog(std::string s);
 
 const std::string CONFIG_FILENAME = "tool_config.txt";
 const std::string COPY_FILENAME = "tool_config_old.txt";
-const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight","eeLogPath"};
+const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight","sfmlSize","imguiSize"};
 const int SFMLWINDOWSIZEX = 1200;
 const int SFMLWINDOWSIZEY = 300;
 
@@ -65,9 +65,12 @@ public:
 
 		x = a;
 		y=b;
-
+	}
+	Point() {
 
 	}
+
+
 };
 
 
@@ -181,11 +184,11 @@ public:
 
 struct WindowParameters {
 
-	int width;
-	int height;
+	int width=0;
+	int height=0;
 
 	WindowParameters(int width, int height) :width(width), height(height) {};
-
+	WindowParameters() {};
 };
 
 
@@ -287,7 +290,7 @@ ToolConfig readConfigFile();
 
 
 
-Point stringToCoordinates(std::string s);
+std::pair<int,int>stringToIntPair(std::string s);
 
 
 
@@ -307,8 +310,10 @@ std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, Ite
 
 void customizeWindow(sf::RenderWindow& w,WindowParameters& state );
 
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters);
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters);
 void unregisterHotkeys();
 void copyConfigToOldFile();
 
 int StringToVirtualKeyCode(std::string s);
+
+WindowParameters getWindowSize(std::string s,ToolConfig& toolconfig);

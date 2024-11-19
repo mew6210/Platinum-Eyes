@@ -10,15 +10,17 @@ int main()
     if (!checkIfConfigFileExists()) {
         createConfigFile();
         std::cout << "Config file successfully created. For program to work, configure the config file named tool_config.txt \nFor tips check github repo.";
+        getchar();
         return 0;
     }
 
     ToolConfig toolConfig = readConfigFile();
 
     registerHotkeys();
-    WindowParameters sfmlSize = WindowParameters(1200, 300);
-    WindowParameters imguiSize = WindowParameters(sfmlSize.width - 100, sfmlSize.height - 100);
     
+    WindowParameters sfmlSize = getWindowSize("sfml",toolConfig);
+    WindowParameters imguiSize = getWindowSize("imgui",toolConfig);
+
     sf::RenderWindow window(sf::VideoMode(sfmlSize.width, sfmlSize.height), "Warframe tool", sf::Style::None, sf::ContextSettings(32));
     
     sf::Clock deltaClock;
@@ -72,7 +74,7 @@ int main()
         ImGui::SFML::Update(window, deltaClock.restart());
 
         
-        createImGuiWindow(running,state.imguiSize);
+        createImGuiWindow(running,state.imguiSize,state.sfmlSize);
         generateImGuiTable(currentItems);
         //ImGui::ShowDemoWindow(&running);
 
@@ -88,7 +90,7 @@ int main()
 
 
     unregisterHotkeys();
-
-
+    std::cout << "Press to leave: ";
+    getchar();
     return 0;
 }

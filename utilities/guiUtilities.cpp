@@ -71,7 +71,7 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 	ImGui::SameLine();
 
 
-	std::string formattedPrice = std::format("{:.2f}", item.second.averagePrice); // s == "3.14"
+	std::string formattedPrice = std::format("{:.2f}", item.second.averagePrice); 
 	ImGui::Text(formattedPrice.c_str());
 	ImGui::Text(getFormatedAveragePrices(item.second.lowestPrices).c_str());
 
@@ -137,17 +137,18 @@ void setImGuiStyle() {
 
 }
 
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters) {
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters) {
 
 	setImGuiStyle();
-	
+	int heightDiff = sfmlParameters.height - imguiParameters.height;
+	int widthDiff = sfmlParameters.width - imguiParameters.width;
 
 	ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar;
 	flags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGuiCond cond = ImGuiCond_Once;
 	ImGui::SetNextWindowBgAlpha(0.7);
 	ImGui::SetNextWindowSize(ImVec2(imguiParameters.width,imguiParameters.height), cond);
-	ImGui::SetNextWindowPos(ImVec2(50, 50), cond);
+	ImGui::SetNextWindowPos(ImVec2(widthDiff/2, heightDiff/2), cond);
 	
 	ImGui::Begin("Warframe tool-main", &isRunning, flags);
 }

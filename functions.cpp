@@ -192,7 +192,7 @@ void errorLog(std::string s) {
 
 
 
-Point stringToCoordinates(std::string s) {
+std::pair<int,int> stringToIntPair(std::string s) {
 
     int middlePos = s.find(",");
 
@@ -202,7 +202,7 @@ Point stringToCoordinates(std::string s) {
 
 
 
-    return Point(std::stoi(x), std::stoi(y));
+    return std::pair(std::stoi(x), std::stoi(y));
 
 }
 

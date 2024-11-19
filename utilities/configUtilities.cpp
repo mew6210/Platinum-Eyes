@@ -16,7 +16,30 @@ bool checkIfConfigFileExists() {
 
 }
 
+WindowParameters getWindowSize(std::string s,ToolConfig& toolConfig) {
 
+    WindowParameters parameters;
+
+    for (auto& c : s) {
+        c = std::tolower(c);
+    }
+    if (s == "sfml") {
+
+        std::pair<int, int> sfmlCoordinates = stringToIntPair(toolConfig["sfmlSize"]);
+        parameters = WindowParameters(sfmlCoordinates.first, sfmlCoordinates.second);
+    }
+    else if (s == "imgui") {
+        std::pair<int, int> imguiCoordinates = stringToIntPair(toolConfig["imguiSize"]);
+        parameters = WindowParameters(imguiCoordinates.first, imguiCoordinates.second);
+
+    }
+    else {
+        return parameters;
+    }
+    return parameters;
+
+
+}
 
 
 void createConfigFile() {
