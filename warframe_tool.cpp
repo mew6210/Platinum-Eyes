@@ -28,8 +28,8 @@ int main()
     bool running = true;
     bool visible = true;
     MSG msg = { 0 };
-
-    AppState state(currentItems,toolConfig,window,running,visible,msg,sfmlSize,imguiSize);
+    bool settingsOpen = false;
+    AppState state(currentItems,toolConfig,window,running,visible,msg,sfmlSize,imguiSize,settingsOpen);
     
 
 
@@ -74,7 +74,7 @@ int main()
         ImGui::SFML::Update(window, deltaClock.restart());
 
         
-        createImGuiWindow(running,state.imguiSize,state.sfmlSize);
+        createImGuiWindow(running,state.imguiSize,state.sfmlSize,state.settingsVisible);
         generateImGuiTable(currentItems);
         //ImGui::ShowDemoWindow(&running);
 

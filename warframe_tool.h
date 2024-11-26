@@ -203,6 +203,7 @@ struct AppState {
 	MSG& msg;
 	WindowParameters& sfmlSize;
 	WindowParameters& imguiSize;
+	bool& settingsVisible;
 
 
 	AppState(
@@ -213,9 +214,10 @@ struct AppState {
 		bool& v,
 		MSG& m,
 		WindowParameters& sfmlS,
-		WindowParameters& imguiS
+		WindowParameters& imguiS,
+		bool& sv
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS) {};
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv) {};
 
 };
 
@@ -310,7 +312,7 @@ std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, Ite
 
 void customizeWindow(sf::RenderWindow& w,WindowParameters& state );
 
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters);
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen);
 void unregisterHotkeys();
 void copyConfigToOldFile();
 
