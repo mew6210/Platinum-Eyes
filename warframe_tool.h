@@ -26,9 +26,10 @@
 #include <dwmapi.h>
 
 using json = nlohmann::json;
-
+#define ASSERTION_ERROR 499
 
 void errorLog(std::string s);
+void myAssert(bool stmt,std::string s);
 
 const std::string CONFIG_FILENAME = "tool_config.txt";
 const std::string COPY_FILENAME = "tool_config_old.txt";
@@ -129,9 +130,10 @@ public:
 
 class ToolConfig {
 
-
-
 	std::map<std::string, std::string> properties;
+
+
+
 	std::string getPropertyValue(std::string key) {
 
 
@@ -178,6 +180,27 @@ public:
 	std::string operator[](std::string s) {
 		return getPropertyValue(s);
 	}
+
+
+	bool operator==(ToolConfig& otherConfig) {
+
+		for (auto& property : properties) {
+
+			if (otherConfig[property.first] != property.second) return false;
+
+		}
+
+		return true;
+
+	}
+	ToolConfig operator=(ToolConfig& config) {
+		config.properties = properties;
+
+
+
+		return config;
+	}
+
 	
 };
 
@@ -312,10 +335,12 @@ std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, Ite
 
 void customizeWindow(sf::RenderWindow& w,WindowParameters& state );
 
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen);
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state);
 void unregisterHotkeys();
 void copyConfigToOldFile();
 
 int StringToVirtualKeyCode(std::string s);
 
 WindowParameters getWindowSize(std::string s,ToolConfig& toolconfig);
+
+void showSettingsMenu(bool* p_open,AppState state);

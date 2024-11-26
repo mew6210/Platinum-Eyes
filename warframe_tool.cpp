@@ -74,7 +74,7 @@ int main()
         ImGui::SFML::Update(window, deltaClock.restart());
 
         
-        createImGuiWindow(running,state.imguiSize,state.sfmlSize,state.settingsVisible);
+        createImGuiWindow(running,state.imguiSize,state.sfmlSize,state.settingsVisible,state);
         generateImGuiTable(currentItems);
         //ImGui::ShowDemoWindow(&running);
 

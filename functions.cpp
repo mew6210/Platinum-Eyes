@@ -2,6 +2,9 @@
 #include "warframe_tool.h"
 using namespace std;
 
+
+
+
 HBITMAP takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY) {
 
 
@@ -190,7 +193,19 @@ void errorLog(std::string s) {
     std::cout << "Error: " <<s<< "\n";
 }
 
+void myAssert(bool stmt,std::string failDescription) {
 
+    if (!stmt) {
+        std::cout << "Assertion error: ";
+        std::cout << failDescription << std::endl;
+        throw ASSERTION_ERROR;
+    }
+    else {
+        return;
+    }
+
+
+}
 
 std::pair<int,int> stringToIntPair(std::string s) {
 

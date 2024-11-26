@@ -115,3 +115,22 @@ void copyConfigToOldFile() {
 
 }
 
+void rewriteConfigFile(ToolConfig& config) {
+
+
+    std::ofstream configFile(CONFIG_FILENAME);
+
+    std::string line;
+
+
+    for (auto& property : CONFIGPROPERTIES) {
+
+        configFile << property <<": "<< config["property"]<<"\n";
+
+
+    }
+
+
+
+}
+
