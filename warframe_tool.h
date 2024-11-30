@@ -194,11 +194,22 @@ public:
 
 	}
 	ToolConfig operator=(ToolConfig& config) {
-		config.properties = properties;
-
-
+		
+		properties = config.properties;
 
 		return config;
+	}
+
+	void printConfig() {
+
+		for (auto& property:properties) {
+
+			std::cout << property.first + ": ";
+			std::cout << property.second << std::endl;
+
+		}
+
+
 	}
 
 	
@@ -344,3 +355,6 @@ int StringToVirtualKeyCode(std::string s);
 WindowParameters getWindowSize(std::string s,ToolConfig& toolconfig);
 
 void showSettingsMenu(bool* p_open,AppState state);
+
+
+void rewriteConfigFile(ToolConfig& config);

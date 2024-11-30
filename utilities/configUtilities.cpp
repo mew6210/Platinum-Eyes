@@ -125,7 +125,7 @@ void rewriteConfigFile(ToolConfig& config) {
 
     for (auto& property : CONFIGPROPERTIES) {
 
-        configFile << property <<": "<< config["property"]<<"\n";
+        configFile << property <<": "<< config[property]<<"\n";
 
 
     }
