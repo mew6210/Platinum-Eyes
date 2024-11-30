@@ -17,7 +17,7 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 #include <ranges>
-#include "trim.cpp"
+#include "utilities/trim.cpp"
 #include <SFML/Window.hpp>
 #include <SFML/OpenGl.hpp>
 #include<SFML/Graphics/RenderWindow.hpp>

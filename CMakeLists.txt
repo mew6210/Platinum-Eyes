@@ -26,7 +26,7 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 
 
 # Dodaj źródło do pliku wykonywalnego tego projektu.
-add_executable (${PROJECT_NAME} "main.cpp" "platinumEyes.h" "functions.cpp" "trim.cpp" "utilities/guiUtilities.cpp" "utilities/keyBindings.cpp" "utilities/configUtilities.cpp" "utilities/readingItems.cpp" "utilities/settingsMenu.cpp")
+add_executable (${PROJECT_NAME} "main.cpp" "platinumEyes.h" "utilities/functions.cpp" "utilities/trim.cpp" "utilities/guiUtilities.cpp" "utilities/keyBindings.cpp" "utilities/configUtilities.cpp" "utilities/readingItems.cpp" "utilities/settingsMenu.cpp")
 target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr)
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
 #target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARY})

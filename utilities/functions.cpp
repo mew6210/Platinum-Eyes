@@ -1,5 +1,5 @@
 
-#include "platinumEyes.h"
+#include "../platinumEyes.h"
 using namespace std;
 
 
