@@ -41,15 +41,22 @@ int StringToVirtualKeyCode(std::string s) {
 }
 
 
+#define KB_ReadItemsFromScreen 1
+#define KB_EscapeProgram 2
+#define KB_ReadPreviousItems 3
+#define KB_WindowVisibility 4
+#define KB_BackupConfig 5
+#define KB_ExampleItems 6
 
-static int counter = 1;
+
+
 std::map<int, KeyBind> keyBindings = {
-    {counter++,KeyBind(StringToVirtualKeyCode("b"),"Read items from current screen")},  
-    {counter++,KeyBind(StringToVirtualKeyCode("esc"),"Escape program")},  
-    {counter++,KeyBind(StringToVirtualKeyCode("x"),"Read previously shown items")},    
-    {counter++,KeyBind(StringToVirtualKeyCode("c"),"Toggle window visibility")},    
-    {counter++,KeyBind(StringToVirtualKeyCode("a"),"Save current config to copy file")}, 
-    {counter++,KeyBind(StringToVirtualKeyCode("s"),"Show example items")}  
+    {KB_ReadItemsFromScreen,KeyBind(StringToVirtualKeyCode("b"),"Read items from current screen")},
+    {KB_EscapeProgram,KeyBind(StringToVirtualKeyCode("esc"),"Escape program")},
+    {KB_ReadPreviousItems,KeyBind(StringToVirtualKeyCode("x"),"Read previously shown items")},
+    {KB_WindowVisibility,KeyBind(StringToVirtualKeyCode("c"),"Toggle window visibility")},
+    {KB_BackupConfig,KeyBind(StringToVirtualKeyCode("a"),"Save current config to copy file")},
+    {KB_ExampleItems,KeyBind(StringToVirtualKeyCode("s"),"Show example items")}
 };
 
 
@@ -144,13 +151,13 @@ void checkKeyPressed(AppState state) {
         //keybind logic
         switch (state.msg.wParam) {
             
-        case 1: state.items = readItemsFromScreen(state.config);  
+        case KB_ReadItemsFromScreen: state.items = readItemsFromScreen(state.config);
             break;
-        case 2: state.running = false;  
+        case KB_EscapeProgram: state.running = false;
             break;
-        case 3: state.items = readItemsFromScreenWithoutScreenshot(state.config); 
+        case KB_ReadPreviousItems: state.items = readItemsFromScreenWithoutScreenshot(state.config);
             break;
-        case 4: 
+        case KB_WindowVisibility:
             /*
             if (state.isVisible == 0) {
                 state.isVisible = 1;
@@ -164,8 +171,8 @@ void checkKeyPressed(AppState state) {
             state.isVisible = !state.isVisible;
             state.window.setVisible(state.isVisible);
             break;
-        case 5: copyConfigToOldFile(); break;
-        case 6: state.items = exampleItems; break;
+        case KB_BackupConfig: copyConfigToOldFile(); break;
+        case KB_ExampleItems: state.items = exampleItems; break;
         }
     
 
