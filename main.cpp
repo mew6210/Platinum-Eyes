@@ -1,4 +1,4 @@
-﻿#include "warframe_tool.h"
+﻿#include "platinumEyes.h"
 
 
 using json = nlohmann::json;
@@ -90,7 +90,7 @@ int main()
 
 
     unregisterHotkeys();
-    std::cout << "Press to leave: ";
-    getchar();
+    //std::cout << "Press to leave: ";
+    //getchar();
     return 0;
 }
