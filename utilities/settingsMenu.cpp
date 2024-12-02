@@ -76,8 +76,8 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 		
 		structure.ocrServer = 
 			std::pair<std::string, std::function<void(std::string& s1, std::string& s2)>>
-			("Configure settings related to communication between the ocr server(main.py). Ip is usually just your local pc ip, "
-			"port is 5055 unless u changed something in main.py ",ocrServerSettings);
+			("Configure settings related to communication between the ocr server(main.py). "
+			"For a normal user there is nothing to do here.",ocrServerSettings);
 			
 
 

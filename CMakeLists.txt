@@ -12,9 +12,14 @@ endif()
 project ("Platinum_Eyes")
 
 set(CMAKE_CXX_STANDARD 17)
+
+set(SERVER_SCRIPT ${CMAKE_SOURCE_DIR}/ocrserver.py)
+set(SERVER_SCRIPT_DESTINATION ${CMAKE_BINARY_DIR}/ocrserver.py)
+
+
+
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-set(CMAKE_CXX_STANDARD 17)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 #find_package(OpenGl REQUIRED)
 find_package(imgui CONFIG REQUIRED)
@@ -35,7 +40,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ImGui-SFML::ImGui-SFML)
 target_link_libraries( ${PROJECT_NAME} PRIVATE "Dwmapi.lib") 
 
 
-
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${SERVER_SCRIPT} ${SERVER_SCRIPT_DESTINATION}
+    COMMENT "Copying server.py to the output directory"
+)
 
 
 

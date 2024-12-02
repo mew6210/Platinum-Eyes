@@ -9,9 +9,8 @@ int main()
 
     if (!checkIfConfigFileExists()) {
         createConfigFile();
-        std::cout << "Config file successfully created. For program to work, configure the config file named tool_config.txt \nFor tips check github repo.";
-        getchar();
-        return 0;
+        std::cout << "Config file successfully created. There are still some things that have to be configured, check the settings button and look for '---' parameters, they need to be filled out. \nFor tips check github repo.\n";
+
     }
 
     ToolConfig toolConfig = readConfigFile();

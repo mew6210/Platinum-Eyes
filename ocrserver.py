@@ -56,7 +56,7 @@ if __name__=="__main__":
     from waitress import serve
 
     dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, 'out\\build\\x64-debug\\tool_config.txt')
+    filename = os.path.join(dirname, 'tool_config.txt')
     
     ocrIp=str()
     ocrPort=str()
@@ -77,7 +77,7 @@ if __name__=="__main__":
     while ocrIp:
         try:  
             while True:
-                print("Server hosted successfully")
+                print(f"Server hosted successfully on: {ocrIp}: {ocrPort}")
                 serve(app,host=ocrIp,port=ocrPort)
         except:
             print("error lol")
