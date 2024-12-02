@@ -25,17 +25,34 @@ find_package(imgui CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
 
 
+set(LIBRARIES 
+cpr::cpr
+sfml-system 
+sfml-network 
+sfml-graphics 
+sfml-window
+imgui::imgui
+ImGui-SFML::ImGui-SFML
+Dwmapi.lib
+)
 
 
 
+add_executable (
+    ${PROJECT_NAME} 
+        "main.cpp" 
+        "platinumEyes.h" 
+        "utilities/functions.cpp" 
+        "utilities/trim.cpp" 
+        "utilities/guiUtilities.cpp" 
+        "utilities/keyBindings.cpp" 
+        "utilities/configUtilities.cpp" 
+        "utilities/readingItems.cpp" 
+        "utilities/settingsMenu.cpp"
+)
 
-# Dodaj źródło do pliku wykonywalnego tego projektu.
-add_executable (${PROJECT_NAME} "main.cpp" "platinumEyes.h" "utilities/functions.cpp" "utilities/trim.cpp" "utilities/guiUtilities.cpp" "utilities/keyBindings.cpp" "utilities/configUtilities.cpp" "utilities/readingItems.cpp" "utilities/settingsMenu.cpp")
-target_link_libraries(${PROJECT_NAME} PRIVATE cpr::cpr)
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
-target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
-target_link_libraries(${PROJECT_NAME} PRIVATE ImGui-SFML::ImGui-SFML)
-target_link_libraries( ${PROJECT_NAME} PRIVATE "Dwmapi.lib") 
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
 
 
 add_custom_command(
