@@ -1,2 +1,6 @@
 install
 cpr
+nlohmann-json
+sfml
+imgui
+ImGui-SFML
