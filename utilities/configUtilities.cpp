@@ -1,4 +1,5 @@
 #include "../platinumEyes.h"
+#include <direct.h>   
 
 
 
@@ -25,6 +26,29 @@ namespace screenShotParams{
     #define SCR_Size_1920x1080 1
     #define SCR_Size_3440x1440 2
 
+    std::string getCurrentPath() {
+
+        const size_t size = 1024;
+        // Allocate a character array to store the directory path
+        char buffer[size];
+
+        // Call _getcwd to get the current working directory and store it in buffer
+        if (getcwd(buffer, size) != NULL) {
+            // print the current working directory
+            std::cout << "Current working directory: " << buffer << std::endl;
+        }
+        else {
+            // If _getcwd returns NULL, print an error message
+            std::cerr << "Error getting current working directory" << std::endl;
+        }
+
+        std::string returnString(buffer);
+        returnString.append("/screenshot.bmp");
+
+        return returnString;
+
+
+    }
 
     int getScreenResolution(int screenWidth, int screenHeight) {
         int screenResolution=SCR_Size_NotSpecified;
@@ -172,10 +196,7 @@ WindowParameters getWindowSize(std::string s,ToolConfig& toolConfig) {
 
 }
 
-
-void createConfigFile() {
-
-    std::ofstream configFile(CONFIG_FILENAME);
+void fillOutConfigFile(std::ofstream& configFile) {
 
     HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
     int width = GetDeviceCaps(hScreen, HORZRES);
@@ -186,13 +207,13 @@ void createConfigFile() {
 
         configFile << configProperty << ": ";
         if (configProperty == "ocrIp") {
-            configFile<<"127.0.0.1";
+            configFile << "127.0.0.1";
         }
         else if (configProperty == "ocrPort") {
             configFile << "5055";
         }
         else if (configProperty == "screenShotFilePath") {
-            configFile << "screenshot.bmp";
+            configFile << screenShotParams::getCurrentPath();
         }
         else if (configProperty == "coordinatesOfScreenShotCenter") {
             configFile << screenShotParams::getCenterCoordinates(screenResolution);
@@ -214,9 +235,18 @@ void createConfigFile() {
 
 
     }
+    DeleteDC(hScreen);
+
+}
+
+
+void createConfigFile() {
+
+    std::ofstream configFile(CONFIG_FILENAME);
+
+    fillOutConfigFile(configFile);
 
     configFile.close();
-    DeleteDC(hScreen);
 
 }
 
