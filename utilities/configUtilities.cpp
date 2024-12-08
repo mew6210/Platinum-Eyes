@@ -206,6 +206,9 @@ void fillOutConfigFile(std::ofstream& configFile) {
     for (std::string configProperty : CONFIGPROPERTIES) {
 
         configFile << configProperty << ": ";
+        if (configProperty == "ocrType") {
+            configFile << "tesseract";
+        }
         if (configProperty == "ocrIp") {
             configFile << "127.0.0.1";
         }

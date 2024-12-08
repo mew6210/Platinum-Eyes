@@ -15,15 +15,17 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SERVER_SCRIPT ${CMAKE_SOURCE_DIR}/ocrserver.py)
 set(SERVER_SCRIPT_DESTINATION ${CMAKE_BINARY_DIR}/ocrserver.py)
+set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
 
 
-
+find_package(Tesseract CONFIG REQUIRED)
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
-
+find_package(lodepng CONFIG REQUIRED)
+find_package(OpenCV REQUIRED)
 
 set(LIBRARIES 
 cpr::cpr
@@ -34,6 +36,9 @@ sfml-window
 imgui::imgui
 ImGui-SFML::ImGui-SFML
 Dwmapi.lib
+Tesseract::libtesseract
+lodepng
+${OpenCV_LIBS}
 )
 
 
@@ -49,7 +54,9 @@ add_executable (
         "utilities/configUtilities.cpp" 
         "utilities/readingItems.cpp" 
         "utilities/settingsMenu.cpp"
-)
+        "utilities/tesseract.cpp"
+        "utilities/easyocr.cpp" 
+        "utilities/ocrfunctions.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

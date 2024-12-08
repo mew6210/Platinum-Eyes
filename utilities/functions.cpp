@@ -48,6 +48,7 @@ HBITMAP takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY
     SelectObject(hScreen, oldbitmap);
     ReleaseDC(NULL, hTarget);
     DeleteDC(hScreen);
+    
     return bitmap;
 
 }
@@ -100,6 +101,7 @@ HBITMAP takeScreenshot(int imageWidth, int imageHeight, Point p)
     return bitmap;
 
 }
+
 
 BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName)
 {

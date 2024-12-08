@@ -151,11 +151,11 @@ void checkKeyPressed(AppState state) {
         //keybind logic
         switch (state.msg.wParam) {
             
-        case KB_ReadItemsFromScreen: state.items = readItemsFromScreen(state.config);
+        case KB_ReadItemsFromScreen:state.items = readItemsFromScreen(state);
             break;
         case KB_EscapeProgram: state.running = false;
             break;
-        case KB_ReadPreviousItems: state.items = readItemsFromScreenWithoutScreenshot(state.config);
+        case KB_ReadPreviousItems: state.items = readItemsFromScreenWithoutScreenShot(state);
             break;
         case KB_WindowVisibility:
             /*

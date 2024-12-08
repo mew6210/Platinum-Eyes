@@ -4,3 +4,5 @@ nlohmann-json
 sfml
 imgui
 ImGui-SFML
+tesseract
+opencv4

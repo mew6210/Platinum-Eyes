@@ -4,7 +4,7 @@
 using json = nlohmann::json;
 int main()
 {
-
+    
     std::map<std::string, ItemDetails> currentItems;
 
     if (!checkIfConfigFileExists()) {
@@ -14,6 +14,10 @@ int main()
     }
 
     ToolConfig toolConfig = readConfigFile();
+
+    tesseract::TessBaseAPI tesseractapi;
+    int ocrType = tesseractInit(tesseractapi,toolConfig);
+
 
     registerHotkeys();
     
@@ -28,7 +32,19 @@ int main()
     bool visible = true;
     MSG msg = { 0 };
     bool settingsOpen = false;
-    AppState state(currentItems,toolConfig,window,running,visible,msg,sfmlSize,imguiSize,settingsOpen);
+    AppState state(
+        currentItems,
+        toolConfig,
+        window,
+        running,
+        visible,
+        msg,
+        sfmlSize,
+        imguiSize,
+        settingsOpen,
+        ocrType,
+        tesseractapi
+    );
     
 
 
@@ -87,7 +103,7 @@ int main()
         
     }
 
-
+    tesseractapi.End();
     unregisterHotkeys();
     //std::cout << "Press to leave: ";
     //getchar();

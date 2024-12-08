@@ -24,16 +24,24 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include <dwmapi.h>
+#include <tesseract/baseapi.h>
+#include <leptonica/allheaders.h>
+#include "lodepng.h"
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
+
 
 using json = nlohmann::json;
 #define ASSERTION_ERROR 499
+#define OCR_tesseract 1
+#define OCR_easyocr 2
 
 void errorLog(std::string s);
 void myAssert(bool stmt,std::string s);
 
 const std::string CONFIG_FILENAME = "tool_config.txt";
 const std::string COPY_FILENAME = "tool_config_old.txt";
-const std::string CONFIGPROPERTIES[] = { "ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight","sfmlSize","imguiSize"};
+const std::string CONFIGPROPERTIES[] = { "ocrType","ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight","sfmlSize","imguiSize"};
 const int SFMLWINDOWSIZEX = 1200;
 const int SFMLWINDOWSIZEY = 300;
 
@@ -238,6 +246,8 @@ struct AppState {
 	WindowParameters& sfmlSize;
 	WindowParameters& imguiSize;
 	bool& settingsVisible;
+	int& ocrType;
+	tesseract::TessBaseAPI& tesseractApi;
 
 
 	AppState(
@@ -249,9 +259,11 @@ struct AppState {
 		MSG& m,
 		WindowParameters& sfmlS,
 		WindowParameters& imguiS,
-		bool& sv
+		bool& sv,
+		int& o,
+		tesseract::TessBaseAPI& t
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv) {};
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t) {};
 
 };
 
@@ -311,9 +323,9 @@ void printItemPrices(std::map<std::string, ItemDetails>& itemPrices);
 
 
 
-std::map<std::string, ItemDetails> readItemsFromScreen(ToolConfig& config); 
+std::map<std::string, ItemDetails> readItemsFromScreenEasyocr(ToolConfig& config); 
 
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshot(ToolConfig& config);
+std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshotEasyocr(ToolConfig& config);
 
 bool checkIfConfigFileExists();
 
@@ -358,3 +370,13 @@ void showSettingsMenu(bool* p_open,AppState state);
 
 
 void rewriteConfigFile(ToolConfig& config);
+int convertBMPtoPNG(std::string& path);
+std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showImage);
+std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api, size_t itemCount);
+std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& config, tesseract::TessBaseAPI& api);
+
+std::map<std::string, ItemDetails> readItemsFromScreen(AppState state);
+
+std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(ToolConfig& config, tesseract::TessBaseAPI& api);
+std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state);
+int tesseractInit(tesseract::TessBaseAPI& api,ToolConfig& config);

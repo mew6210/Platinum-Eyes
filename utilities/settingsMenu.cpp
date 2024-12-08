@@ -25,19 +25,21 @@ struct rightPane {
 	std::function<void(ToolConfig&)> details;
 };
 
-void ocrServerSettings(std::string& s1, std::string& s2) {
+void ocrServerSettings(std::string& s1, std::string& s2,std::string& s3) {
 
+	
 	configParameter(s1,1,"ocrIp");
 	configParameter(s2,2,"ocrPort");
+	configParameter(s3,3, "ocrType");
 }
 
 
 void screenshotSettings(std::string& s1, std::string& s2, std::string& s3, std::string& s4) {
 
-	configParameter(s1, 3, "screenShotFilePath");
-	configParameter(s2, 4, "coordinatesOfScreenShotCenter");
-	configParameter(s3, 5, "screenShotWidth");
-	configParameter(s4, 6, "screenShotHeight");
+	configParameter(s1, 4, "screenShotFilePath");
+	configParameter(s2, 5, "coordinatesOfScreenShotCenter");
+	configParameter(s3, 6, "screenShotWidth");
+	configParameter(s4, 7, "screenShotHeight");
 
 
 
@@ -45,8 +47,8 @@ void screenshotSettings(std::string& s1, std::string& s2, std::string& s3, std::
 
 void windowSizesSettings(std::string& s1, std::string& s2) {
 
-	configParameter(s1, 7, "sfmlSize");
-	configParameter(s2, 8, "imguiSize");
+	configParameter(s1, 8, "sfmlSize");
+	configParameter(s2, 9, "imguiSize");
 
 
 }
@@ -62,7 +64,7 @@ void keybindingsSettings(std::string& s1, std::string& s2) {
 struct settingsStructure{
 	static const int length = 4;
 	std::vector<std::string> leftPanes = {"Ocr server settings","Screenshot parameters","Window sizes","Keybindings"};
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> ocrServer;
+	std::pair < std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>> ocrServer;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> keyBindings;
@@ -75,7 +77,7 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 	if (should) {
 		
 		structure.ocrServer = 
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2)>>
+			std::pair<std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>>
 			("Configure settings related to communication between the ocr server(main.py). "
 			"For a normal user there is nothing to do here.",ocrServerSettings);
 			
@@ -115,7 +117,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static int should = 1;
 	static ToolConfig newConfig = state.config;
 
-
+	static const std::string  ocrTypeForRevert = newConfig["ocrType"];
 	static const std::string  ocrIpForRevert = newConfig["ocrIp"];
 	static const std::string  ocrPortForRevert = newConfig["ocrPort"];
 	static const std::string  screenShotFilePathForRevert = newConfig["screenShotFilePath"];
@@ -127,7 +129,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static const std::string  keybind1ForRevert = newConfig["keybind1"];
 	static const std::string  keybind2ForRevert = newConfig["keybind2"];
 
-
+	static std::string  ocrType = newConfig["ocrType"];
 	static std::string  ocrIp = newConfig["ocrIp"];
 	static std::string  ocrPort=newConfig["ocrPort"];
 	static std::string  screenShotFilePath=newConfig["screenShotFilePath"];
@@ -198,7 +200,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 				{
 					switch (selected) {
 
-					case 0: structure.ocrServer.second(ocrIp,ocrPort); break;
+					case 0: structure.ocrServer.second(ocrIp,ocrPort,ocrType); break;
 					case 1: structure.screenShotParameters.second(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); break;
 					case 2: structure.windowSizes.second(sfmlSize, imguiSize); break;
 					case 3: structure.keyBindings.second(keybind1,keybind2); break;
@@ -215,6 +217,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 			
 			if (ImGui::Button("Revert")) {
 
+				ocrType = ocrTypeForRevert;
 				ocrIp = ocrIpForRevert;
 				ocrPort = ocrPortForRevert;
 				screenShotFilePath = screenShotFilePathForRevert;
@@ -230,6 +233,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 			ImGui::SameLine();
 			if (ImGui::Button("Save")) {
 			
+				newConfig.setPropertyValue("ocrType", ocrType);
 				newConfig.setPropertyValue("ocrIp", ocrIp);
 				newConfig.setPropertyValue("ocrPort", ocrPort);
 				newConfig.setPropertyValue("screenShotFilePath", screenShotFilePath);
