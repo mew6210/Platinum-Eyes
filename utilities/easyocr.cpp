@@ -131,24 +131,24 @@ std::map<std::string, ItemDetails> readItemsFromScreenEasyocr(ToolConfig& config
     p.x = coordinates.first;
     p.y = coordinates.second;
 
-    timer.start_time();
+    timer.start();
     HBITMAP bitmap = takeScreenshot(stoi(config["screenShotWidth"]), stoi(config["screenShotHeight"]), p);
-    timer.end_time();
-    timer.say_time("take screenshot");
+    timer.stop();
+    timer.print("take screenshot");
 
 
 
-    timer.start_time();
+    timer.start();
 
     std::string file_name_to_send = config["screenShotFilePath"];
     LPCTSTR file_name = file_name_to_send.c_str();
     SaveHBITMAPToFile(bitmap, file_name);
-    timer.end_time();
-    timer.say_time("saving to file");
+    timer.stop();
+    timer.print("saving to file");
     DeleteObject(bitmap);
 
 
-    timer.start_time();
+    timer.start();
     std::string address = config["ocrIp"] + ":" + config["ocrPort"] + "/ocr";
     std::cout << std::endl << "address: " << address << std::endl;
 
@@ -157,8 +157,8 @@ std::map<std::string, ItemDetails> readItemsFromScreenEasyocr(ToolConfig& config
 
 
 
-    timer.end_time();
-    timer.say_time("getting response from a server");
+    timer.stop();
+    timer.print("getting response from a server");
 
     std::vector<std::string> items = extractItemsFromServer(resultTable);
 
@@ -166,11 +166,11 @@ std::map<std::string, ItemDetails> readItemsFromScreenEasyocr(ToolConfig& config
 
 
 
-    timer.start_time();
+    timer.start();
     std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
 
-    timer.end_time();
-    timer.say_time("FETCHING ORDERS");
+    timer.stop();
+    timer.print("FETCHING ORDERS");
 
 
     prepareItemsForRead(itemPrices);
@@ -192,15 +192,15 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshotEasyocr(T
     LPCTSTR file_name = file_name_to_send.c_str();
 
 
-    timer.start_time();
+    timer.start();
     std::string address = config["ocrIp"] + ":" + config["ocrPort"] + "/ocr";
 
 
     std::string resultTable = fetchResultTable(address, file_name_to_send);
 
 
-    timer.end_time();
-    timer.say_time("getting response from a server");
+    timer.stop();
+    timer.print("getting response from a server");
 
     std::vector<std::string> items = extractItemsFromServer(resultTable);
 
@@ -208,11 +208,11 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshotEasyocr(T
 
 
 
-    timer.start_time();
+    timer.start();
     std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
 
-    timer.end_time();
-    timer.say_time("FETCHING ORDERS");
+    timer.stop();
+    timer.print("FETCHING ORDERS");
 
     itemPrices = prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);

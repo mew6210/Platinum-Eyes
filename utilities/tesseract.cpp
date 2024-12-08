@@ -72,7 +72,7 @@ unsigned decodeBMP(std::vector<unsigned char>& image, unsigned& w, unsigned& h, 
 int convertBMPtoPNG(std::string& path) {
 
     Timer timer = Timer();
-    timer.start_time();
+    timer.start();
     std::vector<unsigned char> bmp;
     lodepng::load_file(bmp, "screenshot.bmp");
     std::vector<unsigned char> image;
@@ -93,8 +93,8 @@ int convertBMPtoPNG(std::string& path) {
     }
 
     lodepng::save_file(png, "screenshot.png");
-    timer.end_time();
-    timer.say_time("converting bmp to png");
+    timer.stop();
+    timer.print("converting bmp to png");
 
 
 
@@ -154,7 +154,7 @@ std::string removeShortWords(std::string& item) {
 
 std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,size_t itemCount) {
     Timer timer = Timer();
-    timer.start_time();
+    timer.start();
     std::string path = "screenshot.bmp";
     int error = convertBMPtoPNG(path);
 
@@ -165,11 +165,14 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
         std::cerr << "Failed to load image.\n";
         exit(-1);
     }
+    timer.stop();
+    timer.print("converting bmp to png");
 
-
+    
     switch (itemCount) {
     case 4:
     {
+        timer.start();
         cv::Mat first_item
             = img(cv::Range(30, img.rows), cv::Range(0, img.cols / 4 - 1));
 
@@ -189,14 +192,15 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
         items.push_back(readItemTesseract(second_item, api,false));
         items.push_back(readItemTesseract(third_item, api,false));
         items.push_back(readItemTesseract(fourth_item, api,false));
-        timer.end_time();
-        timer.say_time("performing tesseract ocr");
+        timer.stop();
+        timer.print("performing tesseract ocr for 4 images");
 
         return items;
         break;
 
     }
     case 3: {
+        timer.start();
         int space = (img.cols / 4) / 2;
         cv::Mat first_item
             = img(cv::Range(30, img.rows), cv::Range(space, (img.cols / 4 - 1)+space));
@@ -213,8 +217,8 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
         items.push_back(readItemTesseract(first_item, api,false));
         items.push_back(readItemTesseract(second_item, api,false));
         items.push_back(readItemTesseract(third_item, api,false));
-        timer.end_time();
-        timer.say_time("performing tesseract ocr");
+        timer.stop();
+        timer.print("performing tesseract ocr for 3 images");
 
         return items;
 
@@ -225,6 +229,7 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
         
         } ;
     case 2: { 
+        timer.start();
         cv::Mat first_item
             = img(cv::Range(30, img.rows), cv::Range(0, img.cols / 2));
 
@@ -237,11 +242,14 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
         items.push_back(readItemTesseract(first_item, api, false));
         items.push_back(readItemTesseract(second_item, api, false));
 
+        timer.stop();
+        timer.print("performing tesseract ocr for 2 images");
+
         return items;
 
     
     };
-    case 1: { std::cout << "1 item"; };
+    case 1:  
 
           cv::Mat first_item
               = img(cv::Range(30, img.rows), cv::Range(0, img.cols));
@@ -328,20 +336,20 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& conf
     p.x = coordinates.first;
     p.y = coordinates.second;
 
-    timer.start_time();
+    timer.start();
     HBITMAP bitmap = takeScreenshot(stoi(config["screenShotWidth"]), stoi(config["screenShotHeight"]), p);
-    timer.end_time();
-    timer.say_time("take screenshot");
+    timer.stop();
+    timer.print("take screenshot");
 
 
 
 
-
+    timer.start();
     std::string file_name_to_send = config["screenShotFilePath"];
     LPCTSTR file_name = file_name_to_send.c_str();
     SaveHBITMAPToFile(bitmap, file_name);
-    timer.end_time();
-    timer.say_time("saving to file");
+    timer.stop();
+    timer.print("saving to file");
     DeleteObject(bitmap);
 
 
@@ -349,10 +357,13 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& conf
 
     std::vector<std::string> items = readScreenShotTesseract(api,itemCount);
 
+    timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
-
+    timer.stop();
+    timer.print("preparing items");
 
   
+    timer.start();
     std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
 
 
@@ -362,9 +373,10 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& conf
         preparedItems = prepareItems(items);
         itemPrices = getItemPricesMap(preparedItems);
     }
+    timer.stop();
+    timer.print("fetching item prices");
 
-
-    prepareItemsForRead(itemPrices);
+    itemPrices = prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
 
 
@@ -379,15 +391,17 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& conf
 std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(ToolConfig& config, tesseract::TessBaseAPI& api) {
 
    
-
+    Timer timer=Timer();
     size_t itemCount = 4;
     std::vector<std::string> items = readScreenShotTesseract(api,itemCount);
 
+    timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
+    timer.stop();
+    timer.print("preparing items");
 
 
-
-
+    timer.start();
     std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
 
     while (arePricesEmpty(itemPrices) && itemCount!=0) {
@@ -396,14 +410,15 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract
         preparedItems = prepareItems(items);
         itemPrices = getItemPricesMap(preparedItems);
     }
-    
+    timer.stop();
+    timer.print("fetching item prices");
 
 
 
     
 
 
-    prepareItemsForRead(itemPrices);
+    itemPrices = prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
 
 

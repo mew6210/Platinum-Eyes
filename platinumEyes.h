@@ -87,19 +87,19 @@ public:
 
 class Timer {
 
-public:
+
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-
-	void start_time() {
+public:
+	void start() {
 		begin = std::chrono::steady_clock::now();
 	}
-	void end_time() {
+	void stop() {
 		end = std::chrono::steady_clock::now();
 	}
 
-	void say_time(std::string s) {
+	void print(std::string s) {
 		std::cout << s<<": " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "milliseconds "<< std::endl;
 	}
 
