@@ -281,7 +281,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 				
 
 				if (newConfig == state.config) {
-					std::cout << "You haven't changed anything";
+					std::cout << "You haven't changed anything\n";
 				}
 				else {
 					std::cout << "New configuration detected\n";
@@ -296,7 +296,6 @@ void showSettingsMenu(bool* p_open,AppState state)
 						reRegisterHotkeys(state.config);
 					}
 					if (windowSizesChanged(differences)) {
-						std::cout << "changed";
 						WindowParameters parameterssfml = getWindowSize("sfml", state.config);
 						reSizeSfmlWindow(state.window, parameterssfml);
 						WindowParameters parametersimgui = getWindowSize("imgui", state.config);

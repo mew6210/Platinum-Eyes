@@ -15,6 +15,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SERVER_SCRIPT ${CMAKE_SOURCE_DIR}/ocrserver.py)
 set(SERVER_SCRIPT_DESTINATION ${CMAKE_BINARY_DIR}/ocrserver.py)
+set(TESSERACT_TRAINING_ENG ${CMAKE_SOURCE_DIR}/eng.traineddata)
+set(TESSERACT_TRAINING_ENG_DESTINATION ${CMAKE_BINARY_DIR}/eng.traineddata)
+
+
 set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
 
 
@@ -67,6 +71,14 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${SERVER_SCRIPT} ${SERVER_SCRIPT_DESTINATION}
     COMMENT "Copying server.py to the output directory"
+)
+
+
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${TESSERACT_TRAINING_ENG} ${TESSERACT_TRAINING_ENG_DESTINATION}
+    COMMENT "Copying training data to the output directory"
 )
 
 
