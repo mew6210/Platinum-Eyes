@@ -195,6 +195,11 @@ void errorLog(std::string s) {
     std::cout << "Error: " <<s<< "\n";
 }
 
+void warningLog(std::string s) {
+    std::cout << "Warning: " << s << "\n";
+
+}
+
 void myAssert(bool stmt,std::string failDescription) {
 
     if (!stmt) {

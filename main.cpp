@@ -18,8 +18,8 @@ int main()
     tesseract::TessBaseAPI tesseractapi;
     int ocrType = tesseractInit(tesseractapi,toolConfig);
 
-
-    registerHotkeys();
+    
+    registerHotkeys(toolConfig);
     
     WindowParameters sfmlSize = getWindowSize("sfml",toolConfig);
     WindowParameters imguiSize = getWindowSize("imgui",toolConfig);

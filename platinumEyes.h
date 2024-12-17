@@ -37,11 +37,29 @@ using json = nlohmann::json;
 #define OCR_easyocr 2
 
 void errorLog(std::string s);
+void warningLog(std::string s);
 void myAssert(bool stmt,std::string s);
 
 const std::string CONFIG_FILENAME = "tool_config.txt";
 const std::string COPY_FILENAME = "tool_config_old.txt";
-const std::string CONFIGPROPERTIES[] = { "ocrType","ocrIp","ocrPort","screenShotFilePath","coordinatesOfScreenShotCenter","screenShotWidth","screenShotHeight","sfmlSize","imguiSize"};
+const std::string CONFIGPROPERTIES[] = { 
+	"ocrType",
+	"ocrIp",
+	"ocrPort",
+	"screenShotFilePath",
+	"coordinatesOfScreenShotCenter",
+	"screenShotWidth",
+	"screenShotHeight",
+	"sfmlSize",
+	"imguiSize",
+	"keyBind_ReadItemsFromScreen",
+	"keyBind_EscapeProgram",
+	"keyBind_ReadPreviousItems",
+	"keyBind_WindowVisibility",
+	"keyBind_BackupConfig",
+	"keyBind_ExampleItems"
+
+};
 const int SFMLWINDOWSIZEX = 1200;
 const int SFMLWINDOWSIZEY = 300;
 
@@ -347,7 +365,7 @@ void generateImGuiTable(std::map<std::string, ItemDetails>& items);
 
 HRESULT setTransparency(HWND hWnd);
 
-void registerHotkeys();
+void registerHotkeys(ToolConfig& config);
 
 void checkKeyPressed(AppState state);
 
@@ -380,3 +398,4 @@ std::map<std::string, ItemDetails> readItemsFromScreen(AppState state);
 std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(ToolConfig& config, tesseract::TessBaseAPI& api);
 std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state);
 int tesseractInit(tesseract::TessBaseAPI& api,ToolConfig& config);
+void reRegisterHotkeys(ToolConfig& config);

@@ -53,9 +53,17 @@ void windowSizesSettings(std::string& s1, std::string& s2) {
 
 }
 
-void keybindingsSettings(std::string& s1, std::string& s2) {
+void keybindingsSettings(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6) {
 	
-	ImGui::Text("Will be added later");
+	
+	configParameter(s1, 10, "keyBind_ReadItemsFromScreen");
+	configParameter(s2, 11, "keyBind_EscapeProgram");
+	configParameter(s3, 12, "keyBind_ReadPreviousItems");
+	configParameter(s4, 13, "keyBind_WindowVisibility");
+	configParameter(s5, 14, "keyBind_BackupConfig");
+	configParameter(s6, 15, "keyBind_ExampleItems");
+
+
 
 }
 
@@ -67,7 +75,7 @@ struct settingsStructure{
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>> ocrServer;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> keyBindings;
+	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6)>> keyBindings;
 
 };
 
@@ -95,8 +103,8 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 
 
 		structure.keyBindings=
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2)>>
-			( "Keybindings, every keybind is treated as 'Alt + <keybind>'",keybindingsSettings);
+			std::pair<std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6)>>
+			( "Keybindings, every keybind is treated as 'Alt + <keybind>'\nIt's important to remember, that keybinds should be 1 character in length, except esc.",keybindingsSettings);
 
 		should = 0;
 		
@@ -126,8 +134,16 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static const std::string  screenShotHeightForRevert = newConfig["screenShotHeight"];
 	static const std::string  sfmlSizeForRevert = newConfig["sfmlSize"];
 	static const std::string  imguiSizeForRevert = newConfig["imguiSize"];
-	static const std::string  keybind1ForRevert = newConfig["keybind1"];
-	static const std::string  keybind2ForRevert = newConfig["keybind2"];
+	static const std::string  keyBind_ReadItemsFromScreenForRevert = newConfig["keyBind_ReadItemsFromScreen"];
+	static const std::string  keyBind_EscapeProgramForRevert = newConfig["keyBind_EscapeProgram"];
+	static const std::string  keyBind_ReadPreviousItemsForRevert = newConfig["keyBind_ReadPreviousItems"];
+	static const std::string  keyBind_WindowVisibilityForRevert = newConfig["keyBind_WindowVisibility"];
+	static const std::string  keyBind_BackupConfigForRevert = newConfig["keyBind_BackupConfig"];
+	static const std::string  keyBind_ExampleItemsForRevert = newConfig["keyBind_ExampleItems"];
+
+
+
+
 
 	static std::string  ocrType = newConfig["ocrType"];
 	static std::string  ocrIp = newConfig["ocrIp"];
@@ -138,8 +154,12 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static std::string  screenShotHeight=newConfig["screenShotHeight"];
 	static std::string  sfmlSize=newConfig["sfmlSize"];
 	static std::string  imguiSize=newConfig["imguiSize"];
-	static std::string  keybind1= newConfig["keybind1"];
-	static std::string  keybind2 = newConfig["keybind2"];
+	static std::string  keyBind_ReadItemsFromScreen = newConfig["keyBind_ReadItemsFromScreen"];
+	static std::string  keyBind_EscapeProgram = newConfig["keyBind_EscapeProgram"];
+	static std::string  keyBind_ReadPreviousItems = newConfig["keyBind_ReadPreviousItems"];
+	static std::string  keyBind_WindowVisibility = newConfig["keyBind_WindowVisibility"];
+	static std::string  keyBind_BackupConfig = newConfig["keyBind_BackupConfig"];
+	static std::string  keyBind_ExampleItems = newConfig["keyBind_ExampleItems"];
 
 	appendToSettingsStructure(should, structure, state);
 
@@ -203,7 +223,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 					case 0: structure.ocrServer.second(ocrIp,ocrPort,ocrType); break;
 					case 1: structure.screenShotParameters.second(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); break;
 					case 2: structure.windowSizes.second(sfmlSize, imguiSize); break;
-					case 3: structure.keyBindings.second(keybind1,keybind2); break;
+					case 3: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems); break;
 
 
 						//structure.rightPanes[selected].details(newConfig);
@@ -226,8 +246,12 @@ void showSettingsMenu(bool* p_open,AppState state)
 				screenShotHeight = screenShotHeightForRevert;
 				sfmlSize = sfmlSizeForRevert;
 				imguiSize = imguiSizeForRevert;
-				keybind1 = keybind1ForRevert;
-				keybind2 = keybind2ForRevert;
+				keyBind_ReadItemsFromScreen = keyBind_ReadItemsFromScreenForRevert;
+				keyBind_EscapeProgram = keyBind_EscapeProgramForRevert;
+				keyBind_ReadPreviousItems = keyBind_ReadPreviousItemsForRevert;
+				keyBind_WindowVisibility = keyBind_WindowVisibilityForRevert;
+				keyBind_BackupConfig = keyBind_BackupConfigForRevert;
+				keyBind_ExampleItems = keyBind_ExampleItemsForRevert;
 
 			}
 			ImGui::SameLine();
@@ -243,6 +267,17 @@ void showSettingsMenu(bool* p_open,AppState state)
 				newConfig.setPropertyValue("sfmlSize", sfmlSize);
 				newConfig.setPropertyValue("imguiSize", imguiSize);
 				
+				newConfig.setPropertyValue("keyBind_ReadItemsFromScreen", keyBind_ReadItemsFromScreen);
+				newConfig.setPropertyValue("keyBind_EscapeProgram", keyBind_EscapeProgram);
+				newConfig.setPropertyValue("keyBind_ReadPreviousItems", keyBind_ReadPreviousItems);
+				newConfig.setPropertyValue("keyBind_WindowVisibility", keyBind_WindowVisibility);
+				newConfig.setPropertyValue("keyBind_BackupConfig", keyBind_BackupConfig);
+				newConfig.setPropertyValue("keyBind_ExampleItems", keyBind_ExampleItems);
+
+
+
+
+				
 
 				if (newConfig == state.config) {
 					std::cout << "You haven't changed anything";
@@ -253,7 +288,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 					state.config = newConfig;
 
 					rewriteConfigFile(state.config);
-
+					reRegisterHotkeys(state.config);
 
 				}
 

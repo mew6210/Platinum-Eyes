@@ -35,7 +35,8 @@ int StringToVirtualKeyCode(std::string s) {
     }
 
 
-    HKL keyboard = LoadKeyboardLayoutA("00000415", KLF_ACTIVATE);        //polish programmer keyboard layout
+
+    HKL keyboard = LoadKeyboardLayoutA("00000409", KLF_ACTIVATE);        //primary english US keyboard layout
 
     return VkKeyScanEx(s[0], keyboard);
 }
@@ -50,14 +51,7 @@ int StringToVirtualKeyCode(std::string s) {
 
 
 
-std::map<int, KeyBind> keyBindings = {
-    {KB_ReadItemsFromScreen,KeyBind(StringToVirtualKeyCode("b"),"Read items from current screen")},
-    {KB_EscapeProgram,KeyBind(StringToVirtualKeyCode("esc"),"Escape program")},
-    {KB_ReadPreviousItems,KeyBind(StringToVirtualKeyCode("x"),"Read previously shown items")},
-    {KB_WindowVisibility,KeyBind(StringToVirtualKeyCode("c"),"Toggle window visibility")},
-    {KB_BackupConfig,KeyBind(StringToVirtualKeyCode("a"),"Save current config to copy file")},
-    {KB_ExampleItems,KeyBind(StringToVirtualKeyCode("s"),"Show example items")}
-};
+std::map<int, KeyBind> keyBindings = {};
 
 
 
@@ -88,12 +82,57 @@ std::string VirtualKeyCodeToString(UCHAR virtualKey)
 }
 
 
+void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings,ToolConfig& config) {
 
 
-void registerHotkeys() {
+    keyBindings = { 
+    { KB_ReadItemsFromScreen, KeyBind(StringToVirtualKeyCode(config["keyBind_ReadItemsFromScreen"]), "Read items from current screen") },
+    { KB_EscapeProgram,KeyBind(StringToVirtualKeyCode(config["keyBind_EscapeProgram"]),"Escape program") },
+    { KB_ReadPreviousItems,KeyBind(StringToVirtualKeyCode(config["keyBind_ReadPreviousItems"]),"Read previously shown items") },
+    { KB_WindowVisibility,KeyBind(StringToVirtualKeyCode(config["keyBind_WindowVisibility"]),"Toggle window visibility") },
+    { KB_BackupConfig,KeyBind(StringToVirtualKeyCode(config["keyBind_BackupConfig"]),"Save current config to copy file") },
+    { KB_ExampleItems,KeyBind(StringToVirtualKeyCode(config["keyBind_ExampleItems"]),"Show example items") }
+    };
+
+
+}
+
+
+void validateProperty(std::string property,std::string name) {
+
+    if (property.length() != 1 && property != "esc") {
+        warningLog("Keybinds in config should have only 1 character in length (except esc). Program will proceed with its first character. Property: "+name+"\n");
+    }
+
+}
+
+
+void validateConfigKeybinds(ToolConfig& config) {
+
+    validateProperty(config["keyBind_ReadItemsFromScreen"],"keyBind_ReadItemsFromScreen");
+    validateProperty(config["keyBind_EscapeProgram"], "keyBind_EscapeProgram");
+    validateProperty(config["keyBind_ReadPreviousItems"], "keyBind_ReadPreviousItems");
+    validateProperty(config["keyBind_WindowVisibility"], "keyBind_WindowVisibility");
+    validateProperty(config["keyBind_BackupConfig"], "keyBind_BackupConfig");
+    validateProperty(config["keyBind_ExampleItems"], "keyBind_ExampleItems");
+
+}
+
+void reRegisterHotkeys(ToolConfig& config) {
+
+    unregisterHotkeys();
+    registerHotkeys(config);
+
+}
+
+
+void registerHotkeys(ToolConfig& config) {
     //every registered hotkey is assumed to be: alt+(hotkey)
 
-    
+    validateConfigKeybinds(config);
+
+    initializeKeyBindingsMap(keyBindings,config);
+
     //loop through every declared hotkey
     for (auto& p : keyBindings) {
     
@@ -158,16 +197,6 @@ void checkKeyPressed(AppState state) {
         case KB_ReadPreviousItems: state.items = readItemsFromScreenWithoutScreenShot(state);
             break;
         case KB_WindowVisibility:
-            /*
-            if (state.isVisible == 0) {
-                state.isVisible = 1;
-                state.window.setVisible(state.isVisible);
-            }
-            else {
-                state.isVisible = 0;
-                state.window.setVisible(state.isVisible);
-            }
-            */
             state.isVisible = !state.isVisible;
             state.window.setVisible(state.isVisible);
             break;

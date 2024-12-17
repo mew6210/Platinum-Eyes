@@ -154,10 +154,6 @@ namespace screenShotParams{
 
 
 
-
-
-
-
 bool checkIfConfigFileExists() {
 
     std::ifstream file;
@@ -233,6 +229,29 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "imguiSize") {
             configFile << screenShotParams::getImGuiSize(screenResolution);
         }
+        else if(configProperty=="keyBind_ReadItemsFromScreen") {
+            configFile << "b";
+        }
+        else if (configProperty == "keyBind_EscapeProgram") {
+            configFile<<"esc";
+        }
+        else if (configProperty == "keyBind_ReadPreviousItems") {
+            configFile<<"x";
+        }
+        else if (configProperty == "keyBind_WindowVisibility") {
+            configFile<<"c";
+        }
+        else if (configProperty == "keyBind_BackupConfig") {
+            configFile<<"a";
+        }
+        else if (configProperty == "keyBind_ExampleItems"){
+            configFile<<"s";
+        }
+
+
+
+
+
         configFile << "\n";
 
 
