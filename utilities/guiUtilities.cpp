@@ -107,13 +107,19 @@ void generateImGuiTable(std::map<std::string, ItemDetails>& items) {
 
 
 
+void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 
+	w.setSize(sf::Vector2u( sfmlParameters.width, sfmlParameters.height ));
+	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - (sfmlParameters.width + 25), 25));
+	
+}
 
 
 void customizeWindow(sf::RenderWindow& w,WindowParameters& sfmlParameters) {
 	HWND hwnd = w.getSystemHandle();
 
 	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - (sfmlParameters.width+25), 25));
+	
 	w.setFramerateLimit(60);
 	ImGui::SFML::Init(w);
 
@@ -141,7 +147,10 @@ void setImGuiStyle() {
 
 
 
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state) {
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state, bool& shouldReSizeImGui) {
+
+
+	
 
 	setImGuiStyle();
 	int heightDiff = sfmlParameters.height - imguiParameters.height;
@@ -151,8 +160,18 @@ void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowP
 	flags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGuiCond cond = ImGuiCond_Once;
 	ImGui::SetNextWindowBgAlpha(0.7);
-	ImGui::SetNextWindowSize(ImVec2(imguiParameters.width,imguiParameters.height), cond);
-	ImGui::SetNextWindowPos(ImVec2(widthDiff/2, heightDiff/2), cond);
+	if (shouldReSizeImGui) {
+		heightDiff = sfmlParameters.height - imguiParameters.height;
+		widthDiff = sfmlParameters.width - imguiParameters.width;
+		ImGui::SetNextWindowSize(ImVec2(imguiParameters.width, imguiParameters.height),ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), ImGuiCond_Always);
+		shouldReSizeImGui = !shouldReSizeImGui;
+	}
+	else {
+		ImGui::SetNextWindowSize(ImVec2(imguiParameters.width, imguiParameters.height), cond);
+		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), cond);
+	}
+		
 	
 	ImGui::Begin("Warframe tool-main", &isRunning, flags);
 	

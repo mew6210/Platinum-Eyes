@@ -1,6 +1,7 @@
 #include "../platinumEyes.h"
 #include <functional>
 #include <imgui_stdlib.h>
+#include "settingsChanged.h"
 
 
 void configParameter(std::string& s,int counter,const char* label) {
@@ -283,12 +284,28 @@ void showSettingsMenu(bool* p_open,AppState state)
 					std::cout << "You haven't changed anything";
 				}
 				else {
-					std::cout << "New configuration detected";
+					std::cout << "New configuration detected\n";
+					std::vector<std::string> differences=state.config.getDifferenceList(newConfig);
+
+					
 
 					state.config = newConfig;
-
 					rewriteConfigFile(state.config);
-					reRegisterHotkeys(state.config);
+
+					if (keyBindsChanged(differences)) {
+						reRegisterHotkeys(state.config);
+					}
+					if (windowSizesChanged(differences)) {
+						std::cout << "changed";
+						WindowParameters parameterssfml = getWindowSize("sfml", state.config);
+						reSizeSfmlWindow(state.window, parameterssfml);
+						WindowParameters parametersimgui = getWindowSize("imgui", state.config);
+
+						state.sfmlSize = parameterssfml;
+						state.imguiSize = parametersimgui;
+						state.shouldReSizeImGui = true;
+					}
+					
 
 				}
 

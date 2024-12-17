@@ -60,6 +60,9 @@ const std::string CONFIGPROPERTIES[] = {
 	"keyBind_ExampleItems"
 
 };
+
+
+
 const int SFMLWINDOWSIZEX = 1200;
 const int SFMLWINDOWSIZEY = 300;
 
@@ -226,6 +229,19 @@ public:
 		return config;
 	}
 
+	std::vector<std::string> getDifferenceList(ToolConfig& otherConfig) {
+		std::vector<std::string> differenceList;
+		for (auto& property : properties) {
+
+			if (otherConfig[property.first] != property.second) differenceList.push_back(property.first);
+
+		}
+
+		return differenceList;
+
+	}
+
+
 	void printConfig() {
 
 		for (auto& property:properties) {
@@ -266,6 +282,7 @@ struct AppState {
 	bool& settingsVisible;
 	int& ocrType;
 	tesseract::TessBaseAPI& tesseractApi;
+	bool& shouldReSizeImGui;
 
 
 	AppState(
@@ -279,9 +296,10 @@ struct AppState {
 		WindowParameters& imguiS,
 		bool& sv,
 		int& o,
-		tesseract::TessBaseAPI& t
+		tesseract::TessBaseAPI& t,
+		bool& sri
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t) {};
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri) {};
 
 };
 
@@ -376,7 +394,7 @@ std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, Ite
 
 void customizeWindow(sf::RenderWindow& w,WindowParameters& state );
 
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state);
+void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state,bool& shouldReSizeImGui);
 void unregisterHotkeys();
 void copyConfigToOldFile();
 
@@ -399,3 +417,4 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract
 std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state);
 int tesseractInit(tesseract::TessBaseAPI& api,ToolConfig& config);
 void reRegisterHotkeys(ToolConfig& config);
+void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters);

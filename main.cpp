@@ -32,6 +32,7 @@ int main()
     bool visible = true;
     MSG msg = { 0 };
     bool settingsOpen = false;
+    bool shouldReSizeImGui = false;
     AppState state(
         currentItems,
         toolConfig,
@@ -43,13 +44,14 @@ int main()
         imguiSize,
         settingsOpen,
         ocrType,
-        tesseractapi
+        tesseractapi,
+        shouldReSizeImGui
     );
     
 
 
     customizeWindow(window,state.sfmlSize);
-
+    
 
 
     while (running)
@@ -89,7 +91,7 @@ int main()
         ImGui::SFML::Update(window, deltaClock.restart());
 
         
-        createImGuiWindow(running,state.imguiSize,state.sfmlSize,state.settingsVisible,state);
+        createImGuiWindow(running,state.imguiSize,state.sfmlSize,state.settingsVisible,state,shouldReSizeImGui);
         generateImGuiTable(currentItems);
         //ImGui::ShowDemoWindow(&running);
 

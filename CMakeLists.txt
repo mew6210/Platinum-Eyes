@@ -56,7 +56,7 @@ add_executable (
         "utilities/settingsMenu.cpp"
         "utilities/tesseract.cpp"
         "utilities/easyocr.cpp" 
-        "utilities/ocrfunctions.cpp")
+        "utilities/ocrfunctions.cpp" "utilities/settingsChanges.cpp" "utilities/settingsChanged.h")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
