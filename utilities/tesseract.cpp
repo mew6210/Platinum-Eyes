@@ -271,6 +271,93 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
 
 
 
+//TODO: THESE 3 FUNCTIONS DO EXACTLY THE SAME THING BUT WITH DIFFERENT FILTER MASKS
+std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path,bool showImage) {
+    cv::Mat image = cv::imread(path);
+
+    cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
+    //cv::threshold(image, image, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+
+    //cv::Canny(image, image, 100, 200);
+
+
+
+
+    static std::string name = "aaa";
+    api.SetImage((uchar*)image.data, image.size().width, image.size().height, image.channels(), image.step1());
+    std::string text = api.GetUTF8Text();
+
+    const char charMap[] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ','\n',         // Uppercase letters
+    '0','1','2','3','4','5','6','7','8','9'
+    
+    
+    };
+    size_t mapSize = sizeof(charMap) / sizeof(charMap[0]);
+
+    std::string result = filterResults(text, charMap, mapSize);
+    if (showImage)cv::imshow(name, image);
+    name.append("a");
+    //result = replaceChar(result, '\n', " ");
+    //trim(result);
+
+    //result = removeShortWords(result);
+    //trim(result);
+
+
+    std::cout << result << "\n";
+
+    return result;
+
+
+}
+
+
+std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage) {
+    cv::Mat image = cv::imread(path);
+
+    cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
+    //cv::threshold(image, image, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+
+    //cv::Canny(image, image, 100, 200);
+
+
+
+
+    static std::string name = "aaa";
+    api.SetImage((uchar*)image.data, image.size().width, image.size().height, image.channels(), image.step1());
+    std::string text = api.GetUTF8Text();
+
+    const char charMap[] = {
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+    'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', ' ',         // Uppercase letters
+    '0','1','2','3','4','5','6','7','8','9'
+
+
+    };
+    size_t mapSize = sizeof(charMap) / sizeof(charMap[0]);
+
+    std::string result = filterResults(text, charMap, mapSize);
+    if (showImage)cv::imshow(name, image);
+    name.append("a");
+    //result = replaceChar(result, '\n', " ");
+    //trim(result);
+
+    //result = removeShortWords(result);
+    //trim(result);
+
+
+    std::cout << result << "\n";
+
+    return result;
+
+
+}
+
+
+
+
 std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showImage) {
 
 
@@ -308,6 +395,97 @@ std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool s
 
 
 }
+
+
+std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
+    // Aspect ratio
+    double aspectRatio = static_cast<double>(width) / height;
+
+    // Linear interpolation constants for x_ratio
+    double m_x = 0.1541;
+    double c_x = 0.356;
+    double x_ratio = m_x * aspectRatio + c_x;
+
+    // y_ratio is approximately constant
+    double y_ratio = 0.255;
+
+    // Calculate x and y positions
+    int x_new = static_cast<int>(std::round(width * x_ratio));
+    int y_new = static_cast<int>(std::round(height * y_ratio));
+
+    // Linear interpolation constants for screenshot width ratio
+    double m_width = -0.0759;
+    double c_width = 0.4234;
+    double screenshot_width_ratio = m_width * aspectRatio + c_width;
+
+    // Calculate screenshot width
+    int screenshot_width = static_cast<int>(std::round(width * screenshot_width_ratio));
+
+    return { x_new, y_new, screenshot_width };
+}
+
+
+RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
+
+
+    Timer timer;
+
+    size_t itemCount = 4;
+
+    int px, py;
+    HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
+    int width = GetDeviceCaps(hScreen, HORZRES);
+    int height = GetDeviceCaps(hScreen, VERTRES);
+
+    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(width, height);
+
+    
+    px = coordinatex;
+    py = coordinatey;
+
+    std::cout << "position: " << px << "," << py << " width: " << titleWidth;
+
+
+    timer.start();
+    HBITMAP bitmap = takeScreenshot(titleWidth,40,px-5,py-5);
+    timer.stop();
+    timer.print("take screenshot");
+
+
+    timer.start();
+    std::string file_name_to_send = "screenshot.bmp";
+    LPCTSTR file_name = file_name_to_send.c_str();
+    SaveHBITMAPToFile(bitmap, file_name);
+    timer.stop();
+    timer.print("saving to file");
+    DeleteObject(bitmap);
+
+    timer.start();
+    std::string path = "screenshot.bmp";
+    int error = convertBMPtoPNG(path);
+
+    myAssert(error != 0, "Error converting bmp to png");
+
+    cv::Mat img = cv::imread("screenshot.png");
+    if (img.empty()) {
+        std::cerr << "Failed to load image.\n";
+        exit(-1);
+    }
+    timer.stop();
+    timer.print("converting bmp to png");
+
+
+    std::string relicRead = readRelicTitleTesseract(api, "screenshot.png", true);
+    std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
+    RelicInfo relic = FetchRelicItemPrices(relicParsed);
+
+
+    return relic;
+
+
+}
+
+
 
 bool arePricesEmpty(std::map<std::string, ItemDetails>& itemPrices) {
 

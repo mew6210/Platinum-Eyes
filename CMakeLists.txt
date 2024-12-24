@@ -60,7 +60,7 @@ add_executable (
         "utilities/settingsMenu.cpp"
         "utilities/tesseract.cpp"
         "utilities/easyocr.cpp" 
-        "utilities/ocrfunctions.cpp" "utilities/settingsChanges.cpp" "utilities/settingsChanged.h")
+        "utilities/ocrfunctions.cpp" "utilities/settingsChanges.cpp" "utilities/settingsChanged.h" "utilities/relicDatabase.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

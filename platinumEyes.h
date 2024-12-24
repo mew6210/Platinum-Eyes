@@ -57,7 +57,8 @@ const std::string CONFIGPROPERTIES[] = {
 	"keyBind_ReadPreviousItems",
 	"keyBind_WindowVisibility",
 	"keyBind_BackupConfig",
-	"keyBind_ExampleItems"
+	"keyBind_ExampleItems",
+	"keyBind_ReadRelicTitle"
 
 };
 
@@ -74,11 +75,11 @@ const int IMGUIWINDOWSIZEY = SFMLWINDOWSIZEY - 100;
 
 namespace Rarity {
 
-	enum level{
+	enum level {
 		Common,
 		Uncommon,
 		Rare,
-		Undefined
+		Undefined = -1
 	};
 
 }
@@ -304,7 +305,13 @@ struct AppState {
 };
 
 
+class RelicInfo{
+public:
+	std::string name;
+	std::vector<std::tuple<std::string,float,ItemDetails>> items;
+	float relicPrice;
 
+};
 
 
 const std::map<std::string, ItemDetails> exampleItems = {
@@ -418,3 +425,16 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState
 int tesseractInit(tesseract::TessBaseAPI& api,ToolConfig& config);
 void reRegisterHotkeys(ToolConfig& config);
 void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters);
+int parseRelicData();
+std::array<std::string, 6> getRelicRawItems(std::string relic);
+
+
+std::array<std::pair<std::string, std::string>, 6> getRelicItemDetails(std::string relic);
+ItemDetails fetchItemPrice(const std::string& item);
+RelicInfo FetchRelicItemPrices(std::string relic);
+
+std::string rarityToString(Rarity::level r);
+std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
+std::string relicMenuTitleStringToRelicString(std::string& s);
+std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
+RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api);

@@ -48,6 +48,7 @@ int StringToVirtualKeyCode(std::string s) {
 #define KB_WindowVisibility 4
 #define KB_BackupConfig 5
 #define KB_ExampleItems 6
+#define KB_RelicTitleScreenshot 7
 
 
 
@@ -91,7 +92,8 @@ void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings,ToolConfig& co
     { KB_ReadPreviousItems,KeyBind(StringToVirtualKeyCode(config["keyBind_ReadPreviousItems"]),"Read previously shown items") },
     { KB_WindowVisibility,KeyBind(StringToVirtualKeyCode(config["keyBind_WindowVisibility"]),"Toggle window visibility") },
     { KB_BackupConfig,KeyBind(StringToVirtualKeyCode(config["keyBind_BackupConfig"]),"Save current config to copy file") },
-    { KB_ExampleItems,KeyBind(StringToVirtualKeyCode(config["keyBind_ExampleItems"]),"Show example items") }
+    { KB_ExampleItems,KeyBind(StringToVirtualKeyCode(config["keyBind_ExampleItems"]),"Show example items") },
+    { KB_RelicTitleScreenshot,KeyBind(StringToVirtualKeyCode(config["keyBind_ReadRelicTitle"]),"Relic Title Screenshot")}
     };
 
 
@@ -115,6 +117,7 @@ void validateConfigKeybinds(ToolConfig& config) {
     validateProperty(config["keyBind_WindowVisibility"], "keyBind_WindowVisibility");
     validateProperty(config["keyBind_BackupConfig"], "keyBind_BackupConfig");
     validateProperty(config["keyBind_ExampleItems"], "keyBind_ExampleItems");
+    validateProperty(config["keyBind_ReadRelicTitle"], "keyBind_ReadRelicTitle");
 
 }
 
@@ -202,6 +205,25 @@ void checkKeyPressed(AppState state) {
             break;
         case KB_BackupConfig: copyConfigToOldFile(); break;
         case KB_ExampleItems: state.items = exampleItems; break;
+        case KB_RelicTitleScreenshot: {
+
+            RelicInfo relic = readItemsFromRelicTitleTesseract(state.tesseractApi);
+
+
+
+            for (auto& price : relic.items) {
+
+                std::cout << "Name: " << std::get<0>(price);
+                std::cout << " percentages: " << std::get<1>(price);
+                std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
+                std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
+            }
+            std::cout << "Average relic price: " << relic.relicPrice;
+
+            
+
+            break;
+        }
         }
     
 

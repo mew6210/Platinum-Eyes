@@ -18,8 +18,36 @@ int main()
     tesseract::TessBaseAPI tesseractapi;
     int ocrType = tesseractInit(tesseractapi,toolConfig);
 
+    /*
+    Timer timer = Timer();
+    timer.start();
+    parseRelicData();
+    timer.stop();
+    timer.print("parsing database");
+
     
+
+    timer.start();
+    timer.stop();
+    timer.print("fetching relics");
+    for (auto& price : relic.items) {
+
+        std::cout << "Name: " << std::get<0>(price);
+        std::cout << " percentages: " << std::get<1>(price);
+        std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
+        std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
+    }
+    std::cout << "Average relic price: " << relic.relicPrice;
+    */
+    Timer timer = Timer();
+    timer.start();
+
+
+    timer.stop();
+
+
     registerHotkeys(toolConfig);
+
     
     WindowParameters sfmlSize = getWindowSize("sfml",toolConfig);
     WindowParameters imguiSize = getWindowSize("imgui",toolConfig);
