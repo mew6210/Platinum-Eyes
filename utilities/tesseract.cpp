@@ -475,7 +475,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     timer.print("converting bmp to png");
 
 
-    std::string relicRead = readRelicTitleTesseract(api, "screenshot.png", true);
+    std::string relicRead = readRelicTitleTesseract(api, "screenshot.png", false);
     std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
