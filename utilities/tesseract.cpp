@@ -15,7 +15,7 @@ unsigned decodeBMP(std::vector<unsigned char>& image, unsigned& w, unsigned& h, 
     w = bmp[18] + bmp[19] * 256;
     h = bmp[22] + bmp[23] * 256;
     int signedHeight = bmp[22] + (bmp[23] << 8) + (bmp[24] << 16) + (bmp[25] << 24);
-    h = (signedHeight < 0) ? -signedHeight : signedHeight;
+    h = (signedHeight < 0) ? -signedHeight : signedHeight;              //without this everything breaks btw
     //read number of channels from BMP header
     if (bmp[28] != 24 && bmp[28] != 32) return 2; //only 24-bit and 32-bit BMPs are supported.
     unsigned numChannels = bmp[28] / 8;
@@ -26,12 +26,6 @@ unsigned decodeBMP(std::vector<unsigned char>& image, unsigned& w, unsigned& h, 
     if (scanlineBytes % 4 != 0) scanlineBytes = (scanlineBytes / 4) * 4 + 4;
 
     unsigned dataSize = scanlineBytes * h;
-
-    std::cout << "Bmp size: " << bmp.size() << "\n";
-    std::cout << "Pixel Offset: " << pixeloffset << "\n";
-    std::cout << "Data size: " << dataSize << "\n";
-    std::cout << "w: " << w << "\n";
-    std::cout << "h: " << h << "\n";
 
     if (bmp.size() < dataSize + pixeloffset) return 3; //BMP file too small to contain all pixels
 
@@ -74,7 +68,8 @@ int convertBMPtoPNG(std::string& path) {
     Timer timer = Timer();
     timer.start();
     std::vector<unsigned char> bmp;
-    lodepng::load_file(bmp, "screenshot.bmp");
+
+    lodepng::load_file(bmp, path+".bmp");
     std::vector<unsigned char> image;
     unsigned w, h;
     unsigned error = decodeBMP(image, w, h, bmp);
@@ -92,7 +87,7 @@ int convertBMPtoPNG(std::string& path) {
         return 0;
     }
 
-    lodepng::save_file(png, "screenshot.png");
+    lodepng::save_file(png, path+".png");
     timer.stop();
     timer.print("converting bmp to png");
 
@@ -155,7 +150,7 @@ std::string removeShortWords(std::string& item) {
 std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,size_t itemCount) {
     Timer timer = Timer();
     timer.start();
-    std::string path = "screenshot.bmp";
+    std::string path = "screenshot";
     int error = convertBMPtoPNG(path);
 
     myAssert(error != 0, "Error converting bmp to png");
@@ -453,7 +448,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
 
 
     timer.start();
-    std::string file_name_to_send = "screenshot.bmp";
+    std::string file_name_to_send = "relicTitleScreenshot.bmp";
     LPCTSTR file_name = file_name_to_send.c_str();
     SaveHBITMAPToFile(bitmap, file_name);
     timer.stop();
@@ -461,12 +456,12 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     DeleteObject(bitmap);
 
     timer.start();
-    std::string path = "screenshot.bmp";
+    std::string path = "relicTitleScreenshot";
     int error = convertBMPtoPNG(path);
 
     myAssert(error != 0, "Error converting bmp to png");
 
-    cv::Mat img = cv::imread("screenshot.png");
+    cv::Mat img = cv::imread("relicTitleScreenshot.png");
     if (img.empty()) {
         std::cerr << "Failed to load image.\n";
         exit(-1);
@@ -475,7 +470,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     timer.print("converting bmp to png");
 
 
-    std::string relicRead = readRelicTitleTesseract(api, "screenshot.png", false);
+    std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
     std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
