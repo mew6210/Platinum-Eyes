@@ -247,6 +247,9 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "keyBind_ExampleItems"){
             configFile<<"s";
         }
+        else if (configProperty == "keyBind_ReadRelicTitle") {
+            configFile << "f";
+        }
 
 
 

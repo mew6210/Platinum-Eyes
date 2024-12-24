@@ -54,7 +54,7 @@ void windowSizesSettings(std::string& s1, std::string& s2) {
 
 }
 
-void keybindingsSettings(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6) {
+void keybindingsSettings(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6,std::string& s7) {
 	
 	
 	configParameter(s1, 10, "keyBind_ReadItemsFromScreen");
@@ -63,6 +63,7 @@ void keybindingsSettings(std::string& s1, std::string& s2, std::string& s3, std:
 	configParameter(s4, 13, "keyBind_WindowVisibility");
 	configParameter(s5, 14, "keyBind_BackupConfig");
 	configParameter(s6, 15, "keyBind_ExampleItems");
+	configParameter(s7, 16, "keyBind_ReadRelicTitle");
 
 
 
@@ -76,7 +77,7 @@ struct settingsStructure{
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>> ocrServer;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6)>> keyBindings;
+	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>> keyBindings;
 
 };
 
@@ -104,7 +105,7 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 
 
 		structure.keyBindings=
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6)>>
+			std::pair<std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>>
 			( "Keybindings, every keybind is treated as 'Alt + <keybind>'\nIt's important to remember, that keybinds should be 1 character in length, except esc.",keybindingsSettings);
 
 		should = 0;
@@ -141,7 +142,9 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static const std::string  keyBind_WindowVisibilityForRevert = newConfig["keyBind_WindowVisibility"];
 	static const std::string  keyBind_BackupConfigForRevert = newConfig["keyBind_BackupConfig"];
 	static const std::string  keyBind_ExampleItemsForRevert = newConfig["keyBind_ExampleItems"];
+	static const std::string  keyBind_ReadRelicTitleForRevert = newConfig["keyBind_ReadRelicTitle"];
 
+	
 
 
 
@@ -161,6 +164,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static std::string  keyBind_WindowVisibility = newConfig["keyBind_WindowVisibility"];
 	static std::string  keyBind_BackupConfig = newConfig["keyBind_BackupConfig"];
 	static std::string  keyBind_ExampleItems = newConfig["keyBind_ExampleItems"];
+	static std::string  keyBind_ReadRelicTitle = newConfig["keyBind_ReadRelicTitle"];
 
 	appendToSettingsStructure(should, structure, state);
 
@@ -224,7 +228,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 					case 0: structure.ocrServer.second(ocrIp,ocrPort,ocrType); break;
 					case 1: structure.screenShotParameters.second(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); break;
 					case 2: structure.windowSizes.second(sfmlSize, imguiSize); break;
-					case 3: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems); break;
+					case 3: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); break;
 
 
 						//structure.rightPanes[selected].details(newConfig);
@@ -253,6 +257,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 				keyBind_WindowVisibility = keyBind_WindowVisibilityForRevert;
 				keyBind_BackupConfig = keyBind_BackupConfigForRevert;
 				keyBind_ExampleItems = keyBind_ExampleItemsForRevert;
+				keyBind_ReadRelicTitle = keyBind_ReadRelicTitleForRevert;
 
 			}
 			ImGui::SameLine();
@@ -274,6 +279,8 @@ void showSettingsMenu(bool* p_open,AppState state)
 				newConfig.setPropertyValue("keyBind_WindowVisibility", keyBind_WindowVisibility);
 				newConfig.setPropertyValue("keyBind_BackupConfig", keyBind_BackupConfig);
 				newConfig.setPropertyValue("keyBind_ExampleItems", keyBind_ExampleItems);
+				newConfig.setPropertyValue("keyBind_ReadRelicTitle", keyBind_ReadRelicTitle);
+
 
 
 

@@ -6,7 +6,8 @@ const std::vector<std::string> keyBindNames = {
 	"keyBind_ReadPreviousItems",
 	"keyBind_WindowVisibility",
 	"keyBind_BackupConfig",
-	"keyBind_ExampleItems"
+	"keyBind_ExampleItems",
+	"keyBind_ReadRelicTitle"
 };
 const std::vector<std::string> windowSizesNames = {
 "sfmlSize",
