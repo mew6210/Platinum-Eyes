@@ -50,7 +50,7 @@ const int IMGUIWINDOWSIZEX = SFMLWINDOWSIZEX - 100;
 const int IMGUIWINDOWSIZEY = SFMLWINDOWSIZEY - 100;
 
 
-
+//should be a sum of vectors in config.h
 const std::string CONFIGPROPERTIES[] = {
 	"ocrType",
 	"ocrIp",
