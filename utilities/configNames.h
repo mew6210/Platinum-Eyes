@@ -1,6 +1,39 @@
 #pragma once
-#include <vector>
-#include <string>
+#include "../platinumEyes.h"
+
+
+
+const std::vector<std::string> ocrConfigNames = {
+	"ocrType",
+	"ocrIp",
+	"ocrPort"
+};
+
+const std::vector<std::string> screenshotParametersNames = {
+	"screenShotFilePath",
+	"coordinatesOfScreenShotCenter",
+	"screenShotWidth",
+	"screenShotHeight"
+};
+
+const std::vector<std::string> windowSizesNames = {
+	"sfmlSize",
+	"imguiSize"
+};
+
+
+
+const std::vector<std::string> keyBindNames = {
+	"keyBind_ReadItemsFromScreen",
+	"keyBind_EscapeProgram",
+	"keyBind_ReadPreviousItems",
+	"keyBind_WindowVisibility",
+	"keyBind_BackupConfig",
+	"keyBind_ExampleItems",
+	"keyBind_ReadRelicTitle"
+};
+
+
 
 
 const std::string CONFIGPROPERTIES[] = {
@@ -21,19 +54,4 @@ const std::string CONFIGPROPERTIES[] = {
 	"keyBind_ExampleItems",
 	"keyBind_ReadRelicTitle"
 
-};
-
-
-const std::vector<std::string> keyBindNames = {			
-	"keyBind_ReadItemsFromScreen",
-	"keyBind_EscapeProgram",
-	"keyBind_ReadPreviousItems",
-	"keyBind_WindowVisibility",
-	"keyBind_BackupConfig",
-	"keyBind_ExampleItems",
-	"keyBind_ReadRelicTitle"
-};
-const std::vector<std::string> windowSizesNames = {
-	"sfmlSize",
-	"imguiSize"
 };
