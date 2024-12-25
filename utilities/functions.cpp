@@ -1,4 +1,3 @@
-
 #include "../platinumEyes.h"
 using namespace std;
 

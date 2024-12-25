@@ -1,10 +1,6 @@
 ﻿#pragma once
 
 #include <iostream>
-#include <iostream>
-#include <stdio.h>
-#include <fcntl.h>
-#include <io.h>
 
 #define NOMINMAX
 
@@ -14,7 +10,6 @@
 #include <thread>
 #include <chrono>
 #include <cpr/cpr.h>
-#include <vector>
 #include <nlohmann/json.hpp>
 #include <ranges>
 #include "utilities/trim.cpp"
@@ -29,7 +24,7 @@
 #include "lodepng.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
-#include "utilities/configNames.h"
+#include "config/configNames.h"
 
 
 using json = nlohmann::json;

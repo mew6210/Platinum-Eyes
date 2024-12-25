@@ -1,5 +1,5 @@
 #include "settingsChanged.h"
-#include "configNames.h"
+#include "../config/configNames.h"
 
 
 

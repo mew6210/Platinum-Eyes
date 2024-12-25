@@ -53,18 +53,18 @@ add_executable (
         "platinumEyes.h" 
         "utilities/functions.cpp" 
         "utilities/trim.cpp" 
-        "utilities/guiUtilities.cpp" 
-        "utilities/keyBindings.cpp" 
-        "utilities/configUtilities.cpp" 
-        "utilities/readingItems.cpp" 
-        "utilities/settingsMenu.cpp"
-        "utilities/tesseract.cpp"
-        "utilities/easyocr.cpp" 
-        "utilities/ocrfunctions.cpp" 
-        "utilities/settingsChanges.cpp" 
-        "utilities/settingsChanged.h" 
-        "utilities/relicDatabase.cpp" 
-        "utilities/configNames.h")
+        "gui/guiUtilities.cpp" 
+        "keybindings/keyBindings.cpp" 
+        "config/configUtilities.cpp" 
+        "ocr/readingItems.cpp" 
+        "gui/settingsMenu.cpp"
+        "ocr/tesseract.cpp"
+        "ocr/easyocr.cpp" 
+        "ocr/ocrfunctions.cpp" 
+        "gui/settingsChanges.cpp" 
+        "gui/settingsChanged.h" 
+        "relics/relicDatabase.cpp" 
+        "config/configNames.h")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
