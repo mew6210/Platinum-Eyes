@@ -1,6 +1,17 @@
-#include "../platinumEyes.h"
+#include "ocr.h"
 
 
+
+int getItem(std::string s, std::vector<std::string>& list, int iterator) {
+
+
+    int length = s.length();
+
+    list.push_back(s);
+
+
+    return iterator + length + 2;
+}
 
 
 
@@ -88,17 +99,6 @@ std::vector<std::string> extractItemsFromServer(std::string s) {
     return itemList;
 }
 
-
-int getItem(std::string s, std::vector<std::string>& list, int iterator) {
-
-
-    int length = s.length();
-
-    list.push_back(s);
-
-
-    return iterator + length + 2;
-}
 
 
 
