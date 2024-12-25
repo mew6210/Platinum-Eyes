@@ -73,7 +73,7 @@ void keybindingsSettings(std::string& s1, std::string& s2, std::string& s3, std:
 
 struct settingsStructure{
 	static const int length = 4;
-	std::vector<std::string> leftPanes = {"Ocr server settings","Screenshot parameters","Window sizes","Keybindings"};
+	std::vector<std::string> leftPanes = {"Ocr configuration","Screenshot parameters","Window sizes","Keybindings"};
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>> ocrServer;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
@@ -88,7 +88,7 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 		
 		structure.ocrServer = 
 			std::pair<std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>>
-			("Configure settings related to communication between the ocr server(main.py). "
+			("Configure settings related to reading things from screen. \n"
 			"For a normal user there is nothing to do here.",ocrServerSettings);
 			
 
