@@ -1,6 +1,6 @@
 #include "config.h"
 #include <direct.h>   
-#include "../platinumEyes.h"
+
 
 
 

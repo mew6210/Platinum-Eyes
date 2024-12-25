@@ -1,5 +1,5 @@
 #pragma once
-#include "../platinumEyes.h"
+#include "../../platinumEyes.h"
 
 void generateImGuiTable(std::map<std::string, ItemDetails>& items);
 HRESULT setTransparency(HWND hWnd);

@@ -12,7 +12,7 @@
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 #include <ranges>
-#include "utilities/trim.cpp"
+#include "modules/utilities/trim.cpp"
 #include <SFML/Window.hpp>
 #include <SFML/OpenGl.hpp>
 #include<SFML/Graphics/RenderWindow.hpp>
@@ -330,9 +330,9 @@ const std::map<std::string, ItemDetails> exampleItems = {
 };
 
 
-#include "ocr/ocr.h"
-#include "utilities/utilities.h"
-#include "keybindings/keybindings.h"
-#include "gui/gui.h"
-#include "config/config.h"
-#include "relics/relics.h"
+#include "modules/ocr/ocr.h"
+#include "modules/utilities/utilities.h"
+#include "modules/keybindings/keybindings.h"
+#include "modules/gui/gui.h"
+#include "modules/config/config.h"
+#include "modules/relics/relics.h"
