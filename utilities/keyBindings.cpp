@@ -111,13 +111,9 @@ void validateProperty(std::string property,std::string name) {
 
 void validateConfigKeybinds(ToolConfig& config) {
 
-    validateProperty(config["keyBind_ReadItemsFromScreen"],"keyBind_ReadItemsFromScreen");
-    validateProperty(config["keyBind_EscapeProgram"], "keyBind_EscapeProgram");
-    validateProperty(config["keyBind_ReadPreviousItems"], "keyBind_ReadPreviousItems");
-    validateProperty(config["keyBind_WindowVisibility"], "keyBind_WindowVisibility");
-    validateProperty(config["keyBind_BackupConfig"], "keyBind_BackupConfig");
-    validateProperty(config["keyBind_ExampleItems"], "keyBind_ExampleItems");
-    validateProperty(config["keyBind_ReadRelicTitle"], "keyBind_ReadRelicTitle");
+    for (std::string keybind : keyBindNames) {
+        validateProperty(config[keybind], keybind);     //validate every declared hotkey in config
+    }
 
 }
 

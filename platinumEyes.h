@@ -29,6 +29,7 @@
 #include "lodepng.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
+#include "utilities/configNames.h"
 
 
 using json = nlohmann::json;
@@ -42,25 +43,7 @@ void myAssert(bool stmt,std::string s);
 
 const std::string CONFIG_FILENAME = "tool_config.txt";
 const std::string COPY_FILENAME = "tool_config_old.txt";
-const std::string CONFIGPROPERTIES[] = { 
-	"ocrType",
-	"ocrIp",
-	"ocrPort",
-	"screenShotFilePath",
-	"coordinatesOfScreenShotCenter",
-	"screenShotWidth",
-	"screenShotHeight",
-	"sfmlSize",
-	"imguiSize",
-	"keyBind_ReadItemsFromScreen",
-	"keyBind_EscapeProgram",
-	"keyBind_ReadPreviousItems",
-	"keyBind_WindowVisibility",
-	"keyBind_BackupConfig",
-	"keyBind_ExampleItems",
-	"keyBind_ReadRelicTitle"
 
-};
 
 
 
