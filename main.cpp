@@ -1,7 +1,6 @@
 ﻿#include "platinumEyes.h"
 
 
-using json = nlohmann::json;
 int main()
 {
     
