@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include <iostream>
+
 
 #define NOMINMAX
-
+#include <iostream>
 #include <Windows.h>
 #include <string>
 #include <vector>
@@ -24,7 +24,8 @@
 #include "lodepng.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
-#include "config/configNames.h"
+
+
 
 
 using json = nlohmann::json;
@@ -50,6 +51,25 @@ const int IMGUIWINDOWSIZEY = SFMLWINDOWSIZEY - 100;
 
 
 
+const std::string CONFIGPROPERTIES[] = {
+	"ocrType",
+	"ocrIp",
+	"ocrPort",
+	"screenShotFilePath",
+	"coordinatesOfScreenShotCenter",
+	"screenShotWidth",
+	"screenShotHeight",
+	"sfmlSize",
+	"imguiSize",
+	"keyBind_ReadItemsFromScreen",
+	"keyBind_EscapeProgram",
+	"keyBind_ReadPreviousItems",
+	"keyBind_WindowVisibility",
+	"keyBind_BackupConfig",
+	"keyBind_ExampleItems",
+	"keyBind_ReadRelicTitle"
+
+};
 
 namespace Rarity {
 
@@ -134,8 +154,6 @@ public:
 
 };
 
-
-
 class ToolConfig {
 
 	std::map<std::string, std::string> properties;
@@ -146,7 +164,7 @@ class ToolConfig {
 
 
 		if (properties.count(key) > 0) {
-			
+
 			std::string propertyValue = properties[key];
 			trim(propertyValue);
 			return propertyValue;
@@ -158,7 +176,7 @@ class ToolConfig {
 
 	}
 
-	
+
 
 public:
 
@@ -202,7 +220,7 @@ public:
 
 	}
 	ToolConfig operator=(ToolConfig& config) {
-		
+
 		properties = config.properties;
 
 		return config;
@@ -223,7 +241,7 @@ public:
 
 	void printConfig() {
 
-		for (auto& property:properties) {
+		for (auto& property : properties) {
 
 			std::cout << property.first + ": ";
 			std::cout << property.second << std::endl;
@@ -233,7 +251,7 @@ public:
 
 	}
 
-	
+
 };
 
 
@@ -312,110 +330,9 @@ const std::map<std::string, ItemDetails> exampleItems = {
 };
 
 
-
-
-
-
-BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
-
-HBITMAP takeScreenshot(int imageWidth = 1200, int imageHeight = 800, int offsetX = 200, int offsetY = 200);
-HBITMAP takeScreenshot(int imageWidth = 1200, int imageHeight = 800, Point center=Point(0,0));
-void saveScreenshotToClipboard(HBITMAP bitmap);
-
-
-std::vector<std::string> extractItemsFromServer(std::string s);
-int getItem(std::string s, std::vector<std::string>& list,int iterator);
-
-
-std::vector<std::string> prepareItems(std::vector<std::string>&);
-std::string replaceChar(std::string s, char a, std::string b);
-
-
-ItemDetails getAveragePrice(const json& list);
-
-
-
-std::map<std::string, ItemDetails> getItemPricesMap(std::vector<std::string>& preparedItems);
-std::string getFormatedAveragePrices(std::vector<int>& lowestPrices);
-
-
-void printItemPrices(std::map<std::string, ItemDetails>& itemPrices);
-
-
-
-
-std::map<std::string, ItemDetails> readItemsFromScreenEasyocr(ToolConfig& config); 
-
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshotEasyocr(ToolConfig& config);
-
-bool checkIfConfigFileExists();
-
-
-void createConfigFile();
-
-ToolConfig readConfigFile();
-
-
-
-
-
-std::pair<int,int>stringToIntPair(std::string s);
-
-
-
-void generateImGuiTable(std::map<std::string, ItemDetails>& items);
-
-
-HRESULT setTransparency(HWND hWnd);
-
-void registerHotkeys(ToolConfig& config);
-
-void checkKeyPressed(AppState state);
-
-
-
-std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items);
-
-
-void customizeWindow(sf::RenderWindow& w,WindowParameters& state );
-
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state,bool& shouldReSizeImGui);
-void unregisterHotkeys();
-void copyConfigToOldFile();
-
-int StringToVirtualKeyCode(std::string s);
-
-WindowParameters getWindowSize(std::string s,ToolConfig& toolconfig);
-
-void showSettingsMenu(bool* p_open,AppState state);
-
-
-void rewriteConfigFile(ToolConfig& config);
-
-//takes in name of the file without extension, since its obvious it is .bmp to .png
-//for example 'niceItems.bmp' should be passed as 'niceItems'
-int convertBMPtoPNG(std::string& path);
-std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showImage);
-std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api, size_t itemCount);
-std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& config, tesseract::TessBaseAPI& api);
-
-std::map<std::string, ItemDetails> readItemsFromScreen(AppState state);
-
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(ToolConfig& config, tesseract::TessBaseAPI& api);
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state);
-int tesseractInit(tesseract::TessBaseAPI& api,ToolConfig& config);
-void reRegisterHotkeys(ToolConfig& config);
-void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters);
-int parseRelicData();
-std::array<std::string, 6> getRelicRawItems(std::string relic);
-
-
-std::array<std::pair<std::string, std::string>, 6> getRelicItemDetails(std::string relic);
-ItemDetails fetchItemPrice(const std::string& item);
-RelicInfo FetchRelicItemPrices(std::string relic);
-
-std::string rarityToString(Rarity::level r);
-std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
-std::string relicMenuTitleStringToRelicString(std::string& s);
-std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
-RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api);
+#include "ocr/ocr.h"
+#include "utilities/utilities.h"
+#include "keybindings/keybindings.h"
+#include "gui/gui.h"
+#include "config/config.h"
+#include "relics/relics.h"

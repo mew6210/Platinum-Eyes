@@ -1,4 +1,12 @@
 #pragma once
+#include <vector>
+#include <string>
+
+
+
+#include "../platinumEyes.h"
+
+
 
 
 
@@ -35,22 +43,17 @@ const std::vector<std::string> keyBindNames = {
 
 
 
-const std::string CONFIGPROPERTIES[] = {
-	"ocrType",
-	"ocrIp",
-	"ocrPort",
-	"screenShotFilePath",
-	"coordinatesOfScreenShotCenter",
-	"screenShotWidth",
-	"screenShotHeight",
-	"sfmlSize",
-	"imguiSize",
-	"keyBind_ReadItemsFromScreen",
-	"keyBind_EscapeProgram",
-	"keyBind_ReadPreviousItems",
-	"keyBind_WindowVisibility",
-	"keyBind_BackupConfig",
-	"keyBind_ExampleItems",
-	"keyBind_ReadRelicTitle"
 
-};
+
+
+
+
+bool contains(std::vector<std::string> targets, std::vector<std::string> differences);
+bool keyBindsChanged(std::vector<std::string> differences);
+bool windowSizesChanged(std::vector<std::string> differences);
+void copyConfigToOldFile();
+bool checkIfConfigFileExists();
+void createConfigFile();
+ToolConfig readConfigFile();
+WindowParameters getWindowSize(std::string s, ToolConfig& toolconfig);
+void rewriteConfigFile(ToolConfig& config);

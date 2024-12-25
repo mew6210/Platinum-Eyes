@@ -1,4 +1,4 @@
-#include "../platinumEyes.h"
+#include "keybindings.h"
 
 
 class KeyBind {

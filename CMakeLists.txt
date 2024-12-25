@@ -64,7 +64,7 @@ add_executable (
         "gui/settingsChanges.cpp" 
         "gui/settingsChanged.h" 
         "relics/relicDatabase.cpp" 
-        "config/configNames.h")
+         "ocr/ocr.h" "config/config.h" "utilities/utilities.h" "gui/gui.h" "keybindings/keybindings.h" "relics/relics.h")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
