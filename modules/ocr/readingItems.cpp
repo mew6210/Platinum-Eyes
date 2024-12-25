@@ -1,4 +1,4 @@
-#include "../platinumEyes.h"
+#include "ocr.h"
 
 
 

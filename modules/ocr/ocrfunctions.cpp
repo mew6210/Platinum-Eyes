@@ -1,6 +1,41 @@
+#include "ocr.h"
 
-#include "../platinumEyes.h"
-using namespace std;
+
+
+std::map<std::string, ItemDetails> readItemsFromScreen(AppState state) {
+
+	myAssert(state.ocrType == OCR_tesseract || state.ocrType == OCR_easyocr, "Invalid ocr type, it should be either 'tesseract' or 'easyocr'");
+	std::map<std::string, ItemDetails> items;
+
+
+	if (state.ocrType == OCR_tesseract) {
+		items = readItemsFromScreenTesseract(state.config, state.tesseractApi);
+	}
+	
+	else {
+		items = readItemsFromScreenEasyocr(state.config);
+	}
+	return items;
+	
+}
+
+std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state) {
+
+	myAssert(state.ocrType == OCR_tesseract || state.ocrType == OCR_easyocr, "Invalid ocr type, it should be either 'tesseract' or 'easyocr'");
+	std::map<std::string, ItemDetails> items;
+
+
+	if (state.ocrType == OCR_tesseract) {
+		items = readItemsFromScreenWithoutScreenShotTesseract(state.config, state.tesseractApi);
+	}
+
+	else {
+		items = readItemsFromScreenWithoutScreenshotEasyocr(state.config);
+	}
+	return items;
+
+}
+
 
 
 
@@ -24,8 +59,8 @@ HBITMAP takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY
     int width = GetDeviceCaps(hScreen, HORZRES);
     int height = GetDeviceCaps(hScreen, VERTRES);
 
-    std::cout << "Width: " << width << endl;
-    std::cout << "\nHeight: " << height << endl;
+    std::cout << "Width: " << width << std::endl;
+    std::cout << "\nHeight: " << height << std::endl;
 
 
 
@@ -48,7 +83,7 @@ HBITMAP takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY
     SelectObject(hScreen, oldbitmap);
     ReleaseDC(NULL, hTarget);
     DeleteDC(hScreen);
-    
+
     return bitmap;
 
 }
@@ -71,8 +106,8 @@ HBITMAP takeScreenshot(int imageWidth, int imageHeight, Point p)
     int height = GetDeviceCaps(hScreen, VERTRES);
 
     std::cout << "\nScreenParameters: " << std::endl;
-    std::cout << "Width: " << width << endl;
-    std::cout << "Height: " << height << endl;
+    std::cout << "Width: " << width << std::endl;
+    std::cout << "Height: " << height << std::endl;
 
 
 
@@ -190,42 +225,3 @@ void saveScreenshotToClipboard(HBITMAP bitmap) {
     SetClipboardData(CF_BITMAP, bitmap);
     CloseClipboard();
 }
-
-void errorLog(std::string s) {
-    std::cout << "Error: " <<s<< "\n";
-}
-
-void warningLog(std::string s) {
-    std::cout << "Warning: " << s << "\n";
-
-}
-
-void myAssert(bool stmt,std::string failDescription) {
-
-    if (!stmt) {
-        std::cout << "Assertion error: ";
-        std::cout << failDescription << std::endl;
-        throw ASSERTION_ERROR;
-    }
-    else {
-        return;
-    }
-
-
-}
-
-std::pair<int,int> stringToIntPair(std::string s) {
-
-    int middlePos = s.find(",");
-
-    std::string x = s.substr(0, middlePos);
-    std::string y = s.substr(middlePos + 1, s.length() - x.length());
-
-
-
-
-    return std::pair(std::stoi(x), std::stoi(y));
-
-}
-
-
