@@ -81,26 +81,112 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 	
 }
 
+void createRelicItemBox(std::tuple<std::string,float,ItemDetails> item,ImVec2 screenSize){
 
-
-
-void generateImGuiTable(std::map<std::string, ItemDetails>& items) {
-
-
-	int itemCount = items.size();
-	ImGui::Dummy(ImVec2(50.0, 0.0));
 	
-	int it = 0;
-	for (auto& item : items) {
-		createItemBox(item);
-		ImGui::SameLine();
 
-		if (it != items.size() - 1) {
-			ImGui::Dummy(ImVec2(50.0, 0.0));
+
+	ImVec4 bgColor = { 0,0,0,1 };
+	switch (std::get<2>(item).rarity) {
+	case Rarity::level::Common:bgColor = { 189,145,119,128 }; break;
+	case Rarity::level::Uncommon: bgColor = { 209,208,209,128 }; break;
+	case Rarity::level::Rare: bgColor = { 236,225,117,128 }; break;
+	default: bgColor = { 0,0,0,255 }; break;
+	}
+
+
+
+
+
+	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+	window_flags |= ImGuiWindowFlags_MenuBar;
+	window_flags |= ImGuiWindowFlags_HorizontalScrollbar;
+	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+	ImGui::BeginChild(std::get<0>(item).c_str(), ImVec2(screenSize.x/4, screenSize.y/3.5), ImGuiChildFlags_Border, window_flags);
+
+
+
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu(std::get<0>(item).c_str()))
+		{
+
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+
+	std::string averagePrice = "Average price: ";
+	std::string formattedPrice = std::format("{:.2f}", std::get<2>(item).averagePrice);
+	ImGui::Text((averagePrice+formattedPrice).c_str());
+	ImGui::SameLine();
+
+	std::string chanceString = "Chance: " + std::format("{:.2f}%%", std::get<1>(item));
+	ImGui::Text(chanceString.c_str());
+
+
+	std::string latestString = "Lowest: " + getFormatedAveragePrices(std::get<2>(item).lowestPrices);
+	ImGui::Text(latestString.c_str());
+
+	ImGui::EndChild();
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
+
+
+
+
+}
+
+
+void generateImGuiTable(AppState state) {
+
+	if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
+
+		int itemCount = state.items.size();
+		ImGui::Dummy(ImVec2(50.0, 0.0));
+
+		int it = 0;
+		for (auto& item : state.items) {
+			createItemBox(item);
 			ImGui::SameLine();
+
+			if (it != state.items.size() - 1) {
+				ImGui::Dummy(ImVec2(50.0, 0.0));
+				ImGui::SameLine();
+			}
+
+			it++;
+		}
+	}
+	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
+		if (state.currentRelic.name != "") {
+		ImVec2 screenSize = ImGui::GetWindowSize();
+		int count=state.currentRelic.items.size();
+
+		int it = 1;
+
+		for (auto& item : state.currentRelic.items) {
+			createRelicItemBox(item,screenSize);
+			if (it != 3&&it!=count) {
+				
+				ImGui::SameLine();
+				ImGui::Dummy({ screenSize.x / 20,0 });
+				ImGui::SameLine();
+			}
+			
+
+
+			it++;
+		}
+		ImGui::NewLine();
+		
+			std::string relicName = "Relic name: " + state.currentRelic.name;
+			ImGui::Text(relicName.c_str());
+			std::string averageRelicPrice = "Average relic price: " + std::format("{:.2f}", state.currentRelic.relicPrice);
+			ImGui::Text(averageRelicPrice.c_str());
 		}
 
-		it++;
 	}
 
 }
@@ -139,6 +225,15 @@ void setImGuiStyle() {
 	style.ChildRounding = 20.0f;
 	style.WindowBorderSize = 1.0f;
 	style.ChildBorderSize = 0.0f;
+	
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->Clear(); 
+	
+	io.Fonts->AddFontFromFileTTF("Lexend-Regular.ttf", 8.f);
+	
+
+	ImGui::SFML::UpdateFontTexture(); 
 
 
 }
@@ -149,10 +244,7 @@ void setImGuiStyle() {
 
 void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state, bool& shouldReSizeImGui) {
 
-
 	
-
-	setImGuiStyle();
 	int heightDiff = sfmlParameters.height - imguiParameters.height;
 	int widthDiff = sfmlParameters.width - imguiParameters.width;
 
@@ -172,7 +264,6 @@ void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowP
 		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), cond);
 	}
 		
-	
 	ImGui::Begin("Warframe tool-main", &isRunning, flags);
 	
 

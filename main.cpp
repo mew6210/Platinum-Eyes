@@ -4,7 +4,8 @@
 int main()
 {
     
-    std::map<std::string, ItemDetails> currentItems;
+    std::map<std::string, ItemDetails> currentFissureItems;
+    RelicInfo currentRelic;
 
     if (!checkIfConfigFileExists()) {
         createConfigFile();
@@ -39,8 +40,9 @@ int main()
     MSG msg = { 0 };
     bool settingsOpen = false;
     bool shouldReSizeImGui = false;
+    bool itemDisplayFlag = ITEMTYPE_relicItems;
     AppState state(
-        currentItems,
+        currentFissureItems,
         toolConfig,
         window,
         running,
@@ -51,13 +53,15 @@ int main()
         settingsOpen,
         ocrType,
         tesseractapi,
-        shouldReSizeImGui
+        shouldReSizeImGui,
+        itemDisplayFlag,
+        currentRelic
     );
     
 
 
     customizeWindow(window,state.sfmlSize);
-    
+    setImGuiStyle();
 
 
     while (running)
@@ -98,7 +102,7 @@ int main()
 
         
         createImGuiWindow(running,state.imguiSize,state.sfmlSize,state.settingsVisible,state,shouldReSizeImGui);
-        generateImGuiTable(currentItems);
+        generateImGuiTable(state);
         //ImGui::ShowDemoWindow(&running);
 
         ImGui::End();

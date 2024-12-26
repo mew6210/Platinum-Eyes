@@ -189,33 +189,52 @@ void checkKeyPressed(AppState state) {
         //keybind logic
         switch (state.msg.wParam) {
             
-        case KB_ReadItemsFromScreen:state.items = readItemsFromScreen(state);
+        case KB_ReadItemsFromScreen:
+        {
+            state.items = readItemsFromScreen(state);
+            state.itemDisplayFlag = ITEMTYPE_fissureItems;
+        }
             break;
         case KB_EscapeProgram: state.running = false;
             break;
-        case KB_ReadPreviousItems: state.items = readItemsFromScreenWithoutScreenShot(state);
+        case KB_ReadPreviousItems: { 
+            state.items = readItemsFromScreenWithoutScreenShot(state);             
+            state.itemDisplayFlag = ITEMTYPE_fissureItems;
+
+            }
             break;
         case KB_WindowVisibility:
             state.isVisible = !state.isVisible;
             state.window.setVisible(state.isVisible);
             break;
         case KB_BackupConfig: copyConfigToOldFile(); break;
-        case KB_ExampleItems: state.items = exampleItems; break;
+        case KB_ExampleItems: {
+            if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
+                state.items = exampleItems;
+            }
+            else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
+                state.currentRelic= FetchRelicItemPrices("Lith A1 Relic (Intact)");
+            }
+           
+
+
+        }
+            break;
         case KB_RelicTitleScreenshot: {
 
-            RelicInfo relic = readItemsFromRelicTitleTesseract(state.tesseractApi);
+            state.currentRelic=readItemsFromRelicTitleTesseract(state.tesseractApi);
 
 
 
-            for (auto& price : relic.items) {
+            for (auto& price : state.currentRelic.items) {
 
                 std::cout << "Name: " << std::get<0>(price);
                 std::cout << " percentages: " << std::get<1>(price);
                 std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
                 std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
             }
-            std::cout << "Average relic price: " << relic.relicPrice;
-
+            std::cout << "Average relic price: " << state.currentRelic.relicPrice;
+            state.itemDisplayFlag = ITEMTYPE_relicItems;
             
 
             break;

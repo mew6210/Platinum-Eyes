@@ -33,6 +33,9 @@ using json = nlohmann::json;
 #define OCR_tesseract 1
 #define OCR_easyocr 2
 
+#define ITEMTYPE_fissureItems true
+#define ITEMTYPE_relicItems false
+
 void errorLog(std::string s);
 void warningLog(std::string s);
 void myAssert(bool stmt,std::string s);
@@ -265,6 +268,15 @@ struct WindowParameters {
 };
 
 
+class RelicInfo {
+public:
+	std::string name;
+	std::vector<std::tuple<std::string, float, ItemDetails>> items;
+	float relicPrice;
+
+};
+
+
 
 struct AppState {
 
@@ -280,6 +292,8 @@ struct AppState {
 	int& ocrType;
 	tesseract::TessBaseAPI& tesseractApi;
 	bool& shouldReSizeImGui;
+	bool& itemDisplayFlag;
+	RelicInfo& currentRelic;
 
 
 	AppState(
@@ -294,20 +308,14 @@ struct AppState {
 		bool& sv,
 		int& o,
 		tesseract::TessBaseAPI& t,
-		bool& sri
+		bool& sri,
+		bool& idf,
+		RelicInfo& cr
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri) {};
-
-};
-
-
-class RelicInfo{
-public:
-	std::string name;
-	std::vector<std::tuple<std::string,float,ItemDetails>> items;
-	float relicPrice;
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr) {};
 
 };
+
 
 
 const std::map<std::string, ItemDetails> exampleItems = {

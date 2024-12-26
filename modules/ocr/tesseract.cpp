@@ -472,9 +472,10 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
 
 
     std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
-    std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
-    RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
+    std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
+   
+    RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
     return relic;
 
