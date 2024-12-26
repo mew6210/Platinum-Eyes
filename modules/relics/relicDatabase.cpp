@@ -164,15 +164,18 @@ std::array<std::pair<std::string, std::string>, 6> getRelicItemDetails(std::stri
     int i = 0;
 
     for (auto& item : items) {
-        std::vector<std::string> separation = explode(item, '---');
+        if (item.find("---") != -1) {
 
-        std::pair<std::string, std::string> pair;
-        pair.first = separation[0];
-        pair.second = separation[1];
+            std::vector<std::string> separation = explode(item, '---');
 
-        itemsSeparated[i] = pair;
+            std::pair<std::string, std::string> pair;
+            pair.first = separation[0];
+            pair.second = separation[1];
+
+            itemsSeparated[i] = pair;
 
 
+        }
         i++;
     }
 

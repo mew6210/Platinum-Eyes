@@ -168,7 +168,7 @@ void generateImGuiTable(AppState state) {
 		}
 	}
 	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
-		if (state.currentRelic.name != "") {
+		if (state.currentRelic.name != "" && state.currentRelic.relicPrice!=0.0) {
 		ImVec2 screenSize = ImGui::GetWindowSize();
 		int count=state.currentRelic.items.size();
 
