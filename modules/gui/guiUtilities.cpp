@@ -142,10 +142,10 @@ void createRelicItemBox(std::tuple<std::string,float,ItemDetails> item,ImVec2 sc
 void generateImGuiTable(AppState state) {
 
 	if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
-
+		
 		int itemCount = state.items.size();
 
-		if (itemCount != 0) {
+		if (itemCount != 0&& state.items.begin()->first != "placeholder") {
 
 			ImGui::Dummy(ImVec2(50.0, 0.0));
 
@@ -162,9 +162,11 @@ void generateImGuiTable(AppState state) {
 				it++;
 			}
 		}
+		else if (itemCount==1&&state.items.begin()->first=="placeholder") {
+			ImGui::Text("Waiting for your input...");
+		}
 		else {
-			ImGui::NewLine();
-			ImGui::Text("couldnt find relic rewards :(");
+			ImGui::Text("Couldn't find relic rewards :(");
 		}
 	}
 	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
@@ -187,12 +189,14 @@ void generateImGuiTable(AppState state) {
 
 			it++;
 		}
-		ImGui::NewLine();
 		
 			std::string relicName = "Relic name: " + state.currentRelic.name;
 			ImGui::Text(relicName.c_str());
 			std::string averageRelicPrice = "Average relic price: " + std::format("{:.2f}", state.currentRelic.relicPrice);
 			ImGui::Text(averageRelicPrice.c_str());
+		}
+		else {
+			ImGui::Text("Couldn't find relic title :(");
 		}
 
 	}

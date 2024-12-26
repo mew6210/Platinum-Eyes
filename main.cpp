@@ -5,6 +5,7 @@ int main()
 {
     
     std::map<std::string, ItemDetails> currentFissureItems;
+    currentFissureItems.insert({"placeholder",ItemDetails()});
     RelicInfo currentRelic;
 
     if (!checkIfConfigFileExists()) {
@@ -40,7 +41,7 @@ int main()
     MSG msg = { 0 };
     bool settingsOpen = false;
     bool shouldReSizeImGui = false;
-    bool itemDisplayFlag = ITEMTYPE_relicItems;
+    bool itemDisplayFlag = ITEMTYPE_fissureItems;
     AppState state(
         currentFissureItems,
         toolConfig,
