@@ -367,7 +367,9 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
 
     std::stringstream ss(s);
     std::string word;
-
+    if (s == "") {
+        return "nullRelic";
+    }
 
     std::vector<std::string> words;
 
@@ -431,6 +433,15 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
 
 
 RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO BE REFACTORED LATER LIKE OMFG WHAT IS HAPPENING HERE
+
+    if (relic == "nullRelic") {
+        RelicInfo relic;
+        relic.name = "couldnt find relic";
+        relic.relicPrice = 0;
+
+
+        return relic;
+    }
 
     std::array<std::pair<std::string, std::string>, 6> items = getRelicItemDetails(relic);
     std::vector<std::string> itemVector;

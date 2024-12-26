@@ -144,19 +144,27 @@ void generateImGuiTable(AppState state) {
 	if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
 
 		int itemCount = state.items.size();
-		ImGui::Dummy(ImVec2(50.0, 0.0));
 
-		int it = 0;
-		for (auto& item : state.items) {
-			createItemBox(item);
-			ImGui::SameLine();
+		if (itemCount != 0) {
 
-			if (it != state.items.size() - 1) {
-				ImGui::Dummy(ImVec2(50.0, 0.0));
+			ImGui::Dummy(ImVec2(50.0, 0.0));
+
+			int it = 0;
+			for (auto& item : state.items) {
+				createItemBox(item);
 				ImGui::SameLine();
-			}
 
-			it++;
+				if (it != state.items.size() - 1) {
+					ImGui::Dummy(ImVec2(50.0, 0.0));
+					ImGui::SameLine();
+				}
+
+				it++;
+			}
+		}
+		else {
+			ImGui::NewLine();
+			ImGui::Text("couldnt find relic rewards :(");
 		}
 	}
 	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
@@ -230,7 +238,7 @@ void setImGuiStyle() {
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->Clear(); 
 	
-	io.Fonts->AddFontFromFileTTF("Lexend-Regular.ttf", 8.f);
+	io.Fonts->AddFontFromFileTTF("Lexend-Regular.ttf", 16.f);
 	
 
 	ImGui::SFML::UpdateFontTexture(); 

@@ -246,17 +246,28 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
     
     };
     case 1:  
+    {
 
-          cv::Mat first_item
-              = img(cv::Range(30, img.rows), cv::Range(0, img.cols));
-          std::vector<std::string> items;
+        cv::Mat first_item
+            = img(cv::Range(30, img.rows), cv::Range(0, img.cols));
+        std::vector<std::string> items;
 
-          items.push_back(readItemTesseract(first_item, api, false));
-          return items;
+        items.push_back(readItemTesseract(first_item, api, false));
+        return items;
+    }
 
 
+
+    case 0:
+    {
+
+
+        std::vector<std::string> items;
+        return items;
 
     }
+    }
+    
 
   
 
