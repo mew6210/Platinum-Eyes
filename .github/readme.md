@@ -69,9 +69,20 @@ But for the others, well u can just pray that it will work. Saying that, i am in
 - ### 🔴 MacOs
   No.
 
-## Ocr selection
+## 📷 Ocr selection
 
-Todo...
+App features 2 ocr's:
+
+### Tesseract
+This is the default one, and for most use cases this ocr is enough, and should do fine. No setup needed, just launch the app and everything works.\
+Every new feature now strictly focuses on using tesseract.
+
+
+### Easyocr
+As i was starting with this app, i was using easyocr. It is a python package for ocr. Communication between python package and this c++ app was done by hosting a http server with python, and passing to it the path to the image that you want to process.\
+I'm not sure why you would want to use it, since tesseract is much more well integrated into the current features, and there is less work to set it up. Just use tesseract.
+
+
 
 ## 🔧 How to build
 
