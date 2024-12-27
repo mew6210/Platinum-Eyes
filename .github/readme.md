@@ -3,16 +3,19 @@ Overlay app for Warframe. Provides a quick, realtime lookup of prices for the it
 
 
 ## ⭐Features
-- [x] Fissure rewards
+- [x] ***Fissure rewards***
  
 
 ![Fissure rewards screenshot](relicRewards1.png "1")
 
 ![Fissure rewards screenshot](relicRewards2.png "2")
 
-
-
-- [x] Relic possible rewards
+&nbsp;
+&nbsp;
+&nbsp;
+###
+###
+- [x] ***Relic possible rewards***
 
 
 ![Fissure rewards screenshot](relicTitleScreenshot1.png "3")
