@@ -8,3 +8,4 @@ std::array<std::pair<std::string, std::string>, 6> getRelicItemDetails(std::stri
 RelicInfo FetchRelicItemPrices(std::string relic);
 std::string rarityToString(Rarity::level r);
 std::string relicMenuTitleStringToRelicString(std::string& s);
+void loadRelicDatabase();

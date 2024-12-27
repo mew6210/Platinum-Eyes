@@ -52,6 +52,30 @@ void replaceAmps(std::string& s) {
 }
 
 
+void loadRelicDatabase() {
+
+    std::ifstream txtDatabase;
+    std::ifstream htmlDatabase;
+    
+
+    txtDatabase.open("relictable.txt");
+    htmlDatabase.open("relictable.html");
+
+    
+
+    if (!txtDatabase) {
+        
+        if (!htmlDatabase) {
+            std::cout << "Missing relic database(html)";
+            exit(-1);
+        }
+        std::cout << "Parsing relic database(html)\n";
+        parseRelicData();
+    }
+
+}
+
+
 
 int parseRelicData() {
     // Input HTML-like file
