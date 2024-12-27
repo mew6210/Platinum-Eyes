@@ -32,20 +32,20 @@ Overlay app for Warframe. Provides a quick, realtime lookup of prices for the it
 All this app does, is something that you can do yourself, but much faster. You absolutely could search up in warframe market all the 4 items that you dropped in your fissure run, but why bother. Even if, the app takes screenshot of your screen which is completely not invasive. This app ***doesn't*** modify warframe files, so everything should be good. Remember though, it is still against Warframe TOS.
 
 ## ❓ How does it work?
-Platinum Eyes can be seen as a 4 part program.
-- 1. ### 📸 Screenshot
+Platinum Eyes can be split into 4 parts.
+- ### 📸 Screenshot
      The app takes a screenshot of your display, in a specific place where item(or relic) names are.\
      It is platform specific, for windows it uses winapi, and for linux it will be using x11.
      
-- 2. ### 🏭 Ocr
+- ### 🏭 Ocr
      Image is then processed by ocr, to determine what words are in the picture. **There are 2 ocr's implemented in the app.** [More on that here](#ocr-selection).\
      They are also easily the heaviest part of the app, tesseract's training data alone is 20mb.
      
-- 3. ### 🚚 Fetch data
+- ### 🚚 Fetch data
      After we get the data from image, for example an item name, we can query warframe-market for the avalible orders for that given item.\
      This is fairly well optimized.
      
-- 4. ### 🖥️ Display
+- ### 🖥️ Display
      Lastly, we display the data that we recieve from warframe-market on the screen for a user.\
      **This app uses a weird mix of sfml and imgui.**
 
