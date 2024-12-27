@@ -242,7 +242,7 @@ void setImGuiStyle() {
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->Clear(); 
 	
-	io.Fonts->AddFontFromFileTTF("Lexend-Regular.ttf", 16.f);
+	io.Fonts->AddFontFromFileTTF("fonts/Lexend-Regular.ttf", 16.f);
 	
 
 	ImGui::SFML::UpdateFontTexture(); 
