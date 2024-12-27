@@ -51,7 +51,7 @@ Platinum Eyes can be seen as a 4 part program.
 
 
 ## 🖥️ Supported Resolutions
-[Looking back here,](#screenshot) it begs a question. How do we know WHERE to take a screenshot, or what to take a screenshot of? **Well, we can only guess.** Since resolutions vary, the places for where to take a screenshot also varies.\
+[Looking back here,](#-screenshot) it begs a question. How do we know WHERE to take a screenshot, or what to take a screenshot of? **Well, we can only guess.** Since resolutions vary, the places for where to take a screenshot also varies.\
 How ui scaling in warframe works is currently beyond me. There is a formula that works in maybe 80% of the cases, so it is pretty fine for most resolutions, but not all. I can guarantee, that for those resolutions everything works well:
 - 1920x1080
 - 3440x1440
