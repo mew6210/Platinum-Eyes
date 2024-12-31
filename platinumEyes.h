@@ -58,19 +58,32 @@ const std::string CONFIGPROPERTIES[] = {
 	"ocrType",
 	"ocrIp",
 	"ocrPort",
+
+
+
 	"screenShotFilePath",
 	"coordinatesOfScreenShotCenter",
 	"screenShotWidth",
 	"screenShotHeight",
+
+
 	"sfmlSize",
 	"imguiSize",
+
+
+
 	"keyBind_ReadItemsFromScreen",
 	"keyBind_EscapeProgram",
 	"keyBind_ReadPreviousItems",
 	"keyBind_WindowVisibility",
 	"keyBind_BackupConfig",
 	"keyBind_ExampleItems",
-	"keyBind_ReadRelicTitle"
+	"keyBind_ReadRelicTitle",
+
+
+
+	"fontFile",
+	"fontSize"
 
 };
 
@@ -294,6 +307,7 @@ struct AppState {
 	bool& shouldReSizeImGui;
 	bool& itemDisplayFlag;
 	RelicInfo& currentRelic;
+	bool& shouldUpdateFonts;
 
 
 	AppState(
@@ -310,9 +324,10 @@ struct AppState {
 		tesseract::TessBaseAPI& t,
 		bool& sri,
 		bool& idf,
-		RelicInfo& cr
+		RelicInfo& cr,
+		bool& suf
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr) {};
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf) {};
 
 };
 

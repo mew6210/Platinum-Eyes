@@ -36,7 +36,10 @@ const std::vector<std::string> keyBindNames = {
 };
 
 
-
+const std::vector<std::string> fontNames = {
+	"fontFile",
+	"fontSize"
+};
 
 
 
@@ -46,6 +49,10 @@ const std::vector<std::string> keyBindNames = {
 bool contains(std::vector<std::string> targets, std::vector<std::string> differences);
 bool keyBindsChanged(std::vector<std::string> differences);
 bool windowSizesChanged(std::vector<std::string> differences);
+bool fontsChanged(std::vector<std::string> differences);
+
+
+
 void copyConfigToOldFile();
 bool checkIfConfigFileExists();
 void createConfigFile();

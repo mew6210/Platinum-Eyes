@@ -69,15 +69,25 @@ void keybindingsSettings(std::string& s1, std::string& s2, std::string& s3, std:
 
 }
 
+void fontsSettings(std::string& s1, std::string& s2) {
+
+	configParameter(s1, 17, "fontFile");
+	configParameter(s2, 18, "fontSize");
+
+
+}
+
 
 
 struct settingsStructure{
-	static const int length = 4;
-	std::vector<std::string> leftPanes = {"Ocr configuration","Screenshot parameters","Window sizes","Keybindings"};
+	static const int length = 5;
+	std::vector<std::string> leftPanes = {"Ocr configuration","Screenshot parameters","Window sizes","Keybindings","Fonts"};
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>> ocrServer;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>> keyBindings;
+	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> fonts;
+
 
 };
 
@@ -107,6 +117,12 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 		structure.keyBindings=
 			std::pair<std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>>
 			( "Keybindings, every keybind is treated as 'Alt + <keybind>'\nIt's important to remember, that keybinds should be 1 character in length, except esc.",keybindingsSettings);
+
+
+		structure.fonts= 
+			std::pair<std::string, std::function<void(std::string& s1, std::string& s2)>>
+			("All about fonts, fontFile is your path to the .tff file in fonts folder. \nfontSize is the size of the font u want to have", fontsSettings);
+
 
 		should = 0;
 		
@@ -144,6 +160,8 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static const std::string  keyBind_ExampleItemsForRevert = newConfig["keyBind_ExampleItems"];
 	static const std::string  keyBind_ReadRelicTitleForRevert = newConfig["keyBind_ReadRelicTitle"];
 
+	static const std::string  fontFileForRevert= newConfig["fontFile"];
+	static const std::string  fontSizeForRevert = newConfig["fontSize"];
 	
 
 
@@ -166,6 +184,10 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static std::string  keyBind_ExampleItems = newConfig["keyBind_ExampleItems"];
 	static std::string  keyBind_ReadRelicTitle = newConfig["keyBind_ReadRelicTitle"];
 
+	static std::string  fontFile= newConfig["fontFile"];
+	static std::string  fontSize= newConfig["fontSize"];
+
+	myAssert(structure.length == structure.leftPanes.size(), "length and length of descriptions in settings structure doesnt match");
 	appendToSettingsStructure(should, structure, state);
 
 	
@@ -214,6 +236,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 					case 1: ImGui::TextWrapped(structure.screenShotParameters.first.c_str()); break;
 					case 2: ImGui::TextWrapped(structure.windowSizes.first.c_str()); break;
 					case 3: ImGui::TextWrapped(structure.keyBindings.first.c_str()); break;
+					case 4: ImGui::TextWrapped(structure.fonts.first.c_str()); break;
 						
 						
 						//ImGui::TextWrapped(structure.rightPanes[selected].description.data());
@@ -229,7 +252,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 					case 1: structure.screenShotParameters.second(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); break;
 					case 2: structure.windowSizes.second(sfmlSize, imguiSize); break;
 					case 3: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); break;
-
+					case 4: structure.fonts.second(fontFile, fontSize); break;
 
 						//structure.rightPanes[selected].details(newConfig);
 
@@ -258,6 +281,12 @@ void showSettingsMenu(bool* p_open,AppState state)
 				keyBind_BackupConfig = keyBind_BackupConfigForRevert;
 				keyBind_ExampleItems = keyBind_ExampleItemsForRevert;
 				keyBind_ReadRelicTitle = keyBind_ReadRelicTitleForRevert;
+				fontFile = fontFileForRevert;
+				fontSize = fontSizeForRevert;
+
+
+
+
 
 			}
 			ImGui::SameLine();
@@ -280,7 +309,8 @@ void showSettingsMenu(bool* p_open,AppState state)
 				newConfig.setPropertyValue("keyBind_BackupConfig", keyBind_BackupConfig);
 				newConfig.setPropertyValue("keyBind_ExampleItems", keyBind_ExampleItems);
 				newConfig.setPropertyValue("keyBind_ReadRelicTitle", keyBind_ReadRelicTitle);
-
+				newConfig.setPropertyValue("fontFile", fontFile);
+				newConfig.setPropertyValue("fontSize", fontSize);
 
 
 
@@ -310,6 +340,9 @@ void showSettingsMenu(bool* p_open,AppState state)
 						state.sfmlSize = parameterssfml;
 						state.imguiSize = parametersimgui;
 						state.shouldReSizeImGui = true;
+					}
+					if (fontsChanged(differences)) {
+						state.shouldUpdateFonts = true;
 					}
 					
 

@@ -250,7 +250,12 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "keyBind_ReadRelicTitle") {
             configFile << "f";
         }
-
+        else if (configProperty == "fontFile") {
+            configFile << "Lexend-Regular.ttf";
+        }
+        else if (configProperty == "fontSize") {
+            configFile << "12";
+        }
 
 
 

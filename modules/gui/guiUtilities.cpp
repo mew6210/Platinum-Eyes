@@ -231,7 +231,19 @@ void customizeWindow(sf::RenderWindow& w,WindowParameters& sfmlParameters) {
 
 }
 
-void setImGuiStyle() {
+void setNewFont(ToolConfig& config) {
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->Clear();
+	std::string filename = "fonts/" + config["fontFile"];
+	float size_pixels = std::stof(config["fontSize"]);
+	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
+
+	ImGui::SFML::UpdateFontTexture();
+
+}
+
+
+void setImGuiStyle(ToolConfig& config) {
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowRounding = 20.0f;
 	style.ChildRounding = 20.0f;
@@ -241,10 +253,10 @@ void setImGuiStyle() {
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->Clear(); 
+	std::string filename = "fonts/" + config["fontFile"];
+	float size_pixels = std::stof(config["fontSize"]);
+	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 	
-	io.Fonts->AddFontFromFileTTF("fonts/Lexend-Regular.ttf", 16.f);
-	
-
 	ImGui::SFML::UpdateFontTexture(); 
 
 
@@ -285,4 +297,14 @@ void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowP
 	if (settingsOpen == true) {
 		showSettingsMenu(&settingsOpen,state);
 	}
+}
+
+void handleBetweenFrameImGuiUpdates(AppState state) {
+
+	if (state.shouldUpdateFonts) {
+		setNewFont(state.config);
+		state.shouldUpdateFonts = false;
+	}
+
+
 }

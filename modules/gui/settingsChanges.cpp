@@ -27,3 +27,9 @@ bool windowSizesChanged(std::vector<std::string> differences) {
 	return contains(windowSizesNames, differences);
 
 }
+
+
+
+bool fontsChanged(std::vector<std::string> differences) {
+	return contains(fontNames, differences);
+}

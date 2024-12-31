@@ -22,7 +22,6 @@ int main()
     Timer timer = Timer();
     timer.start();
 
-
     timer.stop();
 
 
@@ -42,6 +41,7 @@ int main()
     bool settingsOpen = false;
     bool shouldReSizeImGui = false;
     bool itemDisplayFlag = ITEMTYPE_fissureItems;
+    bool shouldUpdateFonts = false;
     AppState state(
         currentFissureItems,
         toolConfig,
@@ -56,13 +56,14 @@ int main()
         tesseractapi,
         shouldReSizeImGui,
         itemDisplayFlag,
-        currentRelic
+        currentRelic,
+        shouldUpdateFonts
     );
     
 
 
     customizeWindow(window,state.sfmlSize);
-    setImGuiStyle();
+    setImGuiStyle(state.config);
 
 
     while (running)
@@ -114,6 +115,8 @@ int main()
         ImGui::SFML::Render(window);
         window.display();
         
+        handleBetweenFrameImGuiUpdates(state);
+
     }
 
     tesseractapi.End();
