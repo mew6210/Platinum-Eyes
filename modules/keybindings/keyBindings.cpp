@@ -204,8 +204,18 @@ void checkKeyPressed(AppState state) {
             }
             break;
         case KB_WindowVisibility:
+        {
             state.isVisible = !state.isVisible;
             state.window.setVisible(state.isVisible);
+
+            if (state.isVisible) {
+                state.window.setFramerateLimit(60);
+            }
+            else {
+                state.window.setFramerateLimit(5);
+            }
+
+        }
             break;
         case KB_BackupConfig: copyConfigToOldFile(); break;
         case KB_ExampleItems: {
