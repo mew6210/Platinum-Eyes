@@ -494,6 +494,89 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
 }
 
 
+int calculateShiftWidth(int width, int height) {
+    // Aspect ratio
+    double aspectRatio = static_cast<double>(width) / height;
+
+    // Linear interpolation constants for shift width ratio
+    double m_shift = -0.0616;
+    double c_shift = 0.256;
+    double shift_width_ratio = m_shift * aspectRatio + c_shift;
+
+    // Calculate and return the shift width
+    return static_cast<int>(std::round(width * shift_width_ratio));
+}
+
+
+
+RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
+
+
+    Timer timer;
+
+    size_t itemCount = 4;
+
+    int px, py;
+    HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
+    int width = GetDeviceCaps(hScreen, HORZRES);
+    int height = GetDeviceCaps(hScreen, VERTRES);
+
+    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(width, height);
+    int x_shift = calculateShiftWidth(width,height);
+
+
+
+    px = coordinatex;
+    py = coordinatey;
+
+    std::cout << "position: " << px << "," << py << " width: " << titleWidth;
+
+    std::cout << "shift: " << x_shift;
+    std::cout << "new position: " << (px + x_shift) - 5;
+    timer.start();
+    HBITMAP bitmap = takeScreenshot(titleWidth-titleWidth/5, 40, (px-x_shift)-5, py - 5);
+    timer.stop();
+    timer.print("take screenshot");
+
+
+    timer.start();
+    std::string file_name_to_send = "relicTitleScreenshot.bmp";
+    LPCTSTR file_name = file_name_to_send.c_str();
+    SaveHBITMAPToFile(bitmap, file_name);
+    timer.stop();
+    timer.print("saving to file");
+    DeleteObject(bitmap);
+
+    timer.start();
+    std::string path = "relicTitleScreenshot";
+    int error = convertBMPtoPNG(path);
+
+    myAssert(error != 0, "Error converting bmp to png");
+
+    cv::Mat img = cv::imread("relicTitleScreenshot.png");
+    if (img.empty()) {
+        std::cerr << "Failed to load image.\n";
+        exit(-1);
+    }
+    timer.stop();
+    timer.print("converting bmp to png");
+
+
+    std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
+
+    std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
+
+    RelicInfo relic = FetchRelicItemPrices(relicParsed);
+
+    return relic;
+
+
+
+}
+
+
+
+
 
 bool arePricesEmpty(std::map<std::string, ItemDetails>& itemPrices) {
 

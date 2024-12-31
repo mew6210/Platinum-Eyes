@@ -38,3 +38,4 @@ ItemDetails fetchItemPrice(const std::string& item);
 std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
 std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
 RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api);
+RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api);

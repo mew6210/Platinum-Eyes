@@ -226,14 +226,13 @@ void checkKeyPressed(AppState state) {
 
 
 
-            for (auto& price : state.currentRelic.items) {
+            if (state.currentRelic.relicPrice == 0.0) {
+                state.currentRelic = readItemsFromRelicTitleTesseractShifted(state.tesseractApi);
 
-                std::cout << "Name: " << std::get<0>(price);
-                std::cout << " percentages: " << std::get<1>(price);
-                std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
-                std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
             }
-            std::cout << "Average relic price: " << state.currentRelic.relicPrice;
+            printRelic(state.currentRelic);
+
+
             state.itemDisplayFlag = ITEMTYPE_relicItems;
             
 

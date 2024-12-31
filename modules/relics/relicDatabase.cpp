@@ -545,3 +545,17 @@ RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO 
 
 
 }
+
+void printRelic(RelicInfo& relic) {
+
+    std::cout << "Relic name: " << relic.name;
+    for (auto& price : relic.items) {
+
+        std::cout << "Name: " << std::get<0>(price);
+        std::cout << " percentages: " << std::get<1>(price);
+        std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
+        std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
+    }
+    std::cout << "Average relic price: " << relic.relicPrice;
+
+}

@@ -9,3 +9,4 @@ RelicInfo FetchRelicItemPrices(std::string relic);
 std::string rarityToString(Rarity::level r);
 std::string relicMenuTitleStringToRelicString(std::string& s);
 void loadRelicDatabase();
+void printRelic(RelicInfo& relic);
