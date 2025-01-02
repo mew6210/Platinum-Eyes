@@ -1,13 +1,5 @@
-﻿# CMakeList.txt: projekt CMake dla elementu warframe_tool, dołącz źródło i zdefiniuj
-# tutaj logikę specyficzną dla projektu.
-#
+﻿
 cmake_minimum_required (VERSION 3.8)
-
-# Włącz przeładowywanie kodu XAML na gorąco dla kompilatorów MSVC, jeśli jest to obsługiwane.
-if (POLICY CMP0141)
-  cmake_policy(SET CMP0141 NEW)
-  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
-endif()
 
 project ("Platinum_Eyes")
 
@@ -15,8 +7,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(SERVER_SCRIPT ${CMAKE_SOURCE_DIR}/ocrserver.py)
 set(SERVER_SCRIPT_DESTINATION ${CMAKE_BINARY_DIR}/ocrserver.py)
-set(TESSERACT_TRAINING_ENG ${CMAKE_SOURCE_DIR}/eng.traineddata)
-set(TESSERACT_TRAINING_ENG_DESTINATION ${CMAKE_BINARY_DIR}/eng.traineddata)
+set(TESSERACT_TRAINING_ENG ${CMAKE_SOURCE_DIR}/eng_fast.traineddata)
+set(TESSERACT_TRAINING_ENG_DESTINATION ${CMAKE_BINARY_DIR}/eng_fast.traineddata)
 
 set(FONT ${CMAKE_SOURCE_DIR}/fonts/Lexend-Regular.ttf)
 set(FONT_DESTINATION ${CMAKE_BINARY_DIR}/fonts/Lexend-Regular.ttf)
@@ -106,4 +98,3 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 endif()
 
-# TODO: Dodaj testy i zainstaluj elementy docelowe w razie potrzeby.

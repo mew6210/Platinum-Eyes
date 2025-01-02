@@ -481,12 +481,18 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     timer.stop();
     timer.print("converting bmp to png");
 
-
+    timer.start();
     std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
+    timer.stop();
+    timer.print("reading relic title");
+
 
     std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
    
+    timer.start();
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
+    timer.stop();
+    timer.print("reading relic title");
 
     return relic;
 
@@ -699,7 +705,7 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract
 int tesseractInit(tesseract::TessBaseAPI& api, ToolConfig& config) {
 
     if (config["ocrType"] == "tesseract") {
-        if (api.Init(nullptr, "eng")) {
+        if (api.Init(nullptr, "eng_fast")) {
             std::cerr << "Could not initialize Tesseract.\n";
             return 1;
         }
