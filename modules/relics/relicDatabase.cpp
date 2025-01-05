@@ -51,8 +51,215 @@ void replaceAmps(std::string& s) {
         s.replace(pos, 5, "&");
 }
 
+bool shouldUpdateDatabase() {
+    //todo: ill do it later
+    return true;
+}
+
+void fetchRelicTable() {
+
+    std::ifstream inputFile("droptable-raw.html");
+    if (!inputFile.is_open()) {
+        std::cerr << "Error opening input file!" << std::endl;
+        exit(1);
+    }
+    std::ofstream outputFile("relictable.html");
+    if (!outputFile.is_open()) {
+        std::cerr << "Error creating output file!" << std::endl;
+        exit(0);
+    }
+
+    std::string line = "";
+    bool read_flag = false;
+    bool close_flag = false;
+    while (std::getline(inputFile, line)) {
+
+        if (line == "<h3 id=\"relicRewards\">Relics:</h3>") {
+            read_flag = true;
+            continue;
+        
+        } 
+        if (line == "<h3 id=\"keyRewards\">Keys:</h3>") {
+            read_flag = false;
+            close_flag = true;
+        } 
+            
+        
+        if (read_flag) {
+            outputFile << line << "\n";
+        }
+        if (close_flag) {
+            break;  
+        }
+
+
+
+    }
+    inputFile.close();
+    outputFile.close();
+
+
+
+}
+
+struct Date {
+
+    int day;
+    int month;
+    int year;
+
+
+};
+
+int monthToInt(std::string s) {
+
+    if (s == "January") {
+        return 1;
+    }
+    if (s == "February") {
+        return 2;
+    }
+    if (s == "March") {
+        return 3;
+    }
+    if (s == "April") {
+        return 4;
+    }
+    if (s == "May") {
+        return 5;
+    }
+    if (s == "June") {
+        return 6;
+    }
+    if (s == "July") {
+        return 7;
+    }
+    if (s == "August") {
+        return 8;
+    }
+    if (s == "September") {
+        return 9;
+    }
+    if (s == "October") {
+        return 10;
+    }
+    if (s == "November") {
+        return 11;
+    }
+    if (s == "December") {
+        return 12;
+    }
+    
+    return -1;
+
+
+}
+
+
+Date stringToDate(std::string s) {
+
+    std::stringstream ss(s);
+
+    std::string word;
+
+    std::vector<std::string> words;
+
+    while (getline(ss, word, ' ')) {
+        words.push_back(word);
+    }
+
+    words[1].pop_back();
+    for (auto& word : words) {
+        std::cout << "word: " << word << "\n";
+    }
+
+    int day = std::stoi(words[0]);
+    int month = monthToInt(words[1]);
+    int year = std::stoi(words[2]);
+
+
+
+
+
+
+    return Date{day,month,year};
+
+}
+
+
+Date getNewestUpdateDate() {
+
+    Date updateDate;
+
+    std::ifstream inputFile("droptable-raw.html");
+
+    std::string line = "";
+    bool close_flag = false;
+    bool read_flag = false;
+    std::string date_string = "";
+    while (getline(inputFile, line)) {
+
+        if (line == "<p><b>Last Update:</b> ") 
+        {
+            read_flag = true;
+            continue;
+        }
+        if (read_flag) {
+            date_string = line;
+            break;
+        }
+        
+    }
+
+    inputFile.close();
+
+    updateDate = stringToDate(date_string);
+
+
+    return updateDate;
+
+}
+
+
+
+
+void updateDatabase() {
+
+    std::ofstream of("droptable-raw.html", std::ios::binary);
+    cpr::Response r = cpr::Download(of, cpr::Url{ "https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html" });
+    std::cout << "http status code = " << r.status_code << std::endl << std::endl;
+    of.close();
+    if (r.status_code == 200) {
+        Date droptable_raw_date=getNewestUpdateDate();
+
+
+
+        fetchRelicTable();
+        parseRelicData();
+    }
+    else {
+        std::cout << "Couldn't download raw html droptable\n";
+        std::cout << "Status code: " << r.status_code << "\n";
+        exit(0);
+    }
+   
+    
+    std::remove("droptable-raw.html");
+
+
+    
+
+
+}
+
+
 
 void loadRelicDatabase() {
+
+    if (shouldUpdateDatabase) {
+        updateDatabase();
+    }
+
 
     std::ifstream txtDatabase;
     std::ifstream htmlDatabase;
