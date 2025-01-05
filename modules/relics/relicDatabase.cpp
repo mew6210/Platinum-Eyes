@@ -51,8 +51,36 @@ void replaceAmps(std::string& s) {
         s.replace(pos, 5, "&");
 }
 
+bool doesDatabaseExist() {
+
+    std::ifstream txtDatabase;
+    std::ifstream htmlDatabase;
+    txtDatabase.open("relictable.txt");
+    htmlDatabase.open("relictable.html");
+
+
+    if (!txtDatabase || !htmlDatabase) {
+        txtDatabase.close();
+        htmlDatabase.close();
+        return false;
+    }
+    else {
+        txtDatabase.close();
+        htmlDatabase.close();
+        return true;
+    }
+  
+}
+
+
+
 bool shouldUpdateDatabase() {
-    //todo: ill do it later
+    
+    if (!doesDatabaseExist) return true;
+
+
+
+
     return true;
 }
 
@@ -261,24 +289,8 @@ void loadRelicDatabase() {
     }
 
 
-    std::ifstream txtDatabase;
-    std::ifstream htmlDatabase;
-    
 
-    txtDatabase.open("relictable.txt");
-    htmlDatabase.open("relictable.html");
 
-    
-
-    if (!txtDatabase) {
-        
-        if (!htmlDatabase) {
-            std::cout << "Missing relic database(html)";
-            exit(-1);
-        }
-        std::cout << "Parsing relic database(html)\n";
-        parseRelicData();
-    }
 
 }
 
