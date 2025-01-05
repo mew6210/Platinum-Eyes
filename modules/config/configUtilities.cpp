@@ -250,7 +250,19 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "fontSize") {
             configFile << "12";
         }
-
+        else if (configProperty == "data_LastTimeLaunched") {
+            configFile << "0 0 0";
+        }
+        else if (configProperty == "data_LatestUpdate") {
+            configFile << "0 0 0";
+        }
+        else if (configProperty == "updatingType") {
+            configFile << "Once per day";
+        }
+    
+    
+    
+    
 
 
 

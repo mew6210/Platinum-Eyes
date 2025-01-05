@@ -1,6 +1,6 @@
 #include "relics.h"
 #include <regex>
-
+#include <ctime>
 
 
 std::vector<std::string> explode(const std::string& s, const char& c)
@@ -43,6 +43,130 @@ std::pair<std::string,std::string> readRelicItem(std::string& line,int& cursor) 
 }
 
 
+int monthToInt(std::string s) {
+
+    if (s == "January") {
+        return 1;
+    }
+    if (s == "February") {
+        return 2;
+    }
+    if (s == "March") {
+        return 3;
+    }
+    if (s == "April") {
+        return 4;
+    }
+    if (s == "May") {
+        return 5;
+    }
+    if (s == "June") {
+        return 6;
+    }
+    if (s == "July") {
+        return 7;
+    }
+    if (s == "August") {
+        return 8;
+    }
+    if (s == "September") {
+        return 9;
+    }
+    if (s == "October") {
+        return 10;
+    }
+    if (s == "November") {
+        return 11;
+    }
+    if (s == "December") {
+        return 12;
+    }
+
+    return -1;
+
+
+}
+
+struct Date {
+
+    int day;
+    int month;
+    int year;
+
+    bool operator<(const Date& other) const {
+        if (year != other.year) {
+            return year < other.year;
+        }
+        if (month != other.month) {
+            return month < other.month;
+        }
+        return day < other.day;
+    }
+
+    // Overload > operator
+    bool operator>(const Date& other) const {
+        if (year != other.year) {
+            return year > other.year;
+        }
+        if (month != other.month) {
+            return month > other.month;
+        }
+        return day > other.day;
+    }
+
+};
+
+
+
+
+Date getCurrentDate() {
+
+    std::time_t currentTime = std::time(nullptr);
+    std::tm* const dateInfo = std::localtime(&currentTime);
+
+    return Date{ dateInfo->tm_mday,(dateInfo->tm_mon) + 1,1900+(dateInfo->tm_year) };
+}
+
+
+Date stringToDate(std::string s) {
+
+    std::stringstream ss(s);
+
+    std::string word;
+
+    std::vector<std::string> words;
+
+    while (getline(ss, word, ' ')) {
+        words.push_back(word);
+    }
+
+    if (words[1].back() == ',') {
+        words[1].pop_back();
+    }
+
+
+    int day = std::stoi(words[0]);
+    int month = -1;
+    if (words[1].length() > 3) {
+        month = monthToInt(words[1]);
+    }
+    else {
+        month = std::stoi(words[1]);
+    }
+
+    int year = std::stoi(words[2]);
+
+
+
+
+
+
+    return Date{ day,month,year };
+
+}
+
+
+
 void replaceAmps(std::string& s) {
 
     int pos = s.find("&amp;");
@@ -73,15 +197,60 @@ bool doesDatabaseExist() {
 }
 
 
+bool is_first_launch(ToolConfig& config) {
 
-bool shouldUpdateDatabase() {
+    if (config["data_LastTimeLaunched"] == "0 0 0" && config["data_LatestUpdate"] == "0 0 0") {
+        std::cout << "first launch";
+        return true;
     
-    if (!doesDatabaseExist) return true;
+    } 
+    else return false;
+
+
+}
+
+bool checkUpdatingType(ToolConfig& config) {
+
+    std::string updatingType = config["updatingType"];
+
+
+    if (updatingType == "Never") {
+        return false;
+    }
+    if (updatingType == "Once per day") {
+
+        if (stringToDate(config["data_LastTimeLaunched"]) < getCurrentDate()) {
+            std::cout << "new day!\n";
+            return true;
+        }
+        else {
+            std::cout << "same day\n";
+            return false;
+        }
 
 
 
-
+    }
+    if (updatingType == "Each Launch") {
+        return true;
+    }
     return true;
+
+
+}
+
+
+
+
+
+bool shouldUpdateDatabase(ToolConfig& config) {
+    
+    if (is_first_launch(config)) return true;
+    if (!doesDatabaseExist()) return true;
+    if (checkUpdatingType(config)) return true;
+
+
+    return false;
 }
 
 void fetchRelicTable() {
@@ -130,89 +299,7 @@ void fetchRelicTable() {
 
 }
 
-struct Date {
 
-    int day;
-    int month;
-    int year;
-
-
-};
-
-int monthToInt(std::string s) {
-
-    if (s == "January") {
-        return 1;
-    }
-    if (s == "February") {
-        return 2;
-    }
-    if (s == "March") {
-        return 3;
-    }
-    if (s == "April") {
-        return 4;
-    }
-    if (s == "May") {
-        return 5;
-    }
-    if (s == "June") {
-        return 6;
-    }
-    if (s == "July") {
-        return 7;
-    }
-    if (s == "August") {
-        return 8;
-    }
-    if (s == "September") {
-        return 9;
-    }
-    if (s == "October") {
-        return 10;
-    }
-    if (s == "November") {
-        return 11;
-    }
-    if (s == "December") {
-        return 12;
-    }
-    
-    return -1;
-
-
-}
-
-
-Date stringToDate(std::string s) {
-
-    std::stringstream ss(s);
-
-    std::string word;
-
-    std::vector<std::string> words;
-
-    while (getline(ss, word, ' ')) {
-        words.push_back(word);
-    }
-
-    words[1].pop_back();
-    for (auto& word : words) {
-        std::cout << "word: " << word << "\n";
-    }
-
-    int day = std::stoi(words[0]);
-    int month = monthToInt(words[1]);
-    int year = std::stoi(words[2]);
-
-
-
-
-
-
-    return Date{day,month,year};
-
-}
 
 
 Date getNewestUpdateDate() {
@@ -249,21 +336,34 @@ Date getNewestUpdateDate() {
 }
 
 
+std::string dateToString(Date& date) {
+    std::string currentTimeString = std::to_string(date.day) + " " + std::to_string(date.month) + " " + std::to_string(date.year);
 
+    return currentTimeString;
+}
 
-void updateDatabase() {
+void updateDatabase(ToolConfig& config) {
 
+    Date currentDate = getCurrentDate();
+    Date latestUpdateRecorded = stringToDate(config["data_LatestUpdate"]);
     std::ofstream of("droptable-raw.html", std::ios::binary);
     cpr::Response r = cpr::Download(of, cpr::Url{ "https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html" });
     std::cout << "http status code = " << r.status_code << std::endl << std::endl;
     of.close();
     if (r.status_code == 200) {
         Date droptable_raw_date=getNewestUpdateDate();
+        
 
+        config.setPropertyValue("data_LatestUpdate", dateToString(droptable_raw_date));
 
-
-        fetchRelicTable();
-        parseRelicData();
+        if (latestUpdateRecorded < droptable_raw_date) {
+            std::cout << "new update, downloading" << "\n";
+            fetchRelicTable();
+            parseRelicData();
+        }
+        else {
+            std::cout << "Relic database is up to date!\n";
+        }
     }
     else {
         std::cout << "Couldn't download raw html droptable\n";
@@ -271,27 +371,31 @@ void updateDatabase() {
         exit(0);
     }
    
-    
+    rewriteConfigFile(config);
     std::remove("droptable-raw.html");
-
-
-    
 
 
 }
 
+void updateCurrentDate(ToolConfig& config) {
 
 
-void loadRelicDatabase() {
+    Date currentDate = getCurrentDate();
 
-    if (shouldUpdateDatabase) {
-        updateDatabase();
+    config.setPropertyValue("data_LastTimeLaunched", dateToString(currentDate));
+    rewriteConfigFile(config);
+}
+
+
+void loadRelicDatabase(ToolConfig& config) {
+
+    if (shouldUpdateDatabase(config)) {
+        updateDatabase(config);
     }
 
 
 
-
-
+    updateCurrentDate(config);
 }
 
 
