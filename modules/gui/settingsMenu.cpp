@@ -20,6 +20,20 @@ void configParameter(std::string& s,int counter,const char* label) {
 }
 
 
+void comboParameter(std::string& s1,const char* label,static const char* options[],int itemsCount) {
+	
+	static int selecteditem = 0;
+	s1 = options[selecteditem];
+	
+	ImGui::Text("%s: ",label);
+	ImGui::SameLine();
+	bool check = ImGui::Combo(label, &selecteditem, options, itemsCount);
+	if (check)
+	{
+		s1 = options[selecteditem];
+	}
+}
+
 
 struct rightPane {
 	std::string description;
@@ -77,17 +91,25 @@ void fontsSettings(std::string& s1, std::string& s2) {
 
 }
 
+void itemDatabaseSettings(std::string& s1) {
+	static const char* options[]{ "Once per day","Always","Never" };
+	comboParameter(s1,"updating type",options,IM_ARRAYSIZE(options));
+
+
+
+}
+
 
 
 struct settingsStructure{
-	static const int length = 5;
-	std::vector<std::string> leftPanes = {"Ocr configuration","Screenshot parameters","Window sizes","Keybindings","Fonts"};
+	static const int length = 6;
+	std::vector<std::string> leftPanes = {"Ocr configuration","Screenshot parameters","Window sizes","Keybindings","Fonts","Item Database"};
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>> ocrServer;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>> keyBindings;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> fonts;
-
+	std::pair < std::string, std::function<void(std::string& s1)>> itemDatabase;
 
 };
 
@@ -122,6 +144,11 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 		structure.fonts= 
 			std::pair<std::string, std::function<void(std::string& s1, std::string& s2)>>
 			("All about fonts, fontFile is your path to the .tff file in fonts folder. \nfontSize is the size of the font u want to have", fontsSettings);
+
+		structure.itemDatabase=
+			std::pair<std::string, std::function<void(std::string& s1)>>
+			("Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet."
+				, itemDatabaseSettings);
 
 
 		should = 0;
@@ -162,7 +189,8 @@ void showSettingsMenu(bool* p_open,AppState state)
 
 	static const std::string  fontFileForRevert= newConfig["fontFile"];
 	static const std::string  fontSizeForRevert = newConfig["fontSize"];
-	
+
+	static const std::string  updatingTypeForRevert= newConfig["updatingType"];
 
 
 
@@ -187,6 +215,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static std::string  fontFile= newConfig["fontFile"];
 	static std::string  fontSize= newConfig["fontSize"];
 
+	static std::string updatingType = newConfig["updatingType"];
 	myAssert(structure.length == structure.leftPanes.size(), "length and length of descriptions in settings structure doesnt match");
 	appendToSettingsStructure(should, structure, state);
 
@@ -237,6 +266,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 					case 2: ImGui::TextWrapped(structure.windowSizes.first.c_str()); break;
 					case 3: ImGui::TextWrapped(structure.keyBindings.first.c_str()); break;
 					case 4: ImGui::TextWrapped(structure.fonts.first.c_str()); break;
+					case 5: ImGui::TextWrapped(structure.itemDatabase.first.c_str()); break;
 						
 						
 						//ImGui::TextWrapped(structure.rightPanes[selected].description.data());
@@ -253,6 +283,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 					case 2: structure.windowSizes.second(sfmlSize, imguiSize); break;
 					case 3: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); break;
 					case 4: structure.fonts.second(fontFile, fontSize); break;
+					case 5: structure.itemDatabase.second(updatingType); break;
 
 						//structure.rightPanes[selected].details(newConfig);
 
@@ -283,7 +314,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 				keyBind_ReadRelicTitle = keyBind_ReadRelicTitleForRevert;
 				fontFile = fontFileForRevert;
 				fontSize = fontSizeForRevert;
-
+				updatingType = updatingTypeForRevert;
 
 
 
@@ -311,7 +342,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 				newConfig.setPropertyValue("keyBind_ReadRelicTitle", keyBind_ReadRelicTitle);
 				newConfig.setPropertyValue("fontFile", fontFile);
 				newConfig.setPropertyValue("fontSize", fontSize);
-
+				newConfig.setPropertyValue("updatingType", updatingType);
 
 
 
