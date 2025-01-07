@@ -178,21 +178,11 @@ void replaceAmps(std::string& s) {
 bool doesDatabaseExist() {
 
     std::ifstream txtDatabase;
-    std::ifstream htmlDatabase;
-    txtDatabase.open("relictable.txt");
-    htmlDatabase.open("relictable.html");
+    
+    txtDatabase.open("relictable_lith.txt");
 
+    return txtDatabase.is_open();
 
-    if (!txtDatabase || !htmlDatabase) {
-        txtDatabase.close();
-        htmlDatabase.close();
-        return false;
-    }
-    else {
-        txtDatabase.close();
-        htmlDatabase.close();
-        return true;
-    }
   
 }
 
@@ -242,15 +232,18 @@ bool checkUpdatingType(ToolConfig& config) {
 
 
 
-
-bool shouldUpdateDatabase(ToolConfig& config) {
+//first is if it should update, and second is how it should be updated
+//if its false, then it should check the recency of the update, if true, then the update should be forced no matter what
+std::pair<bool,bool> shouldUpdateDatabase(ToolConfig& config) {
     
-    if (is_first_launch(config)) return true;
-    if (!doesDatabaseExist()) return true;
-    if (checkUpdatingType(config)) return true;
+    
+
+    if (is_first_launch(config)) return std::pair<bool,bool>(true,true);
+    if (!doesDatabaseExist()) return std::pair<bool,bool>(true,true);
+    if (checkUpdatingType(config)) return std::pair<bool,bool>(true,false);
 
 
-    return false;
+    return std::pair<bool,bool>(false,false);
 }
 
 void fetchRelicTable() {
@@ -342,13 +335,13 @@ std::string dateToString(Date& date) {
     return currentTimeString;
 }
 
-void updateDatabase(ToolConfig& config) {
+void updateDatabase(ToolConfig& config,bool forced) {
 
     Date currentDate = getCurrentDate();
     Date latestUpdateRecorded = stringToDate(config["data_LatestUpdate"]);
     std::ofstream of("droptable-raw.html", std::ios::binary);
     cpr::Response r = cpr::Download(of, cpr::Url{ "https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html" });
-    std::cout << "http status code = " << r.status_code << std::endl << std::endl;
+    
     of.close();
     if (r.status_code == 200) {
         Date droptable_raw_date=getNewestUpdateDate();
@@ -357,9 +350,17 @@ void updateDatabase(ToolConfig& config) {
         config.setPropertyValue("data_LatestUpdate", dateToString(droptable_raw_date));
 
         if (latestUpdateRecorded < droptable_raw_date) {
-            std::cout << "new update, downloading" << "\n";
+            std::cout << "New update, downloading..." << "\n";
             fetchRelicTable();
             parseRelicData();
+            std::remove("relictable.html");
+
+        }
+        else if (forced == true) {
+            std::cout << "New update forced, downloading..." << "\n";
+            fetchRelicTable();
+            parseRelicData();
+            std::remove("relictable.html");
         }
         else {
             std::cout << "Relic database is up to date!\n";
@@ -389,13 +390,54 @@ void updateCurrentDate(ToolConfig& config) {
 
 void loadRelicDatabase(ToolConfig& config) {
 
-    if (shouldUpdateDatabase(config)) {
-        updateDatabase(config);
+    std::pair<bool, bool> updateOrders = shouldUpdateDatabase(config);
+
+    if (updateOrders.first) {
+        updateDatabase(config,updateOrders.second);
     }
 
 
 
     updateCurrentDate(config);
+}
+
+
+#define RELICTYPE_Lith 1
+#define RELICTYPE_Meso 2
+#define RELICTYPE_Neo 3
+#define RELICTYPE_Axi 4
+
+
+
+int determineRelicType(std::string& relicname) {
+
+    if (relicname.find("Lith") != std::string::npos) {
+        return RELICTYPE_Lith;
+
+    }
+    if (relicname.find("Meso") != std::string::npos) {
+        return RELICTYPE_Meso;
+    }
+    if (relicname.find("Neo") != std::string::npos) {
+        return RELICTYPE_Neo;
+    }
+    if (relicname.find("Axi") != std::string::npos) {
+        return RELICTYPE_Axi;
+    }
+    return -1;
+}
+
+
+void writeToRelicFile(std::ofstream& outputFile,std::string& relicname,std::string& line,int& cursor) {
+    outputFile << relicname << "\n";
+    std::pair<std::string, std::string> item = readRelicItem(line, cursor);
+    outputFile << "\t" << item.first << "---" << item.second << "\n";
+
+    for (int i = 0; i < 5; i++) {
+
+        item = readRelicItem(line, cursor);
+        outputFile << "\t" << item.first << "---" << item.second << "\n";
+    }
 }
 
 
@@ -409,15 +451,41 @@ int parseRelicData() {
     }
 
     // Output file to save parsed data
-    std::ofstream outputFile("relictable.txt");
-    if (!outputFile.is_open()) {
+    std::ofstream outputFile_others("relictable_others.txt");
+    if (!outputFile_others.is_open()) {
         std::cerr << "Error creating output file!" << std::endl;
         return 1;
     }
+    std::ofstream outputFileLith("relictable_lith.txt");
+    if (!outputFileLith.is_open()) {
+        std::cerr << "Error creating output file!" << std::endl;
+        return 1;
+    }
+    std::ofstream outputFileMeso("relictable_meso.txt");
+    if (!outputFileMeso.is_open()) {
+        std::cerr << "Error creating output file!" << std::endl;
+        return 1;
+    }
+    std::ofstream outputFileNeo("relictable_neo.txt");
+    if (!outputFileNeo.is_open()) {
+        std::cerr << "Error creating output file!" << std::endl;
+        return 1;
+    }
+    std::ofstream outputFileAxi("relictable_axi.txt");
+    if (!outputFileAxi.is_open()) {
+        std::cerr << "Error creating output file!" << std::endl;
+        return 1;
+    }
+    std::ofstream outputFile;
+
+
+
     std::vector<int> howMany;
     std::string line = "";
     std::vector < std::pair < std::string, std::string>> items;
     while (getline(inputFile,line)) {
+        int relictype = 0;
+        
         replaceAmps(line);
         int cursor = 1;
         if (line.starts_with("    <tr class=")) continue;
@@ -429,8 +497,10 @@ int parseRelicData() {
 
             std::string relicname = line.substr(cursor, relicnamepos - cursor);
             cursor += relicname.size();
-            outputFile << relicname<<"\n";
             
+
+            relictype = determineRelicType(relicname);
+
             /*
             int item1start = line.find("td", cursor);
             item1start += 3;
@@ -439,14 +509,18 @@ int parseRelicData() {
             std::string item1 = line.substr(cursor, item1end - item1start);
             std::cout << item1<<"\n";
             */
-            std::pair<std::string, std::string> item = readRelicItem(line, cursor);
-            outputFile << "\t" << item.first << "---" << item.second << "\n";
 
-            for (int i = 0; i < 5; i++) {
+            switch (relictype) {
+            case RELICTYPE_Lith: writeToRelicFile(outputFileLith, relicname, line, cursor); break;
+            case RELICTYPE_Meso: writeToRelicFile(outputFileMeso, relicname, line, cursor); break;
+            case RELICTYPE_Neo: writeToRelicFile(outputFileNeo, relicname, line, cursor); break;
+            case RELICTYPE_Axi: writeToRelicFile(outputFileAxi,relicname,line,cursor); break;
+            case -1: writeToRelicFile(outputFile_others,relicname,line,cursor); break;
 
-                item = readRelicItem(line, cursor);
-                outputFile << "\t" << item.first << "---" << item.second << "\n";
             }
+            
+
+            
 
 
         }
@@ -457,7 +531,12 @@ int parseRelicData() {
 
 
     inputFile.close();
-    outputFile.close();
+    outputFile_others.close();
+    outputFileLith.close();
+    outputFileMeso.close();
+    outputFileNeo.close();
+    outputFileAxi.close();
+
     return 0;
 }
 
@@ -466,22 +545,39 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
 
     std::array<std::string, 6> arr;
 
-    std::ifstream inputFile("relictable.txt");
-    if (!inputFile.is_open()) {
-        std::cerr << "Error opening input file!" << std::endl;
-        exit(-1);
+    std::ifstream inputFile;
+
+
+    int relictype = determineRelicType(relic);
+    
+
+    switch (relictype) {
+    case RELICTYPE_Lith:inputFile.open("relictable_lith.txt"); break;
+    case RELICTYPE_Meso:inputFile.open("relictable_meso.txt"); break;
+    case RELICTYPE_Neo:inputFile.open("relictable_neo.txt"); break;
+    case RELICTYPE_Axi:inputFile.open("relictable_axi.txt"); break;
+    case -1:inputFile.open("relictable_others.txt"); break;
     }
+
+    if (!inputFile.is_open()) {
+        std::cerr << "Error creating output file!" << std::endl;
+        exit(1);
+    }
+
     std::string line = "";
     int i = 0;
     int counter = 1;
     bool save = false;
+    int line_counter = 1;
+    Timer timer = Timer();
+    timer.start();
     while (std::getline(inputFile, line)) {
 
         if (line == relic) {
             save = true;
             continue;
         }
-        
+        //if (save == false && line_counter % 7 != 1) continue;
 
 
         if (save == true&&counter!=7) {
@@ -494,8 +590,10 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
         if (counter == 7)break;
            
         
-
+        line_counter++;
     }
+    timer.stop();
+    timer.print("The loop");
 
     return arr;
 
@@ -720,7 +818,7 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
     if (s == "") {
         return "nullRelic";
     }
-
+    
     std::vector<std::string> words;
 
     while (std::getline(ss, word, ' ')) {
@@ -818,7 +916,8 @@ RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO 
 
     std::vector<std::future<std::pair<std::string, ItemDetails>>> futures;
 
-
+    Timer timer = Timer();
+    timer.start();
     for (auto& item : preparedItems) {
         if (item == "") continue;
         if (item == "forma_blueprint") continue;
@@ -840,6 +939,8 @@ RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO 
         auto result = future.get();
         results.insert(result);
     }
+    timer.stop();
+    timer.print("fetching items from warframe market");
 
     std::vector<std::tuple<std::string, float, ItemDetails>> appendedInfo;
 
