@@ -3,14 +3,14 @@
 
 
 
-
-
+//should be included in configproperties[] in platinumEyes.h
 const std::vector<std::string> ocrConfigNames = {
 	"ocrType",
 	"ocrIp",
 	"ocrPort"
 };
 
+//should be included in configproperties[] in platinumEyes.h
 const std::vector<std::string> screenshotParametersNames = {
 	"screenShotFilePath",
 	"coordinatesOfScreenShotCenter",
@@ -18,13 +18,14 @@ const std::vector<std::string> screenshotParametersNames = {
 	"screenShotHeight"
 };
 
+//should be included in configproperties[] in platinumEyes.h
 const std::vector<std::string> windowSizesNames = {
 	"sfmlSize",
 	"imguiSize"
 };
 
 
-
+//should be included in configproperties[] in platinumEyes.h
 const std::vector<std::string> keyBindNames = {
 	"keyBind_ReadItemsFromScreen",
 	"keyBind_EscapeProgram",
@@ -35,15 +36,25 @@ const std::vector<std::string> keyBindNames = {
 	"keyBind_ReadRelicTitle"
 };
 
-
+//should be included in configproperties[] in platinumEyes.h
 const std::vector<std::string> fontNames = {
 	"fontFile",
 	"fontSize"
 };
 
+//should be included in configproperties[] in platinumEyes.h
+const std::vector<std::string> dataNames = {
+	"data_LastTimeLaunched",
+	"data_LatestUpdate"
+};
+
+//should be included in configproperties[] in platinumEyes.h
+const std::vector<std::string> databaseNames = {
+
+	"updatingType"
 
 
-
+};
 
 
 bool contains(std::vector<std::string> targets, std::vector<std::string> differences);

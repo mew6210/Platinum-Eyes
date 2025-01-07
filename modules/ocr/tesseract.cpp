@@ -467,7 +467,6 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     timer.print("saving to file");
     DeleteObject(bitmap);
 
-    timer.start();
     std::string path = "relicTitleScreenshot";
     int error = convertBMPtoPNG(path);
 
@@ -478,8 +477,6 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
         std::cerr << "Failed to load image.\n";
         exit(-1);
     }
-    timer.stop();
-    timer.print("converting bmp to png");
 
     timer.start();
     std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
@@ -492,7 +489,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     timer.start();
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
     timer.stop();
-    timer.print("reading relic title");
+    timer.print("looking for relic in a database");
 
     return relic;
 
@@ -553,7 +550,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     timer.print("saving to file");
     DeleteObject(bitmap);
 
-    timer.start();
+
     std::string path = "relicTitleScreenshot";
     int error = convertBMPtoPNG(path);
 
@@ -564,8 +561,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
         std::cerr << "Failed to load image.\n";
         exit(-1);
     }
-    timer.stop();
-    timer.print("converting bmp to png");
+
 
 
     std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);

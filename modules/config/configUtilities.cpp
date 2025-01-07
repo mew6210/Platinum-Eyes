@@ -156,14 +156,8 @@ namespace screenShotParams{
 
 bool checkIfConfigFileExists() {
 
-    std::ifstream file;
-
-    file.open(CONFIG_FILENAME);
-
-    if (file) return true;
-    else return false;
-
-
+    std::ifstream file(CONFIG_FILENAME);
+    return file.is_open();
 
 }
 
@@ -256,7 +250,19 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "fontSize") {
             configFile << "12";
         }
-
+        else if (configProperty == "data_LastTimeLaunched") {
+            configFile << "0 0 0";
+        }
+        else if (configProperty == "data_LatestUpdate") {
+            configFile << "0 0 0";
+        }
+        else if (configProperty == "updatingType") {
+            configFile << "Once per day";
+        }
+    
+    
+    
+    
 
 
 
@@ -317,7 +323,7 @@ ToolConfig readConfigFile() {
         resolveConfigLine(toolConfig, line, it);
         it += 1;
     }
-
+    configFile.close();
     return toolConfig;
 
 
@@ -336,6 +342,8 @@ void copyConfigToOldFile() {
          fileCopy << line << "\n";
 
      }
+     fileCurrent.close();
+     fileCopy.close();
 
 }
 
@@ -353,6 +361,7 @@ void rewriteConfigFile(ToolConfig& config) {
 
 
     }
+    configFile.close();
 
 
 

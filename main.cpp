@@ -15,7 +15,7 @@ int main()
     }
 
     ToolConfig toolConfig = readConfigFile();
-    loadRelicDatabase();
+    loadRelicDatabase(toolConfig);
     tesseract::TessBaseAPI tesseractapi;
     int ocrType = tesseractInit(tesseractapi,toolConfig);
 
