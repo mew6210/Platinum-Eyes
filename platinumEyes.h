@@ -318,6 +318,7 @@ struct AppState {
 	bool& itemDisplayFlag;
 	RelicInfo& currentRelic;
 	bool& shouldUpdateFonts;
+	std::vector<std::string>& allAvalibleItems;
 
 
 	AppState(
@@ -335,9 +336,10 @@ struct AppState {
 		bool& sri,
 		bool& idf,
 		RelicInfo& cr,
-		bool& suf
+		bool& suf,
+		std::vector<std::string> aai
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf) {};
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai) {};
 
 };
 

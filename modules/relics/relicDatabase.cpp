@@ -441,6 +441,76 @@ void writeToRelicFile(std::ofstream& outputFile,std::string& relicname,std::stri
 }
 
 
+std::vector<std::string> loadAllAvalibleItemsToVector() {
+
+    std::vector<std::string> allItems = {};
+
+    std::ifstream inputFile("allItemsFile.txt");
+
+    std::string line = "";
+
+    while (getline(inputFile, line)) {
+
+        trim(line);
+        allItems.push_back(line);
+    }
+
+
+    return allItems;
+
+}
+
+
+
+void processAllItemsFromTypeFile(std::ifstream& typeFile,std::vector<std::string>& allItems,std::ofstream& outputFile) {
+
+    std::string line = "";
+
+    while (getline(typeFile, line)) {
+
+        if (line.starts_with("\t")) {
+
+            std::vector<std::string> words = explode(line, '---' );
+
+            trim(words[0]);
+            if (std::find(allItems.begin(), allItems.end(), words[0]) == allItems.end()) {
+                
+                allItems.push_back(words[0]);
+                outputFile << words[0] << "\n";
+            }
+            else continue;
+              
+
+
+        }
+
+    }
+
+
+
+}
+
+
+void parseAllItemsToFile(std::ifstream& lithFile, std::ifstream& mesoFile, std::ifstream& NeoFile, std::ifstream& AxiFile) {
+    
+    std::vector<std::string> alreadyReadItems;
+
+    std::ofstream allItemsFile("allItemsFile.txt");
+
+
+    processAllItemsFromTypeFile(lithFile,alreadyReadItems,allItemsFile);
+    processAllItemsFromTypeFile(mesoFile,alreadyReadItems,allItemsFile);
+    processAllItemsFromTypeFile(NeoFile,alreadyReadItems,allItemsFile);
+    processAllItemsFromTypeFile(AxiFile,alreadyReadItems,allItemsFile);
+
+
+    allItemsFile.close();
+
+
+}
+
+
+
 
 int parseRelicData() {
     // Input HTML-like file
@@ -528,6 +598,8 @@ int parseRelicData() {
         
     }
 
+    
+    
 
 
     inputFile.close();
@@ -536,6 +608,45 @@ int parseRelicData() {
     outputFileMeso.close();
     outputFileNeo.close();
     outputFileAxi.close();
+
+
+    std::ifstream inputFileLith("relictable_lith.txt");
+    if (!inputFileLith.is_open()) {
+        std::cerr << "Error opening input file!" << std::endl;
+        return 1;
+    }
+    std::ifstream inputFileMeso("relictable_meso.txt");
+    if (!inputFileMeso.is_open()) {
+        std::cerr << "Error opening input file!" << std::endl;
+        return 1;
+    }
+    std::ifstream inputFileNeo("relictable_neo.txt");
+    if (!inputFileNeo.is_open()) {
+        std::cerr << "Error opening input file!" << std::endl;
+        return 1;
+    }
+    std::ifstream inputFileAxi("relictable_axi.txt");
+    if (!inputFileAxi.is_open()) {
+        std::cerr << "Error opening input file!" << std::endl;
+        return 1;
+    }
+
+
+
+
+    parseAllItemsToFile(inputFileLith,
+        inputFileMeso,
+        inputFileNeo,
+        inputFileAxi
+    );
+
+    inputFileLith.close();
+    inputFileMeso.close();
+    inputFileNeo.close();
+    inputFileAxi.close();
+
+
+
 
     return 0;
 }
