@@ -46,6 +46,7 @@ int main()
     bool shouldReSizeImGui = false;
     bool itemDisplayFlag = ITEMTYPE_fissureItems;
     bool shouldUpdateFonts = false;
+    allAvalibleItems;
     AppState state(
         currentFissureItems,
         toolConfig,
@@ -66,7 +67,7 @@ int main()
     );
     
 
-
+    state;
     customizeWindow(window,state.sfmlSize);
     setImGuiStyle(state.config);
 

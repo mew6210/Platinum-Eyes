@@ -337,7 +337,7 @@ struct AppState {
 		bool& idf,
 		RelicInfo& cr,
 		bool& suf,
-		std::vector<std::string> aai
+		std::vector<std::string>& aai
 
 	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai) {};
 

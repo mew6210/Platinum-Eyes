@@ -473,10 +473,19 @@ void processAllItemsFromTypeFile(std::ifstream& typeFile,std::vector<std::string
             std::vector<std::string> words = explode(line, '---' );
 
             trim(words[0]);
-            if (std::find(allItems.begin(), allItems.end(), words[0]) == allItems.end()) {
+
+            std::string newstring = replaceChar(words[0], ' ', "_");
+            //replaceAnds(newstring);
+            for (auto& x : newstring) {
+                x = tolower(x);
+            }
+
+
+            if (std::find(allItems.begin(), allItems.end(), newstring) == allItems.end()) {
                 
-                allItems.push_back(words[0]);
-                outputFile << words[0] << "\n";
+
+                allItems.push_back(newstring);
+                outputFile << newstring << "\n";
             }
             else continue;
               
