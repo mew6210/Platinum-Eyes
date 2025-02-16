@@ -9,7 +9,7 @@ std::map<std::string, ItemDetails> readItemsFromScreen(AppState state) {
 
 
 	if (state.ocrType == OCR_tesseract) {
-		items = readItemsFromScreenTesseract(state.config, state.tesseractApi);
+		items = readItemsFromScreenTesseract(state);
 	}
 	
 	else {
@@ -26,7 +26,7 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState
 
 
 	if (state.ocrType == OCR_tesseract) {
-		items = readItemsFromScreenWithoutScreenShotTesseract(state.config, state.tesseractApi);
+		items = readItemsFromScreenWithoutScreenShotTesseract(state);
 	}
 
 	else {

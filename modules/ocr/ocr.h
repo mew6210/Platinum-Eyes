@@ -2,6 +2,14 @@
 #include "../../platinumEyes.h"
 
 
+namespace fuzzy_threshold {
+	const int THRESHOLD_LOW = 5;
+	const int THRESHOLD_MEDIUM = 10;
+	const int THRESHOLD_HIGH = 20;
+};
+
+
+
 BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
 
 HBITMAP takeScreenshot(int imageWidth = 1200, int imageHeight = 800, int offsetX = 200, int offsetY = 200);
@@ -26,10 +34,10 @@ std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, Ite
 int convertBMPtoPNG(std::string& path);
 std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api, bool showImage);
 std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api, size_t itemCount);
-std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& config, tesseract::TessBaseAPI& api);
+std::map<std::string, ItemDetails> readItemsFromScreenTesseract(AppState state);
 std::map<std::string, ItemDetails> readItemsFromScreen(AppState state);
 
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(ToolConfig& config, tesseract::TessBaseAPI& api);
+std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(AppState state);
 std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state);
 int tesseractInit(tesseract::TessBaseAPI& api, ToolConfig& config);
 
@@ -39,3 +47,10 @@ std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path, bo
 std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
 RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api);
 RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api);
+
+
+int checkIfItemsAreValid(std::vector<std::string>& items, std::vector<std::string>& allItems);
+
+
+
+void fixItems(std::vector<std::string>& items, std::vector<std::string>& allItems);

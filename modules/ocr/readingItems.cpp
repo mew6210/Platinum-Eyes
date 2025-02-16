@@ -1,6 +1,159 @@
 #include "ocr.h"
 
 
+int levenshtein_distance(const std::string& str1, const std::string& str2) {
+    int len_str1 = str1.length();
+    int len_str2 = str2.length();
+
+    // Create a 2D matrix to store distances
+    std::vector<std::vector<int>> matrix(len_str1 + 1, std::vector<int>(len_str2 + 1));
+
+    // Initialize the matrix with the base case values
+    for (int i = 0; i <= len_str1; ++i) {
+        matrix[i][0] = i;
+    }
+    for (int j = 0; j <= len_str2; ++j) {
+        matrix[0][j] = j;
+    }
+
+    // Compute the Levenshtein distance
+    for (int i = 1; i <= len_str1; ++i) {
+        for (int j = 1; j <= len_str2; ++j) {
+            int cost = (str1[i - 1] == str2[j - 1]) ? 0 : 1;
+            matrix[i][j] = std::min({ matrix[i - 1][j] + 1,        // Deletion
+                                matrix[i][j - 1] + 1,        // Insertion
+                                matrix[i - 1][j - 1] + cost  // Substitution
+                });
+        }
+    }
+
+    return matrix[len_str1][len_str2];
+}
+
+// Function for fuzzy search
+std::vector<std::pair<std::string, int>> fuzzy_search(const std::string& query, const std::vector<std::string>& string_list, int threshold = 3) {
+    std::vector<std::pair<std::string, int>> results;
+
+    for (const auto& str : string_list) {
+        int distance = levenshtein_distance(query, str);
+        if (distance <= threshold) {  // If distance is within the threshold, it's a match
+            results.push_back(std::make_pair(str, distance));
+        }
+    }
+
+    return results;
+}
+
+
+
+
+int levenshtein_distance_weighted(const std::string& str1, const std::string& str2, int end_weight = 2, int begin_weight = 2) {
+    int len_str1 = str1.length();
+    int len_str2 = str2.length();
+
+    // Create a 2D matrix to store distances
+    std::vector<std::vector<int>> matrix(len_str1 + 1, std::vector<int>(len_str2 + 1));
+
+    // Initialize the matrix with the base case values
+    for (int i = 0; i <= len_str1; ++i) {
+        matrix[i][0] = i * (i == len_str1 ? end_weight : begin_weight);
+    }
+    for (int j = 0; j <= len_str2; ++j) {
+        matrix[0][j] = j * (j == len_str2 ? end_weight : begin_weight);
+    }
+
+    // Compute the Levenshtein distance
+    for (int i = 1; i <= len_str1; ++i) {
+        for (int j = 1; j <= len_str2; ++j) {
+            int cost = (str1[i - 1] == str2[j - 1]) ? 0 : 1;
+            int del_cost = matrix[i - 1][j] + (i == len_str1 ? end_weight : 1);
+            int ins_cost = matrix[i][j - 1] + (j == len_str2 ? end_weight : 1);
+            matrix[i][j] = std::min({ del_cost, ins_cost, matrix[i - 1][j - 1] + cost });
+        }
+    }
+
+    return matrix[len_str1][len_str2];
+}
+
+
+
+std::vector<std::pair<std::string, int>> fuzzy_search_weighted(const std::string& query, const std::vector<std::string>& string_list, int threshold = 3, int end_weight = 2, int begin_weight = 2) {
+    std::vector<std::pair<std::string, int>> results;
+
+    for (const auto& str : string_list) {
+        int distance = levenshtein_distance_weighted(query, str, end_weight, begin_weight);
+        if (distance <= threshold) {
+            results.push_back(std::make_pair(str, distance));
+        }
+    }
+
+    return results;
+}
+
+
+
+
+int checkIfItemsAreValid(std::vector<std::string>& items, std::vector<std::string>& allItems) {
+
+    std::vector<int> distances;
+    for (const auto& item : items) {
+        std::vector<std::pair<std::string, int>> fuzzySearchResults = fuzzy_search(item, allItems, 10);
+
+        
+        if (!fuzzySearchResults.empty()) {
+            auto minElement = std::min_element(fuzzySearchResults.begin(), fuzzySearchResults.end(),
+                [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+                    return a.second < b.second;
+                });
+            distances.push_back(minElement->second);
+        }
+        else {
+            std::cout << "No results found for item: " << item << '\n';
+        }
+        
+    }
+    int lowThresholdCounter = 0;
+    for (const auto& distance : distances) {
+        if (distance <= fuzzy_threshold::THRESHOLD_LOW) lowThresholdCounter++;
+    }
+
+
+
+    return lowThresholdCounter;
+}
+
+
+void fixItems(std::vector<std::string>& items, std::vector<std::string>& allItems) {
+
+    for (auto& item : items) {
+        std::vector<std::pair<std::string, int>> fuzzySearchResults = fuzzy_search_weighted(item, allItems, fuzzy_threshold::THRESHOLD_MEDIUM);
+
+        std::sort(fuzzySearchResults.begin(), fuzzySearchResults.end(), [](auto& left, auto& right) {
+            return left.second < right.second;
+            });
+
+
+
+        if (!fuzzySearchResults.empty()) {
+            auto minElement = std::min_element(fuzzySearchResults.begin(), fuzzySearchResults.end(),
+                [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+                    return a.second < b.second;
+                });
+
+            item = minElement->first;
+            
+
+        }
+        else {
+            std::cout << "Couldnt fix item: " << item << "\n";
+        }
+
+        
+
+        
+    }
+}
+
 
 
 void replaceAnds(std::string& s) {

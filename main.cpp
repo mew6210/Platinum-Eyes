@@ -13,13 +13,17 @@ int main()
         std::cout << "Config file successfully created. There are still some things that have to be configured, check the settings button and look for '---' parameters, they need to be filled out. \nFor tips check github repo.\n";
 
     }
-
+    Timer timer = Timer();
     ToolConfig toolConfig = readConfigFile();
     loadRelicDatabase(toolConfig);
+  
+
+
+    std::vector<std::string> allAvalibleItems = loadAllAvalibleItemsToVector();
+
     tesseract::TessBaseAPI tesseractapi;
     int ocrType = tesseractInit(tesseractapi,toolConfig);
 
-    Timer timer = Timer();
     timer.start();
 
     timer.stop();
@@ -42,6 +46,7 @@ int main()
     bool shouldReSizeImGui = false;
     bool itemDisplayFlag = ITEMTYPE_fissureItems;
     bool shouldUpdateFonts = false;
+    allAvalibleItems;
     AppState state(
         currentFissureItems,
         toolConfig,
@@ -57,11 +62,12 @@ int main()
         shouldReSizeImGui,
         itemDisplayFlag,
         currentRelic,
-        shouldUpdateFonts
+        shouldUpdateFonts,
+        allAvalibleItems
     );
     
 
-
+    state;
     customizeWindow(window,state.sfmlSize);
     setImGuiStyle(state.config);
 

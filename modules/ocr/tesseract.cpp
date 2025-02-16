@@ -370,8 +370,20 @@ std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool s
 
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
     //cv::threshold(image, image, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+    //cv::adaptiveThreshold(image, image, 255, cv::AdaptiveThresholdTypes::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 11, 2);
+    
 
-    //cv::Canny(image, image, 100, 200);
+
+    //dialate,erode
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
+    cv::dilate(image, image, kernel, cv::Point(-1, -1), 1);
+    cv::erode(image, image, kernel, cv::Point(-1, -1), 1);
+
+    //median blur
+    cv::medianBlur(image, image, 3);
+    cv::bitwise_not(image, image);
+    cv::threshold(image, image, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+    //cv::Canny(image, image, 100, 300);
 
 
 
@@ -596,19 +608,19 @@ bool arePricesEmpty(std::map<std::string, ItemDetails>& itemPrices) {
 
 
 
-std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& config, tesseract::TessBaseAPI& api) {
+std::map<std::string, ItemDetails> readItemsFromScreenTesseract(AppState state) {
 
     Timer timer;
 
     size_t itemCount = 4;
 
-    std::pair<int, int > coordinates = stringToIntPair(config["coordinatesOfScreenShotCenter"]);
+    std::pair<int, int > coordinates = stringToIntPair(state.config["coordinatesOfScreenShotCenter"]);
     Point p;
     p.x = coordinates.first;
     p.y = coordinates.second;
 
     timer.start();
-    HBITMAP bitmap = takeScreenshot(stoi(config["screenShotWidth"]), stoi(config["screenShotHeight"]), p);
+    HBITMAP bitmap = takeScreenshot(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]), p);
     timer.stop();
     timer.print("take screenshot");
 
@@ -616,7 +628,7 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& conf
 
 
     timer.start();
-    std::string file_name_to_send = config["screenShotFilePath"];
+    std::string file_name_to_send = state.config["screenShotFilePath"];
     LPCTSTR file_name = file_name_to_send.c_str();
     SaveHBITMAPToFile(bitmap, file_name);
     timer.stop();
@@ -626,26 +638,30 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& conf
 
 
 
-    std::vector<std::string> items = readScreenShotTesseract(api,itemCount);
+    std::vector<std::string> items = readScreenShotTesseract(state.tesseractApi, itemCount);
 
     timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
     timer.stop();
     timer.print("preparing items");
 
-  
+
+    while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
+        itemCount--;
+        items = readScreenShotTesseract(state.tesseractApi, itemCount);
+        preparedItems = prepareItems(items);
+    }
+
+    fixItems(preparedItems, state.allAvalibleItems);
+
+    preparedItems = prepareItems(preparedItems);
+
     timer.start();
     std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
 
-
-    while (arePricesEmpty(itemPrices) && itemCount != 0) {
-        itemCount--;
-        items = readScreenShotTesseract(api, itemCount);
-        preparedItems = prepareItems(items);
-        itemPrices = getItemPricesMap(preparedItems);
-    }
     timer.stop();
     timer.print("fetching item prices");
+
 
     itemPrices = prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
@@ -659,12 +675,12 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(ToolConfig& conf
 
 
 
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(ToolConfig& config, tesseract::TessBaseAPI& api) {
+std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(AppState state) {
 
    
     Timer timer=Timer();
     size_t itemCount = 4;
-    std::vector<std::string> items = readScreenShotTesseract(api,itemCount);
+    std::vector<std::string> items = readScreenShotTesseract(state.tesseractApi,itemCount);
 
     timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
@@ -672,15 +688,19 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract
     timer.print("preparing items");
 
 
+    while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
+        itemCount--;
+        items = readScreenShotTesseract(state.tesseractApi, itemCount);
+        preparedItems = prepareItems(items);
+    }
+    
+    fixItems(preparedItems, state.allAvalibleItems);
+
+    preparedItems = prepareItems(preparedItems);
+
     timer.start();
     std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
 
-    while (arePricesEmpty(itemPrices) && itemCount!=0) {
-        itemCount--;
-        items = readScreenShotTesseract(api, itemCount);
-        preparedItems = prepareItems(items);
-        itemPrices = getItemPricesMap(preparedItems);
-    }
     timer.stop();
     timer.print("fetching item prices");
 

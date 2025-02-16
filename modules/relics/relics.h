@@ -10,3 +10,4 @@ std::string rarityToString(Rarity::level r);
 std::string relicMenuTitleStringToRelicString(std::string& s);
 void loadRelicDatabase(ToolConfig& config);
 void printRelic(RelicInfo& relic);
+std::vector<std::string> loadAllAvalibleItemsToVector();
