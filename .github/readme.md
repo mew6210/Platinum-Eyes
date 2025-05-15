@@ -38,7 +38,7 @@ Platinum Eyes can be split into 4 parts.
      It is platform specific, for windows it uses winapi, and for linux it will be using x11.
      
 - ### 🏭 Ocr
-     Image is then processed by ocr, to determine what words are in the picture. **There are 2 ocr's implemented in the app.** [More on that here](#ocr-selection).\
+     Image is then processed by ocr, to determine what words are in the picture.\
      They are also easily the heaviest part of the app, tesseract's training data alone is 20mb.
      
 - ### 🚚 Fetch data
