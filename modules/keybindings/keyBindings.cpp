@@ -191,14 +191,14 @@ void checkKeyPressed(AppState state) {
             
         case KB_ReadItemsFromScreen:
         {
-            state.items = readItemsFromScreen(state);
+            state.items = readFissureRewardsScreen(state);
             state.itemDisplayFlag = ITEMTYPE_fissureItems;
         }
             break;
         case KB_EscapeProgram: state.running = false;
             break;
         case KB_ReadPreviousItems: { 
-            state.items = readItemsFromScreenWithoutScreenShot(state);             
+            state.items = readPreviousFissureRewardsScreen(state);
             state.itemDisplayFlag = ITEMTYPE_fissureItems;
 
             }

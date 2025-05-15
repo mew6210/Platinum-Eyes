@@ -148,7 +148,7 @@ std::string removeShortWords(std::string& item) {
 
 
 
-std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,size_t itemCount) {
+std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount) {
     Timer timer = Timer();
     timer.start();
     std::string path = "screenshot";
@@ -164,7 +164,7 @@ std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api,siz
     timer.stop();
     timer.print("converting bmp to png");
 
-    
+        
     switch (itemCount) {
     case 4:
     {
@@ -608,7 +608,7 @@ bool arePricesEmpty(std::map<std::string, ItemDetails>& itemPrices) {
 
 
 
-std::map<std::string, ItemDetails> readItemsFromScreenTesseract(AppState state) {
+std::map<std::string, ItemDetails> readFissureRewardsScreen(AppState state) {
 
     Timer timer;
 
@@ -638,7 +638,7 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(AppState state) 
 
 
 
-    std::vector<std::string> items = readScreenShotTesseract(state.tesseractApi, itemCount);
+    std::vector<std::string> items = readFissureItems(state.tesseractApi, itemCount);
 
     timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
@@ -648,7 +648,7 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(AppState state) 
 
     while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
         itemCount--;
-        items = readScreenShotTesseract(state.tesseractApi, itemCount);
+        items = readFissureItems(state.tesseractApi, itemCount);
         preparedItems = prepareItems(items);
     }
 
@@ -675,22 +675,22 @@ std::map<std::string, ItemDetails> readItemsFromScreenTesseract(AppState state) 
 
 
 
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(AppState state) {
+std::map<std::string, ItemDetails> readPreviousFissureRewardsScreen(AppState state) {
 
    
     Timer timer=Timer();
     size_t itemCount = 4;
-    std::vector<std::string> items = readScreenShotTesseract(state.tesseractApi,itemCount);
+    std::vector<std::string> items = readFissureItems(state.tesseractApi,itemCount);
 
     timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
     timer.stop();
     timer.print("preparing items");
-
+    
 
     while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
         itemCount--;
-        items = readScreenShotTesseract(state.tesseractApi, itemCount);
+        items = readFissureItems(state.tesseractApi, itemCount);
         preparedItems = prepareItems(items);
     }
     

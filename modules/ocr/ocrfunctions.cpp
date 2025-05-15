@@ -2,31 +2,6 @@
 
 
 
-std::map<std::string, ItemDetails> readItemsFromScreen(AppState state) {
-
-
-	std::map<std::string, ItemDetails> items;
-	items = readItemsFromScreenTesseract(state);        //toDeleteLater
-	
-	return items;
-	
-}
-
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state) {
-
-
-	std::map<std::string, ItemDetails> items;
-	items = readItemsFromScreenWithoutScreenShotTesseract(state);       //toDeleteLater
-
-
-	return items;
-
-}
-
-
-
-
-
 HBITMAP takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY) {
 
 

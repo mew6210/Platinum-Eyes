@@ -31,12 +31,12 @@ std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, Ite
 //for example 'niceItems.bmp' should be passed as 'niceItems'
 int convertBMPtoPNG(std::string& path);
 std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api, bool showImage);
-std::vector<std::string> readScreenShotTesseract(tesseract::TessBaseAPI& api, size_t itemCount);
-std::map<std::string, ItemDetails> readItemsFromScreenTesseract(AppState state);
-std::map<std::string, ItemDetails> readItemsFromScreen(AppState state);
+std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api, size_t itemCount);
+std::map<std::string, ItemDetails> readFissureRewardsScreen(AppState state);
 
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(AppState state);
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state);
+
+std::map<std::string, ItemDetails> readPreviousFissureRewardsScreen(AppState state);
+
 void tesseractInit(tesseract::TessBaseAPI& api);
 
 
