@@ -40,13 +40,6 @@ struct rightPane {
 	std::function<void(ToolConfig&)> details;
 };
 
-void ocrServerSettings(std::string& s1, std::string& s2,std::string& s3) {
-
-	
-	configParameter(s1,1,"ocrIp");
-	configParameter(s2,2,"ocrPort");
-	configParameter(s3,3, "ocrType");
-}
 
 
 void screenshotSettings(std::string& s1, std::string& s2, std::string& s3, std::string& s4) {
@@ -102,9 +95,9 @@ void itemDatabaseSettings(std::string& s1) {
 
 
 struct settingsStructure{
-	static const int length = 6;
-	std::vector<std::string> leftPanes = {"Ocr configuration","Screenshot parameters","Window sizes","Keybindings","Fonts","Item Database"};
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>> ocrServer;
+	static const int length = 5;
+	std::vector<std::string> leftPanes = {"Screenshot parameters","Window sizes","Keybindings","Fonts","Item Database"};
+	
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
 	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>> keyBindings;
@@ -118,11 +111,7 @@ void appendToSettingsStructure(int& should, settingsStructure& structure, AppSta
 
 	if (should) {
 		
-		structure.ocrServer = 
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2,std::string& s3)>>
-			("Configure settings related to reading things from screen. \n"
-			"For a normal user there is nothing to do here.",ocrServerSettings);
-			
+		
 
 
 		structure.screenShotParameters=
@@ -170,9 +159,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 	static int should = 1;
 	static ToolConfig newConfig = state.config;
 
-	static const std::string  ocrTypeForRevert = newConfig["ocrType"];
-	static const std::string  ocrIpForRevert = newConfig["ocrIp"];
-	static const std::string  ocrPortForRevert = newConfig["ocrPort"];
+	
 	static const std::string  screenShotFilePathForRevert = newConfig["screenShotFilePath"];
 	static const std::string  coordinatesOfScreenShotCenterForRevert = newConfig["coordinatesOfScreenShotCenter"];
 	static const std::string  screenShotWidthForRevert = newConfig["screenShotWidth"];
@@ -195,9 +182,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 
 
 
-	static std::string  ocrType = newConfig["ocrType"];
-	static std::string  ocrIp = newConfig["ocrIp"];
-	static std::string  ocrPort=newConfig["ocrPort"];
+	
 	static std::string  screenShotFilePath=newConfig["screenShotFilePath"];
 	static std::string  coordinatesOfScreenShotCenter=newConfig["coordinatesOfScreenShotCenter"];
 	static std::string  screenShotWidth=newConfig["screenShotWidth"];
@@ -261,12 +246,12 @@ void showSettingsMenu(bool* p_open,AppState state)
 				{
 
 					switch (selected) {
-					case 0: ImGui::TextWrapped(structure.ocrServer.first.c_str()); break;
-					case 1: ImGui::TextWrapped(structure.screenShotParameters.first.c_str()); break;
-					case 2: ImGui::TextWrapped(structure.windowSizes.first.c_str()); break;
-					case 3: ImGui::TextWrapped(structure.keyBindings.first.c_str()); break;
-					case 4: ImGui::TextWrapped(structure.fonts.first.c_str()); break;
-					case 5: ImGui::TextWrapped(structure.itemDatabase.first.c_str()); break;
+					
+					case 0: ImGui::TextWrapped(structure.screenShotParameters.first.c_str()); break;
+					case 1: ImGui::TextWrapped(structure.windowSizes.first.c_str()); break;
+					case 2: ImGui::TextWrapped(structure.keyBindings.first.c_str()); break;
+					case 3: ImGui::TextWrapped(structure.fonts.first.c_str()); break;
+					case 4: ImGui::TextWrapped(structure.itemDatabase.first.c_str()); break;
 						
 						
 						//ImGui::TextWrapped(structure.rightPanes[selected].description.data());
@@ -278,12 +263,12 @@ void showSettingsMenu(bool* p_open,AppState state)
 				{
 					switch (selected) {
 
-					case 0: structure.ocrServer.second(ocrIp,ocrPort,ocrType); break;
-					case 1: structure.screenShotParameters.second(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); break;
-					case 2: structure.windowSizes.second(sfmlSize, imguiSize); break;
-					case 3: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); break;
-					case 4: structure.fonts.second(fontFile, fontSize); break;
-					case 5: structure.itemDatabase.second(updatingType); break;
+					
+					case 0: structure.screenShotParameters.second(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); break;
+					case 1: structure.windowSizes.second(sfmlSize, imguiSize); break;
+					case 2: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); break;
+					case 3: structure.fonts.second(fontFile, fontSize); break;
+					case 4: structure.itemDatabase.second(updatingType); break;
 
 						//structure.rightPanes[selected].details(newConfig);
 
@@ -296,9 +281,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 			
 			if (ImGui::Button("Revert")) {
 
-				ocrType = ocrTypeForRevert;
-				ocrIp = ocrIpForRevert;
-				ocrPort = ocrPortForRevert;
+
 				screenShotFilePath = screenShotFilePathForRevert;
 				coordinatesOfScreenShotCenter = coordinatesOfScreenShotCenterForRevert;
 				screenShotWidth = screenShotWidthForRevert;
@@ -323,9 +306,7 @@ void showSettingsMenu(bool* p_open,AppState state)
 			ImGui::SameLine();
 			if (ImGui::Button("Save")) {
 			
-				newConfig.setPropertyValue("ocrType", ocrType);
-				newConfig.setPropertyValue("ocrIp", ocrIp);
-				newConfig.setPropertyValue("ocrPort", ocrPort);
+
 				newConfig.setPropertyValue("screenShotFilePath", screenShotFilePath);
 				newConfig.setPropertyValue("coordinatesOfScreenShotCenter", coordinatesOfScreenShotCenter);
 				newConfig.setPropertyValue("screenShotWidth", screenShotWidth);

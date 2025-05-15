@@ -718,21 +718,18 @@ std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract
 
 
 
-int tesseractInit(tesseract::TessBaseAPI& api, ToolConfig& config) {
+void tesseractInit(tesseract::TessBaseAPI& api) {
 
-    if (config["ocrType"] == "tesseract") {
+    
         if (api.Init(nullptr, "eng_fast")) {
             std::cerr << "Could not initialize Tesseract.\n";
-            return 1;
+            exit(0);
         }
         else {
             std::cout << "Successfully initialized tesseract\n";
         }
-        return OCR_tesseract;
+        
     }
-    else {
-        return OCR_easyocr;
-    }
-    return 0;
+   
+    
 
-}

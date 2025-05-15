@@ -196,16 +196,9 @@ void fillOutConfigFile(std::ofstream& configFile) {
     for (std::string configProperty : CONFIGPROPERTIES) {
 
         configFile << configProperty << ": ";
-        if (configProperty == "ocrType") {
-            configFile << "tesseract";
-        }
-        if (configProperty == "ocrIp") {
-            configFile << "127.0.0.1";
-        }
-        else if (configProperty == "ocrPort") {
-            configFile << "5055";
-        }
-        else if (configProperty == "screenShotFilePath") {
+
+        
+        if (configProperty == "screenShotFilePath") {
             configFile << screenShotParams::getCurrentPath();
         }
         else if (configProperty == "coordinatesOfScreenShotCenter") {

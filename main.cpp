@@ -22,7 +22,7 @@ int main()
     std::vector<std::string> allAvalibleItems = loadAllAvalibleItemsToVector();
 
     tesseract::TessBaseAPI tesseractapi;
-    int ocrType = tesseractInit(tesseractapi,toolConfig);
+    tesseractInit(tesseractapi);
 
     timer.start();
 
@@ -57,7 +57,6 @@ int main()
         sfmlSize,
         imguiSize,
         settingsOpen,
-        ocrType,
         tesseractapi,
         shouldReSizeImGui,
         itemDisplayFlag,

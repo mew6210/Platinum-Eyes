@@ -30,8 +30,8 @@
 
 using json = nlohmann::json;
 #define ASSERTION_ERROR 499
-#define OCR_tesseract 1
-#define OCR_easyocr 2
+
+
 
 #define ITEMTYPE_fissureItems true
 #define ITEMTYPE_relicItems false
@@ -56,11 +56,6 @@ const int IMGUIWINDOWSIZEY = SFMLWINDOWSIZEY - 100;
 
 //should be a sum of vectors in config.h
 const std::string CONFIGPROPERTIES[] = {
-	"ocrType",
-	"ocrIp",
-	"ocrPort",
-
-
 
 	"screenShotFilePath",
 	"coordinatesOfScreenShotCenter",
@@ -312,7 +307,6 @@ struct AppState {
 	WindowParameters& sfmlSize;
 	WindowParameters& imguiSize;
 	bool& settingsVisible;
-	int& ocrType;
 	tesseract::TessBaseAPI& tesseractApi;
 	bool& shouldReSizeImGui;
 	bool& itemDisplayFlag;
@@ -331,7 +325,6 @@ struct AppState {
 		WindowParameters& sfmlS,
 		WindowParameters& imguiS,
 		bool& sv,
-		int& o,
 		tesseract::TessBaseAPI& t,
 		bool& sri,
 		bool& idf,
@@ -339,7 +332,7 @@ struct AppState {
 		bool& suf,
 		std::vector<std::string>& aai
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),ocrType(o),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai) {};
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai) {};
 
 };
 

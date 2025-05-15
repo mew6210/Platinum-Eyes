@@ -5,8 +5,6 @@ project ("Platinum_Eyes")
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SERVER_SCRIPT ${CMAKE_SOURCE_DIR}/ocrserver.py)
-set(SERVER_SCRIPT_DESTINATION ${CMAKE_BINARY_DIR}/ocrserver.py)
 set(TESSERACT_TRAINING_ENG ${CMAKE_SOURCE_DIR}/eng_fast.traineddata)
 set(TESSERACT_TRAINING_ENG_DESTINATION ${CMAKE_BINARY_DIR}/eng_fast.traineddata)
 
@@ -54,7 +52,7 @@ add_executable (
         "modules/ocr/readingItems.cpp" 
         "modules/gui/settingsMenu.cpp"
         "modules/ocr/tesseract.cpp"
-        "modules/ocr/easyocr.cpp" 
+         
         "modules/ocr/ocrfunctions.cpp" 
         "modules/gui/settingsChanges.cpp" 
         "modules/gui/settingsChanged.h" 
@@ -69,13 +67,6 @@ add_executable (
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
 
-
-add_custom_command(
-    TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${SERVER_SCRIPT} ${SERVER_SCRIPT_DESTINATION}
-    COMMENT "Copying server.py to the output directory"
-)
 
 
 add_custom_command(

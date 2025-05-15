@@ -4,13 +4,6 @@
 
 
 //should be included in configproperties[] in platinumEyes.h
-const std::vector<std::string> ocrConfigNames = {
-	"ocrType",
-	"ocrIp",
-	"ocrPort"
-};
-
-//should be included in configproperties[] in platinumEyes.h
 const std::vector<std::string> screenshotParametersNames = {
 	"screenShotFilePath",
 	"coordinatesOfScreenShotCenter",

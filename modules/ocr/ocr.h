@@ -25,8 +25,6 @@ std::string getFormatedAveragePrices(std::vector<int>& lowestPrices);
 void printItemPrices(std::map<std::string, ItemDetails>& itemPrices);
 
 
-std::map<std::string, ItemDetails> readItemsFromScreenEasyocr(ToolConfig& config);
-std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenshotEasyocr(ToolConfig& config);
 std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items);
 
 //takes in name of the file without extension, since its obvious it is .bmp to .png
@@ -39,7 +37,7 @@ std::map<std::string, ItemDetails> readItemsFromScreen(AppState state);
 
 std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShotTesseract(AppState state);
 std::map<std::string, ItemDetails> readItemsFromScreenWithoutScreenShot(AppState state);
-int tesseractInit(tesseract::TessBaseAPI& api, ToolConfig& config);
+void tesseractInit(tesseract::TessBaseAPI& api);
 
 
 ItemDetails fetchItemPrice(const std::string& item);
