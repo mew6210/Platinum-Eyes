@@ -304,10 +304,10 @@ ItemDetails fetchItemPrice(const std::string& item) {
 
     ItemDetails price = getAveragePrice(products);
 
-
+    
     if(price.lowestPrices!=std::vector<int>{0,0,0,0,0})
     determineRarity(price, data["include"]["item"]);
-
+    //TODO: should be replaced with determining rarity by percentages in warframe pc drops table
 
     return price;
 

@@ -6,3 +6,4 @@ imgui
 ImGui-SFML
 tesseract
 opencv4
+termcolor

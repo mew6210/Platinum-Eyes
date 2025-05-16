@@ -210,11 +210,11 @@ bool checkUpdatingType(ToolConfig& config) {
     if (updatingType == "Once per day") {
 
         if (stringToDate(config["data_LastTimeLaunched"]) < getCurrentDate()) {
-            std::cout << "new day!\n";
+            successLog("New day, checking for downloads");
             return true;
         }
         else {
-            std::cout << "same day\n";
+            successLog("Same day, no need to check for downloads");
             return false;
         }
 
@@ -250,12 +250,12 @@ void fetchRelicTable() {
 
     std::ifstream inputFile("droptable-raw.html");
     if (!inputFile.is_open()) {
-        std::cerr << "Error opening input file!" << std::endl;
+        errorLog("Error opening input file!");
         exit(1);
     }
     std::ofstream outputFile("relictable.html");
     if (!outputFile.is_open()) {
-        std::cerr << "Error creating output file!" << std::endl;
+        errorLog("Error opening input file!");
         exit(0);
     }
 
@@ -350,25 +350,24 @@ void updateDatabase(ToolConfig& config,bool forced) {
         config.setPropertyValue("data_LatestUpdate", dateToString(droptable_raw_date));
 
         if (latestUpdateRecorded < droptable_raw_date) {
-            std::cout << "New update, downloading..." << "\n";
+            successLog("New update, downloading...");
             fetchRelicTable();
             parseRelicData();
             std::remove("relictable.html");
 
         }
         else if (forced == true) {
-            std::cout << "New update forced, downloading..." << "\n";
+            successLog("New update forced, downloading...");
             fetchRelicTable();
             parseRelicData();
             std::remove("relictable.html");
         }
         else {
-            std::cout << "Relic database is up to date!\n";
+            successLog("Relic database is up to date!");
         }
     }
     else {
-        std::cout << "Couldn't download raw html droptable\n";
-        std::cout << "Status code: " << r.status_code << "\n";
+        errorLog("Couldn't download raw html droptable. Status code: "+r.status_code);
         exit(0);
     }
    
@@ -525,34 +524,34 @@ int parseRelicData() {
     // Input HTML-like file
     std::ifstream inputFile("relictable.html");
     if (!inputFile.is_open()) {
-        std::cerr << "Error opening input file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
 
     // Output file to save parsed data
     std::ofstream outputFile_others("relictable_others.txt");
     if (!outputFile_others.is_open()) {
-        std::cerr << "Error creating output file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ofstream outputFileLith("relictable_lith.txt");
     if (!outputFileLith.is_open()) {
-        std::cerr << "Error creating output file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ofstream outputFileMeso("relictable_meso.txt");
     if (!outputFileMeso.is_open()) {
-        std::cerr << "Error creating output file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ofstream outputFileNeo("relictable_neo.txt");
     if (!outputFileNeo.is_open()) {
-        std::cerr << "Error creating output file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ofstream outputFileAxi("relictable_axi.txt");
     if (!outputFileAxi.is_open()) {
-        std::cerr << "Error creating output file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ofstream outputFile;
@@ -621,22 +620,22 @@ int parseRelicData() {
 
     std::ifstream inputFileLith("relictable_lith.txt");
     if (!inputFileLith.is_open()) {
-        std::cerr << "Error opening input file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ifstream inputFileMeso("relictable_meso.txt");
     if (!inputFileMeso.is_open()) {
-        std::cerr << "Error opening input file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ifstream inputFileNeo("relictable_neo.txt");
     if (!inputFileNeo.is_open()) {
-        std::cerr << "Error opening input file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
     std::ifstream inputFileAxi("relictable_axi.txt");
     if (!inputFileAxi.is_open()) {
-        std::cerr << "Error opening input file!" << std::endl;
+errorLog("Error opening input file!");
         return 1;
     }
 
@@ -680,7 +679,7 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
     }
 
     if (!inputFile.is_open()) {
-        std::cerr << "Error creating output file!" << std::endl;
+errorLog("Error opening input file!");
         exit(1);
     }
 
@@ -1092,14 +1091,21 @@ RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO 
 
 void printRelic(RelicInfo& relic) {
 
-    std::cout << "Relic name: " << relic.name;
-    for (auto& price : relic.items) {
+    
+    if (relic.name != "couldnt find relic") {
 
-        std::cout << "Name: " << std::get<0>(price);
-        std::cout << " percentages: " << std::get<1>(price);
-        std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
-        std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
+
+
+        std::cout << "Relic name: " << relic.name;
+        for (auto& price : relic.items) {
+
+            std::cout << "Name: " << std::get<0>(price);
+            std::cout << " percentages: " << std::get<1>(price);
+            std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
+            std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
+        }
+        std::cout << "Average relic price: " << relic.relicPrice;
+
+
     }
-    std::cout << "Average relic price: " << relic.relicPrice;
-
 }

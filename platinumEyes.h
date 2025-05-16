@@ -36,8 +36,11 @@ using json = nlohmann::json;
 #define ITEMTYPE_fissureItems true
 #define ITEMTYPE_relicItems false
 
-void errorLog(std::string s);
-void warningLog(std::string s);
+void errorLog(const std::string& s);
+void warningLog(const std::string& s);
+void successLog(const std::string& s);
+
+
 void myAssert(bool stmt,std::string s);
 
 const std::string CONFIG_FILENAME = "tool_config.txt";
@@ -141,7 +144,7 @@ public:
 	}
 
 	void print(std::string s) {
-		std::cout << s<<": " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "milliseconds "<< std::endl;
+		std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms] " << s << std::endl;
 	}
 
 };

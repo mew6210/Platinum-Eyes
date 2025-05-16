@@ -10,7 +10,7 @@ int main()
 
     if (!checkIfConfigFileExists()) {
         createConfigFile();
-        std::cout << "Config file successfully created. There are still some things that have to be configured, check the settings button and look for '---' parameters, they need to be filled out. \nFor tips check github repo.\n";
+        successLog("Config file successfully created. There are still some things that have to be configured, check the settings button and look for '---' parameters, they need to be filled out. \nFor tips check github repo.\n");
 
     }
     Timer timer = Timer();
@@ -30,12 +30,11 @@ int main()
 
 
     registerHotkeys(toolConfig);
-
     
     WindowParameters sfmlSize = getWindowSize("sfml",toolConfig);
     WindowParameters imguiSize = getWindowSize("imgui",toolConfig);
 
-    sf::RenderWindow window(sf::VideoMode(sfmlSize.width, sfmlSize.height), "Warframe tool", sf::Style::None, sf::ContextSettings(32));
+    sf::RenderWindow window(sf::VideoMode(sfmlSize.width, sfmlSize.height), "Warframe tool", sf::Style::None);
     
     sf::Clock deltaClock;
     

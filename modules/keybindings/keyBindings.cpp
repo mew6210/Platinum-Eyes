@@ -142,10 +142,13 @@ void registerHotkeys(ToolConfig& config) {
             MOD_ALT | MOD_NOREPEAT,
             p.second.getKey()))  
         {
-            std::cout << "Succesfully registered hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
+            successLog("Successfully registered hotkey: " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
+            //std::cout << "Succesfully registered hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
         }
         else {
-            std::cout << "Failed to register hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
+            warningLog("Failed to register hotkey: " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
+            //std::cout << "Failed to register hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
+
         }
         
 
@@ -237,6 +240,7 @@ void checkKeyPressed(AppState state) {
 
 
             if (state.currentRelic.relicPrice == 0.0) {
+                warningLog("No relic name found in its designated area, shifting to right.(Maybe user is in a mission)");
                 state.currentRelic = readItemsFromRelicTitleTesseractShifted(state.tesseractApi);
 
             }

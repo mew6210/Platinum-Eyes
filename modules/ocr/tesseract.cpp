@@ -3,7 +3,7 @@
 #include <sstream>
 
 
-std::vector<std::string> itemsSmallerThan2 = { "bo" };      //all the items that are smaller in name size than 2, should probably do it programatically somehow, but ill do it later
+std::vector<std::string> itemsSmallerThan2 = { "bo" };      //all the items that are smaller in name size than 2, should probably do it programatically somehow, but ill do it later TODO
 
 
 unsigned decodeBMP(std::vector<unsigned char>& image, unsigned& w, unsigned& h, const std::vector<unsigned char>& bmp) {
@@ -76,7 +76,7 @@ int convertBMPtoPNG(std::string& path) {
     unsigned error = decodeBMP(image, w, h, bmp);
 
     if (error) {
-        std::cout << "BMP decoding error " << error << std::endl;
+        errorLog("BMP decoding error " + error);
         return 0;
     }
 
@@ -84,7 +84,8 @@ int convertBMPtoPNG(std::string& path) {
     error = lodepng::encode(png, image, w, h);
 
     if (error) {
-        std::cout << "PNG encoding error " << error << ": " << lodepng_error_text(error) << std::endl;
+        errorLog("PNG encoding error "+std::to_string(error)+": " + std::string(lodepng_error_text(error)));
+        //std::cout << "PNG encoding error " << error << ": " << lodepng_error_text(error) << std::endl;
         return 0;
     }
 
@@ -354,8 +355,10 @@ std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* pat
     //result = removeShortWords(result);
     //trim(result);
 
+    if (result != "")
+        std::cout << "Reading result: " << result << "\n";
+    else  errorLog("No text found in its designated area");
 
-    std::cout << result << "\n";
 
     return result;
 
@@ -408,7 +411,7 @@ std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool s
     trim(result);
 
 
-    std::cout <<result<< "\n";
+    std::cout <<"Reading result: -" << result << "\n";
 
     return result;
 
@@ -462,7 +465,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     px = coordinatex;
     py = coordinatey;
 
-    std::cout << "position: " << px << "," << py << " width: " << titleWidth;
+    //std::cout << "position: " << px << "," << py << " width: " << titleWidth;
 
 
     timer.start();
@@ -544,10 +547,10 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     px = coordinatex;
     py = coordinatey;
 
-    std::cout << "position: " << px << "," << py << " width: " << titleWidth;
+    //std::cout << "position: " << px << "," << py << " width: " << titleWidth;
 
-    std::cout << "shift: " << x_shift;
-    std::cout << "new position: " << (px + x_shift) - 5;
+    //std::cout << "shift: " << x_shift;
+    //std::cout << "new position: " << (px + x_shift) - 5;
     timer.start();
     HBITMAP bitmap = takeScreenshot(titleWidth-titleWidth/5, 40, (px-x_shift)-5, py - 5);
     timer.stop();
@@ -722,11 +725,11 @@ void tesseractInit(tesseract::TessBaseAPI& api) {
 
     
         if (api.Init(nullptr, "eng_fast")) {
-            std::cerr << "Could not initialize Tesseract.\n";
+            errorLog("Could not initialize tesseract");
             exit(0);
         }
         else {
-            std::cout << "Successfully initialized tesseract\n";
+            successLog("Successfully initialized tesseract");
         }
         
     }

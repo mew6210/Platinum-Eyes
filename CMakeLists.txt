@@ -24,6 +24,7 @@ find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(lodepng CONFIG REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(liblzma CONFIG REQUIRED)
+find_path(TERMCOLOR_INCLUE_DIRS "termcolor/termcolor.hpp")
 
 
 set(LIBRARIES 
@@ -69,6 +70,8 @@ add_executable (
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
+target_include_directories(${PROJECT_NAME} PRIVATE ${TERMOCOLOR_INCLUDE_DIRS})
+
 
 
 add_custom_command(

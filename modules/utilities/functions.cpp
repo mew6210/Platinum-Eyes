@@ -1,15 +1,25 @@
 #include "utilities.h"
 #include <lzma.h>
+#include <termcolor/termcolor.hpp> //coloring ui single header library. https://github.com/ikalnytskyi/termcolor
 
 
-void errorLog(std::string s) {
-    std::cout << "Error: " <<s<< "\n";
-}
 
-void warningLog(std::string s) {
-    std::cout << "Warning: " << s << "\n";
+void errorLog(const std::string& s) {
+    std::cout << "[" << termcolor::red << "-" << termcolor::reset << "] " << s << std::endl;
 
 }
+
+void warningLog(const std::string& s) {
+    std::cout << "[" << termcolor::yellow << "?" << termcolor::reset << "] " << s << std::endl;
+
+}
+
+void successLog(const std::string& s) {
+
+    std::cout << "[" << termcolor::green << "+" << termcolor::reset << "] " << s << std::endl;
+
+}
+
 
 void myAssert(bool stmt,std::string failDescription) {
 
