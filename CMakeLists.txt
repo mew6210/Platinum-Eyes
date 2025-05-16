@@ -23,6 +23,8 @@ find_package(imgui CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
 find_package(lodepng CONFIG REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(liblzma CONFIG REQUIRED)
+
 
 set(LIBRARIES 
 cpr::cpr
@@ -36,6 +38,7 @@ Dwmapi.lib
 Tesseract::libtesseract
 lodepng
 ${OpenCV_LIBS}
+liblzma::liblzma
 )
 
 
@@ -66,7 +69,6 @@ add_executable (
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
-
 
 
 add_custom_command(
