@@ -194,6 +194,7 @@ class ToolConfig {
 			return propertyValue;
 		}
 		else {
+			errorLog("Not found property in config: "+ key);
 			return "not found";
 		}
 

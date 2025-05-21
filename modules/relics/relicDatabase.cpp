@@ -147,7 +147,7 @@ Date stringToDate(std::string s) {
 
     int day = std::stoi(words[0]);
     int month = -1;
-    if (words[1].length() > 3) {
+    if (words[1].length() >= 3) {
         month = monthToInt(words[1]);
     }
     else {

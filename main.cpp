@@ -65,7 +65,6 @@ int main()
     );
     
 
-    state;
     customizeWindow(window,state.sfmlSize);
     setImGuiStyle(state.config);
 
@@ -76,7 +75,7 @@ int main()
        
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             
-            checkKeyPressed(state);
+            handleEvents(state);
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }

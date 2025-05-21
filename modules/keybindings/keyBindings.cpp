@@ -42,15 +42,6 @@ int StringToVirtualKeyCode(std::string s) {
 }
 
 
-#define KB_ReadItemsFromScreen 1
-#define KB_EscapeProgram 2
-#define KB_ReadPreviousItems 3
-#define KB_WindowVisibility 4
-#define KB_BackupConfig 5
-#define KB_ExampleItems 6
-#define KB_RelicTitleScreenshot 7
-
-
 
 std::map<int, KeyBind> keyBindings = {};
 
@@ -83,6 +74,16 @@ std::string VirtualKeyCodeToString(UCHAR virtualKey)
 }
 
 
+
+
+#define KB_ReadItemsFromScreen 1
+#define KB_EscapeProgram 2
+#define KB_ReadPreviousItems 3
+#define KB_WindowVisibility 4
+#define KB_BackupConfig 5
+#define KB_ExampleItems 6
+#define KB_RelicTitleScreenshot 7
+//keybindings are declared here
 void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings,ToolConfig& config) {
 
 
@@ -143,11 +144,9 @@ void registerHotkeys(ToolConfig& config) {
             p.second.getKey()))  
         {
             successLog("Successfully registered hotkey: " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
-            //std::cout << "Succesfully registered hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
         }
         else {
             warningLog("Failed to register hotkey: " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
-            //std::cout << "Failed to register hotkey: "<<VirtualKeyCodeToString(p.second.getKey())<<" for: "<<p.second.getDescription()<< std::endl;
 
         }
         
@@ -163,10 +162,10 @@ void unregisterHotkeys() {
 
     for (auto& p : keyBindings) {
         if (UnregisterHotKey(NULL, p.first)) {
-            std::cout << "Succesfully unregistered Alt + " << VirtualKeyCodeToString(p.second.getKey())<<"\n";
+            successLog("Succesfully unregistered Alt + " +VirtualKeyCodeToString(p.second.getKey()));
         }
         else {
-            std::cout << "Failed to unregister Alt + " << VirtualKeyCodeToString(p.second.getKey()) << "\n";
+            errorLog("Failed to unregister Alt + " + VirtualKeyCodeToString(p.second.getKey()));
         }
     }
 
@@ -176,7 +175,7 @@ void unregisterHotkeys() {
 
 
 
-void checkKeyPressed(AppState state) {
+void handleEvents(AppState state) {
     
 
     if (state.msg.message == WM_HOTKEY) {
@@ -186,7 +185,7 @@ void checkKeyPressed(AppState state) {
             std::cout << "Alt + " << VirtualKeyCodeToString(keybind.getKey())<<"\n";
         }
         catch (std::out_of_range e) {
-            std::cout << "didnt find this hotkey :3 \n";
+            std::cout << "didnt find this hotkey :3 \n";    //should never happen btw
         }
         
         //keybind logic
