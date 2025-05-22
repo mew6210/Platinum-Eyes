@@ -326,11 +326,15 @@ std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* pat
     cv::Mat image = cv::imread(path);
 
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
-    //cv::threshold(image, image, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
 
-    //cv::Canny(image, image, 100, 200);
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
+    cv::dilate(image, image, kernel, cv::Point(-1, -1), 1);
+    cv::erode(image, image, kernel, cv::Point(-1, -1), 1);
 
 
+    cv::medianBlur(image, image, 3);
+    cv::bitwise_not(image, image);
+    cv::threshold(image, image, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
 
 
     static std::string name = "aaa";
@@ -349,11 +353,7 @@ std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* pat
     std::string result = filterResults(text, charMap, mapSize);
     if (showImage)cv::imshow(name, image);
     name.append("a");
-    //result = replaceChar(result, '\n', " ");
-    //trim(result);
 
-    //result = removeShortWords(result);
-    //trim(result);
 
     if (result != "")
         std::cout << "Reading result: " << result << "\n";
@@ -448,8 +448,8 @@ std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
 
 
 RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
-
-
+    //HERE1
+    //TODO: SHOULD BE REFACTORED
     Timer timer;
 
     size_t itemCount = 4;
@@ -473,7 +473,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     timer.stop();
     timer.print("take screenshot");
 
-
+    
     timer.start();
     std::string file_name_to_send = "relicTitleScreenshot.bmp";
     LPCTSTR file_name = file_name_to_send.c_str();
@@ -492,19 +492,10 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
         std::cerr << "Failed to load image.\n";
         exit(-1);
     }
-
-    timer.start();
+    //HERE1
     std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
-    timer.stop();
-    timer.print("reading relic title");
-
-
     std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
-   
-    timer.start();
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
-    timer.stop();
-    timer.print("looking for relic in a database");
 
     return relic;
 
@@ -580,9 +571,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
 
 
     std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
-
     std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
-
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
     return relic;

@@ -930,6 +930,36 @@ float calculateRelicPrice(RelicInfo& relic) {
 }
 
 
+bool isRelicTypeString(const std::string& s) {
+
+    if (s == "Lith"
+        || s == "Meso"
+        || s == "Neo"
+        || s == "Axi"
+        || s == "Requiem"   //probably never used
+        ) {
+        return true;
+    }
+    else return false;
+
+
+}
+
+//returns -1 if the first letter is not a digit, or returns the digit if it is
+int firstLetterIsDigit(const std::string& s) {
+
+    if (std::isdigit(s[0])) {
+        return s[0] - '0';
+    }
+    
+    return -1;
+
+
+
+}
+
+
+
 std::string relicMenuTitleStringToRelicString(std::string& s) {
 
     std::stringstream ss(s);
@@ -938,36 +968,59 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
         return "nullRelic";
     }
     
+    //split read string into a vector of words
     std::vector<std::string> words;
 
     while (std::getline(ss, word, ' ')) {
-        words.push_back(word);
-    }
-  
 
+
+        //filter out useless junk
+        if (word != ""
+            && word != " "
+            && word != "\n"
+            && word != "Rewards"
+            && word != "Possible"
+            )
+        {
+            words.push_back(word);
+        }
+
+    }
+
+    //fix incorrect reading of I or O in the second word of a relic
+    if (words.size()>2)
+    {
+        if (words[2] == "Relic" && isRelicTypeString(words[0])) {
+            int firstLetterNumber = 0;
+            if ((firstLetterNumber = firstLetterIsDigit(words[1])) != -1) {
+                switch (firstLetterNumber) {
+                case 0: words[1][0] = 'O'; break;
+                case 1: words[1][0] = 'I'; break;
+                }
+
+            }
+
+        }
+    }
+    else {
+        return "weird relic things";
+    }
+
+
+
+
+    //make a vector of words into a whole word
     std::string clearedString;
 
     for (std::string& word_in_words : words) {
-
-
-        if (word_in_words != "" 
-            && word_in_words != " " 
-            && word_in_words != "\n"
-            && word_in_words !="Rewards"
-            && word_in_words !="Possible"
-            
-            ) {
             clearedString.append(word_in_words);
             clearedString.append(" ");
-
-        }
-
     }
 
     int pos = 0;
     std::string resultString = "";
 
-
+    //add braces around tier level, since thats how our file database reads it from warframe pc drops
     if ((pos = clearedString.find("Exceptional")) != -1) {
         clearedString.insert(pos, "(");
         clearedString.insert(pos + 12, ")");
@@ -993,6 +1046,11 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
         resultString = clearedString;
     }
     trim(resultString);
+
+
+    
+
+
 
 
     return resultString;
@@ -1082,6 +1140,12 @@ RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO 
     relic1.name = relic;
     relic1.relicPrice = calculateRelicPrice(relic1);
     fixRarity(relic1);
+
+    //sort relic items based on their rarity
+    //TODO: later add a possibility to sort it in the opposite way, through a setting in appstate
+    std::sort(relic1.items.begin(), relic1.items.end(), [](auto& a,auto& b) {
+        return std::get<2>(a).rarity > std::get<2>(b).rarity;
+        });
 
     return relic1;
 

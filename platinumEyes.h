@@ -98,9 +98,9 @@ const std::string CONFIGPROPERTIES[] = {
 namespace Rarity {
 
 	enum level {
-		Common,
-		Uncommon,
-		Rare,
+		Common=1,
+		Uncommon=2,
+		Rare=3,
 		Undefined = -1
 	};
 

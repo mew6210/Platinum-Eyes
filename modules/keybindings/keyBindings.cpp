@@ -82,7 +82,7 @@ std::string VirtualKeyCodeToString(UCHAR virtualKey)
 #define KB_WindowVisibility 4
 #define KB_BackupConfig 5
 #define KB_ExampleItems 6
-#define KB_RelicTitleScreenshot 7
+#define KB_ReadRelicTitle 7
 //keybindings are declared here
 void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings,ToolConfig& config) {
 
@@ -94,7 +94,7 @@ void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings,ToolConfig& co
     { KB_WindowVisibility,KeyBind(StringToVirtualKeyCode(config["keyBind_WindowVisibility"]),"Toggle window visibility") },
     { KB_BackupConfig,KeyBind(StringToVirtualKeyCode(config["keyBind_BackupConfig"]),"Save current config to copy file") },
     { KB_ExampleItems,KeyBind(StringToVirtualKeyCode(config["keyBind_ExampleItems"]),"Show example items") },
-    { KB_RelicTitleScreenshot,KeyBind(StringToVirtualKeyCode(config["keyBind_ReadRelicTitle"]),"Relic Title Screenshot")}
+    { KB_ReadRelicTitle,KeyBind(StringToVirtualKeyCode(config["keyBind_ReadRelicTitle"]),"Relic Title Screenshot")}
     };
 
 
@@ -232,7 +232,7 @@ void handleEvents(AppState state) {
 
         }
             break;
-        case KB_RelicTitleScreenshot: {
+        case KB_ReadRelicTitle: {
 
             state.currentRelic=readItemsFromRelicTitleTesseract(state.tesseractApi);
 
