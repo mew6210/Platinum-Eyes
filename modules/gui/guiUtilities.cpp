@@ -33,13 +33,13 @@ std::map<int, std::string> createIntStringMap(std::map<std::string, ItemDetails>
 
 
 
-void createItemBox(std::pair<std::string,ItemDetails> item) {
+void createItemBox(Item item) {
 
-	const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(item.first.c_str()).x;
+	const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(item.preparedName.c_str()).x;
 
 
 	ImVec4 bgColor = { 0,0,0,1 };
-	switch (item.second.rarity) {
+	switch (item.itemDetails.rarity) {
 	case Rarity::level::Common:bgColor = {189,145,119,128}; break;
 	case Rarity::level::Uncommon: bgColor = {209,208,209,128}; break;
 	case Rarity::level::Rare: bgColor = {236,225,117,128}; break;
@@ -52,12 +52,12 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 	window_flags |= ImGuiWindowFlags_MenuBar;
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-	ImGui::BeginChild(item.first.c_str(), ImVec2(TEXT_BASE_WIDTH + 50, 100), ImGuiChildFlags_Border, window_flags);
+	ImGui::BeginChild(item.preparedName.c_str(), ImVec2(TEXT_BASE_WIDTH + 50, 100), ImGuiChildFlags_Border, window_flags);
 
 	
 	if (ImGui::BeginMenuBar())
 	{
-		if (ImGui::BeginMenu(item.first.c_str()))
+		if (ImGui::BeginMenu(item.preparedName.c_str()))
 		{
 
 			ImGui::EndMenu();
@@ -71,9 +71,9 @@ void createItemBox(std::pair<std::string,ItemDetails> item) {
 	ImGui::SameLine();
 
 
-	std::string formattedPrice = std::format("{:.2f}", item.second.averagePrice); 
+	std::string formattedPrice = std::format("{:.2f}", item.itemDetails.averagePrice); 
 	ImGui::Text(formattedPrice.c_str());
-	ImGui::Text(getFormatedAveragePrices(item.second.lowestPrices).c_str());
+	ImGui::Text(getFormatedAveragePrices(item.itemDetails.lowestPrices).c_str());
 
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
@@ -145,7 +145,7 @@ void generateImGuiTable(AppState state) {
 		
 		int itemCount = state.items.size();
 
-		if (itemCount != 0&& state.items.begin()->first != "placeholder") {
+		if (itemCount != 0&& state.items[0].rawName != "placeholder") {
 
 			ImGui::Dummy(ImVec2(50.0, 0.0));
 
@@ -162,7 +162,7 @@ void generateImGuiTable(AppState state) {
 				it++;
 			}
 		}
-		else if (itemCount==1&&state.items.begin()->first=="placeholder") {
+		else if (itemCount==1&& state.items[0].rawName =="placeholder") {
 			ImGui::Text("Waiting for your input...");
 		}
 		else {

@@ -20,22 +20,22 @@ void saveScreenshotToClipboard(HBITMAP bitmap);
 std::vector<std::string> prepareItems(std::vector<std::string>&);
 std::string replaceChar(std::string s, char a, std::string b);
 ItemDetails getAveragePrice(const json& list);
-std::map<std::string, ItemDetails> getItemPricesMap(std::vector<std::string>& preparedItems);
+std::vector<Item> getItemPricesMap(std::vector<std::string>& preparedItems);
 std::string getFormatedAveragePrices(std::vector<int>& lowestPrices);
-void printItemPrices(std::map<std::string, ItemDetails>& itemPrices);
+void printItemPrices(std::vector<Item>& itemPrices);
 
 
-std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items);
+std::vector<Item> prepareItemsForRead(std::vector<Item>& items);
 
 //takes in name of the file without extension, since its obvious it is .bmp to .png
 //for example 'niceItems.bmp' should be passed as 'niceItems'
 int convertBMPtoPNG(std::string& path);
 std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api, bool showImage);
 std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api, size_t itemCount);
-std::map<std::string, ItemDetails> readFissureRewardsScreen(AppState state);
+std::vector<Item> readFissureRewardsScreen(AppState state);
 
 
-std::map<std::string, ItemDetails> readPreviousFissureRewardsScreen(AppState state);
+std::vector<Item> readPreviousFissureRewardsScreen(AppState state);
 
 void tesseractInit(tesseract::TessBaseAPI& api);
 

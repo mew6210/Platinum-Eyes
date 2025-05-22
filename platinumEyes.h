@@ -299,10 +299,35 @@ public:
 };
 
 
+class Item {
+public:
+
+	std::string preparedName = "";
+	std::string rawName = "";
+	ItemDetails itemDetails;
+
+
+
+
+	Item(std::string prepared = "Undefined", std::string raw = "undefined", ItemDetails details = ItemDetails()) {
+		preparedName = prepared;
+		rawName = raw;
+		itemDetails = details;
+	}
+	Item() : preparedName(""), rawName(""), itemDetails(ItemDetails()) {};
+
+
+
+
+};
+
+
+
+
 
 struct AppState {
 
-	std::map<std::string, ItemDetails>& items;
+	std::vector<Item>& items;
 	ToolConfig& config;
 	sf::RenderWindow& window;
 	bool& running;
@@ -320,7 +345,7 @@ struct AppState {
 
 
 	AppState(
-		std::map<std::string, ItemDetails>& i,
+		std::vector<Item>& i,
 		ToolConfig& c,
 		sf::RenderWindow& w,
 		bool& r,
@@ -342,23 +367,23 @@ struct AppState {
 
 
 
-const std::map<std::string, ItemDetails> exampleItems = {
-	std::pair<std::string,ItemDetails>("someItemName1",ItemDetails(5,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName2",ItemDetails(6,std::vector<int>({1,1,1,1,1}),Rarity::level::Uncommon)),
-	std::pair<std::string,ItemDetails>("someItemName3",ItemDetails(7,std::vector<int>({1,1,1,1,1}),Rarity::level::Rare)),
-	std::pair<std::string,ItemDetails>("someItemName4",ItemDetails(8,std::vector<int>({1,1,1,1,1}),Rarity::level::Undefined)),
-	std::pair<std::string,ItemDetails>("someItemName5",ItemDetails(9,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName6",ItemDetails(10,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName7",ItemDetails(11,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName8",ItemDetails(12,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName9",ItemDetails(13,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName10",ItemDetails(14,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName11",ItemDetails(15,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName12",ItemDetails(16,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName13",ItemDetails(17,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName14",ItemDetails(18,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName15",ItemDetails(19,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	std::pair<std::string,ItemDetails>("someItemName16",ItemDetails(20,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+const std::vector<Item> exampleItems = {
+	Item("someItemName1","someItemName1",ItemDetails(5,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName2","someItemName2",ItemDetails(6,std::vector<int>({1,1,1,1,1}),Rarity::level::Uncommon)),
+	Item("someItemName3","someItemName3",ItemDetails(7,std::vector<int>({1,1,1,1,1}),Rarity::level::Rare)),
+	Item("someItemName4","someItemName4",ItemDetails(8,std::vector<int>({1,1,1,1,1}),Rarity::level::Undefined)),
+	Item("someItemName5","someItemName5",ItemDetails(9,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName6","someItemName6",ItemDetails(10,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName7","someItemName7",ItemDetails(11,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName8","someItemName8",ItemDetails(12,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName9","someItemName9",ItemDetails(13,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName10","someItemName10",ItemDetails(14,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName11","someItemName11",ItemDetails(15,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName12","someItemName12",ItemDetails(16,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName13","someItemName13",ItemDetails(17,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName14","someItemName14",ItemDetails(18,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName15","someItemName15",ItemDetails(19,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("someItemName16","someItemName16",ItemDetails(20,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
 };
 
 

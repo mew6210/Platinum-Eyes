@@ -598,9 +598,8 @@ bool arePricesEmpty(std::map<std::string, ItemDetails>& itemPrices) {
 }
 
 
+std::vector<Item> readFissureRewardsScreen(AppState state) {
 
-
-std::map<std::string, ItemDetails> readFissureRewardsScreen(AppState state) {
 
     Timer timer;
 
@@ -649,7 +648,7 @@ std::map<std::string, ItemDetails> readFissureRewardsScreen(AppState state) {
     preparedItems = prepareItems(preparedItems);
 
     timer.start();
-    std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
+    std::vector<Item> itemPrices = getItemPricesMap(preparedItems);
 
     timer.stop();
     timer.print("fetching item prices");
@@ -667,7 +666,7 @@ std::map<std::string, ItemDetails> readFissureRewardsScreen(AppState state) {
 
 
 
-std::map<std::string, ItemDetails> readPreviousFissureRewardsScreen(AppState state) {
+std::vector<Item> readPreviousFissureRewardsScreen(AppState state) {
 
    
     Timer timer=Timer();
@@ -691,7 +690,7 @@ std::map<std::string, ItemDetails> readPreviousFissureRewardsScreen(AppState sta
     preparedItems = prepareItems(preparedItems);
 
     timer.start();
-    std::map<std::string, ItemDetails> itemPrices = getItemPricesMap(preparedItems);
+    std::vector<Item> itemPrices = getItemPricesMap(preparedItems);
 
     timer.stop();
     timer.print("fetching item prices");

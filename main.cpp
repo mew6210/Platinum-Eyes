@@ -3,9 +3,9 @@
 
 int main()
 {
+    std::vector<Item> currentFissureItems;
     
-    std::map<std::string, ItemDetails> currentFissureItems;
-    currentFissureItems.insert({"placeholder",ItemDetails()});
+    currentFissureItems.push_back(Item("placeholder","placeholder",ItemDetails()));
     RelicInfo currentRelic;
 
     if (!checkIfConfigFileExists()) {

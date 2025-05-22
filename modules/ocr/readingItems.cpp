@@ -315,11 +315,11 @@ ItemDetails fetchItemPrice(const std::string& item) {
 }
 
 
-std::map<std::string, ItemDetails> getItemPricesMap(std::vector<std::string>& preparedItems) {
+std::vector<Item> getItemPricesMap(std::vector<std::string>& preparedItems) {
 
 
-    std::map<std::string, ItemDetails> itemPrices;
-    std::vector<std::future<std::pair<std::string, ItemDetails>>> futures;
+    std::vector<Item> itemPrices;
+    std::vector<std::future<Item>> futures;
 
 
 
@@ -331,8 +331,8 @@ std::map<std::string, ItemDetails> getItemPricesMap(std::vector<std::string>& pr
 
 
 
-        futures.push_back(std::async(std::launch::async, [item]() -> std::pair<std::string, ItemDetails> {
-            return { item, fetchItemPrice(item) };
+        futures.push_back(std::async(std::launch::async, [item]() -> Item {
+            return  Item(item,item, fetchItemPrice(item)) ;     //to change later
             }
         )
         );
@@ -341,7 +341,7 @@ std::map<std::string, ItemDetails> getItemPricesMap(std::vector<std::string>& pr
 
     for (auto& future : futures) {
         auto result = future.get();
-        itemPrices.insert(result);
+        itemPrices.push_back(result);
     }
 
 
@@ -375,23 +375,21 @@ std::string getFormatedAveragePrices(std::vector<int>& lowestPrices) {
 
 
 
-void printItemPrices(std::map<std::string, ItemDetails>& itemPrices) {
+void printItemPrices(std::vector<Item>& itemPrices) {
     std::cout << "Item prices: " << std::endl;
     std::cout << "<------------------------------------------------------------------------->" << std::endl;
 
-    for (std::pair<std::string, ItemDetails> pair : itemPrices) {
+    for (Item item : itemPrices) {
 
-        ItemDetails prices = pair.second;
-        std::vector<int> lowestPrices = prices.lowestPrices;
-        float averagePrice = prices.averagePrice;
+
 
 
         std::vector<int> emptyVector = { 0,0,0,0,0 };
-        if (averagePrice == 0 && lowestPrices == emptyVector) {
-            std::cout << pair.first << ": " << "COULDNT FIND ITEM ON THE MARKET" << std::endl;
+        if (item.itemDetails.averagePrice == 0 && item.itemDetails.lowestPrices== emptyVector) {
+            std::cout << item.preparedName<< ": " << "COULDNT FIND ITEM ON THE MARKET" << std::endl;
         }
         else {
-            std::cout << pair.first << ": " << averagePrice << getFormatedAveragePrices(lowestPrices) << std::endl;
+            std::cout << item.preparedName<< ": " << item.itemDetails.averagePrice<< getFormatedAveragePrices(item.itemDetails.lowestPrices) << std::endl;
         }
 
 
@@ -401,17 +399,17 @@ void printItemPrices(std::map<std::string, ItemDetails>& itemPrices) {
 
 
 
-std::map<std::string, ItemDetails> prepareItemsForRead(std::map<std::string, ItemDetails>& items) {
+std::vector<Item> prepareItemsForRead(std::vector<Item>& items) {
 
-    std::map<std::string, ItemDetails> newList = {};
+    std::vector<Item> newList = {};
 
     for (auto& item : items) {
-        std::string newstring = replaceChar(item.first, '_', " ");
+        std::string newstring = replaceChar(item.rawName, '_', " ");
         replaceAnds(newstring);
 
 
         newstring[0] = std::toupper(newstring[0]);
-        newList.insert(std::pair<std::string, ItemDetails>(newstring, item.second));
+        newList.push_back(Item(newstring, item.rawName,item.itemDetails));
     }
 
     return newList;
