@@ -149,21 +149,15 @@ std::string removeShortWords(std::string& item) {
 
 
 
-std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount) {
+std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,std::string& fileName) {
     Timer timer = Timer();
-    timer.start();
-    std::string path = "screenshot";
-    int error = convertBMPtoPNG(path);
 
-    myAssert(error != 0, "Error converting bmp to png");
-
-    cv::Mat img = cv::imread("screenshot.png");
+    cv::Mat img = cv::imread(fileName);
     if (img.empty()) {
         std::cerr << "Failed to load image.\n";
         exit(-1);
     }
-    timer.stop();
-    timer.print("converting bmp to png");
+
 
         
     switch (itemCount) {
@@ -446,13 +440,96 @@ std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
     return { x_new, y_new, screenshot_width };
 }
 
+//filename passed with .bmp extension, in the meantime changes the fileName to .png
+void takeScreenshotAndSaveToFile(const int width, const int height,const Point p,std::string& fileName) {
+    Timer timer = Timer();
 
+    timer.start();
+    HBITMAP bitmap = takeScreenshot(width, height, p);
+    timer.stop();
+    timer.print("take screenshot");
+
+
+    timer.start();
+
+    
+    SaveHBITMAPToFile(bitmap, fileName.c_str());
+    timer.stop();
+    timer.print("saving to file");
+    DeleteObject(bitmap);
+
+    
+
+    fileName.pop_back();
+    fileName.pop_back();
+    fileName.pop_back();
+    fileName.pop_back();
+
+    int error = convertBMPtoPNG(fileName);
+
+    myAssert(error != 0, "Error converting bmp to png");
+
+    cv::Mat img = cv::imread("relicTitleScreenshot.png");
+    if (img.empty()) {
+        std::cerr << "Failed to load image.\n";
+        exit(-1);
+    }
+
+    fileName += ".png";
+
+
+
+}
+
+
+void takeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, std::string& fileName) {
+    Timer timer = Timer();
+
+    timer.start();
+    HBITMAP bitmap = takeScreenshot(width, height, px,py);
+    timer.stop();
+    timer.print("take screenshot");
+
+
+    timer.start();
+
+
+    SaveHBITMAPToFile(bitmap, fileName.c_str());
+    timer.stop();
+    timer.print("saving to file");
+    DeleteObject(bitmap);
+
+
+
+    fileName.pop_back();
+    fileName.pop_back();
+    fileName.pop_back();
+    fileName.pop_back();
+
+    int error = convertBMPtoPNG(fileName);
+
+    myAssert(error != 0, "Error converting bmp to png");
+
+    cv::Mat img = cv::imread("relicTitleScreenshot.png");
+    if (img.empty()) {
+        std::cerr << "Failed to load image.\n";
+        exit(-1);
+    }
+
+    fileName += ".png";
+
+
+
+}
+
+
+
+
+//your mom
 RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
-    //HERE1
-    //TODO: SHOULD BE REFACTORED
+
     Timer timer;
 
-    size_t itemCount = 4;
 
     int px, py;
     HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
@@ -465,35 +542,12 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     px = coordinatex;
     py = coordinatey;
 
-    //std::cout << "position: " << px << "," << py << " width: " << titleWidth;
+    std::string fileName = "relicTitleScreenshot.bmp";
+    takeScreenshotAndSaveToFile(titleWidth,40,px-5,py-5,fileName);
 
 
-    timer.start();
-    HBITMAP bitmap = takeScreenshot(titleWidth,40,px-5,py-5);
-    timer.stop();
-    timer.print("take screenshot");
 
-    
-    timer.start();
-    std::string file_name_to_send = "relicTitleScreenshot.bmp";
-    LPCTSTR file_name = file_name_to_send.c_str();
-    SaveHBITMAPToFile(bitmap, file_name);
-    timer.stop();
-    timer.print("saving to file");
-    DeleteObject(bitmap);
-
-    std::string path = "relicTitleScreenshot";
-    int error = convertBMPtoPNG(path);
-
-    myAssert(error != 0, "Error converting bmp to png");
-
-    cv::Mat img = cv::imread("relicTitleScreenshot.png");
-    if (img.empty()) {
-        std::cerr << "Failed to load image.\n";
-        exit(-1);
-    }
-    //HERE1
-    std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
+    std::string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
     std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
@@ -517,7 +571,7 @@ int calculateShiftWidth(int width, int height) {
 }
 
 
-
+//your mom
 RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
 
 
@@ -539,38 +593,14 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     py = coordinatey;
 
     //std::cout << "position: " << px << "," << py << " width: " << titleWidth;
-
     //std::cout << "shift: " << x_shift;
     //std::cout << "new position: " << (px + x_shift) - 5;
-    timer.start();
-    HBITMAP bitmap = takeScreenshot(titleWidth-titleWidth/5, 40, (px-x_shift)-5, py - 5);
-    timer.stop();
-    timer.print("take screenshot");
+    
+    std::string fileName = "relicTitleScreenshot.bmp";
+    takeScreenshotAndSaveToFile(titleWidth - titleWidth / 5,40,(px-x_shift)-5,py-5,fileName);
+   
 
-
-    timer.start();
-    std::string file_name_to_send = "relicTitleScreenshot.bmp";
-    LPCTSTR file_name = file_name_to_send.c_str();
-    SaveHBITMAPToFile(bitmap, file_name);
-    timer.stop();
-    timer.print("saving to file");
-    DeleteObject(bitmap);
-
-
-    std::string path = "relicTitleScreenshot";
-    int error = convertBMPtoPNG(path);
-
-    myAssert(error != 0, "Error converting bmp to png");
-
-    cv::Mat img = cv::imread("relicTitleScreenshot.png");
-    if (img.empty()) {
-        std::cerr << "Failed to load image.\n";
-        exit(-1);
-    }
-
-
-
-    std::string relicRead = readRelicTitleTesseract(api, "relicTitleScreenshot.png", false);
+    std::string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
     std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
@@ -598,6 +628,7 @@ bool arePricesEmpty(std::map<std::string, ItemDetails>& itemPrices) {
 }
 
 
+//your mom
 std::vector<Item> readFissureRewardsScreen(AppState state) {
 
 
@@ -610,26 +641,12 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
     p.x = coordinates.first;
     p.y = coordinates.second;
 
-    timer.start();
-    HBITMAP bitmap = takeScreenshot(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]), p);
-    timer.stop();
-    timer.print("take screenshot");
+   
+    std::string fileName = state.config["screenShotFilePath"];
+    takeScreenshotAndSaveToFile(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]),p,fileName);
 
 
-
-
-    timer.start();
-    std::string file_name_to_send = state.config["screenShotFilePath"];
-    LPCTSTR file_name = file_name_to_send.c_str();
-    SaveHBITMAPToFile(bitmap, file_name);
-    timer.stop();
-    timer.print("saving to file");
-    DeleteObject(bitmap);
-
-
-
-
-    std::vector<std::string> items = readFissureItems(state.tesseractApi, itemCount);
+    std::vector<std::string> items = readFissureItems(state.tesseractApi, itemCount,fileName);
 
     timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
@@ -639,7 +656,7 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
 
     while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
         itemCount--;
-        items = readFissureItems(state.tesseractApi, itemCount);
+        items = readFissureItems(state.tesseractApi, itemCount,fileName);
         preparedItems = prepareItems(items);
     }
 
@@ -665,13 +682,15 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
 
 
 
-
+//your mom
 std::vector<Item> readPreviousFissureRewardsScreen(AppState state) {
 
    
     Timer timer=Timer();
     size_t itemCount = 4;
-    std::vector<std::string> items = readFissureItems(state.tesseractApi,itemCount);
+
+    std::string fileName = state.config["screenShotFilePath"];
+    std::vector<std::string> items = readFissureItems(state.tesseractApi,itemCount,fileName);
 
     timer.start();
     std::vector<std::string> preparedItems = prepareItems(items);
@@ -681,7 +700,7 @@ std::vector<Item> readPreviousFissureRewardsScreen(AppState state) {
 
     while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
         itemCount--;
-        items = readFissureItems(state.tesseractApi, itemCount);
+        items = readFissureItems(state.tesseractApi, itemCount,fileName);
         preparedItems = prepareItems(items);
     }
     

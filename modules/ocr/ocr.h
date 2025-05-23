@@ -31,7 +31,7 @@ std::vector<Item> prepareItemsForRead(std::vector<Item>& items);
 //for example 'niceItems.bmp' should be passed as 'niceItems'
 int convertBMPtoPNG(std::string& path);
 std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api, bool showImage);
-std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api, size_t itemCount);
+std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api, size_t itemCount,std::string& fileName);
 std::vector<Item> readFissureRewardsScreen(AppState state);
 
 
