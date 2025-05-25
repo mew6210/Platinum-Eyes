@@ -289,7 +289,10 @@ ItemDetails getAveragePrice(const json& list) {
 ItemDetails fetchItemPrice(const std::string& item) {
 
 
-    cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v1/items/" + item + "/orders?include=item" }
+    cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v1/items/" + item + "/orders?include=item" },
+        cpr::Header{{"User-Agent","PlatinumEyes/1.0"}}
+        
+        
 
     );
     r.status_code;                  // 200
