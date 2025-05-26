@@ -355,7 +355,7 @@ std::vector<Item> getItemPricesMap(std::vector<std::string>& preparedItems) {
 
 }
 
-
+//change naming later
 std::string getFormatedAveragePrices(std::vector<int>& lowestPrices) {
 
     std::string s;
@@ -411,8 +411,30 @@ std::vector<Item> prepareItemsForRead(std::vector<Item>& items) {
         replaceAnds(newstring);
 
 
-        newstring[0] = std::toupper(newstring[0]);
-        newList.push_back(Item(newstring, item.rawName,item.itemDetails));
+        //newstring[0] = std::toupper(newstring[0]);
+
+        std::stringstream stream(newstring);
+        std::string word = "";
+        std::vector<std::string> words = {};
+        while (stream >> word) {
+            words.push_back(word);
+        }
+
+        
+        std::string capitalizedString = "";
+        for (auto& word : words)
+        {
+            word[0] = std::toupper(word[0]);
+            capitalizedString += word + " ";
+
+        }
+
+        capitalizedString.pop_back();
+
+
+
+
+        newList.push_back(Item(capitalizedString, item.rawName,item.itemDetails));
     }
 
     return newList;

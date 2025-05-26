@@ -187,3 +187,69 @@ void saveScreenshotToClipboard(HBITMAP bitmap) {
     SetClipboardData(CF_BITMAP, bitmap);
     CloseClipboard();
 }
+
+
+
+std::string getClipboardItemText(std::vector<Item>& items) {
+
+    std::string returnString = "";
+    
+    for (auto& item : items) {
+        returnString += "[";
+        std::string name = item.preparedName;
+
+        if (!name.ends_with("Blueprint")) returnString += name;
+        else returnString += name.substr(0, name.length() - 10);
+
+
+        returnString += "] - ";
+
+        returnString +=getFormatedAveragePrices(item.itemDetails.lowestPrices);
+
+        returnString += " ";
+
+    }
+
+    returnString += " Data provided by Platinum-Eyes on github";
+
+    return returnString;
+}
+
+//chatgpt cooked here
+HGLOBAL loadStringToMemory(std::string& text) {
+    
+    HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, text.size() + 1);
+    if (!hGlobal) return NULL;
+
+    // Lock the memory and copy the text to it
+    char* pGlobal = static_cast<char*>(GlobalLock(hGlobal));
+    if (!pGlobal) {
+        GlobalFree(hGlobal);
+        return NULL;
+    }
+    memcpy(pGlobal, text.c_str(), text.size() + 1);
+    GlobalUnlock(hGlobal);
+
+    return hGlobal;
+
+}
+
+
+
+void saveItemsToClipboard(std::vector<Item>& items) {
+    OpenClipboard(NULL);
+    EmptyClipboard();
+
+    std::string text = "";
+    
+    text = getClipboardItemText(items);
+
+    HGLOBAL textInMemory = loadStringToMemory(text);
+
+
+    SetClipboardData(CF_TEXT,textInMemory);
+    CloseClipboard();
+
+    successLog("Successfully copied prices to clipboard, avalible to paste them in the chat with ctrl + v");
+
+}

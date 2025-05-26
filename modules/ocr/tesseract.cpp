@@ -674,6 +674,8 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
     itemPrices = prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
 
+    saveItemsToClipboard(itemPrices);
+
 
     return itemPrices;
 }
@@ -721,6 +723,7 @@ std::vector<Item> readPreviousFissureRewardsScreen(AppState state) {
 
     itemPrices = prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
+    saveItemsToClipboard(itemPrices);
 
 
     return itemPrices;
