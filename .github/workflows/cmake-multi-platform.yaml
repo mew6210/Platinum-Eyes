@@ -84,8 +84,8 @@ jobs:
           ninja-build python3 python3-pip python3-setuptools \
           libx11-dev libxext-dev libxrender-dev libxft-dev \
           libfreetype6-dev libfontconfig1-dev libglib2.0-dev \
-          libpng-dev libz-dev libxi-dev libxtst-dev libxrandr-dev libudev-dev libxcursor-dev libgl1-mesa-dev
-                
+          libpng-dev libz-dev libxi-dev libxtst-dev libxrandr-dev libudev-dev libxcursor-dev libgl1-mesa-dev libfreetype-dev libflac-dev libvorbis-dev libegl1-mesa-dev
+
                 
                 
                 
