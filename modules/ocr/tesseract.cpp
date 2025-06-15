@@ -469,7 +469,7 @@ void takeScreenshotAndSaveToFile(const int width, const int height,const Point p
 
     myAssert(error != 0, "Error converting bmp to png");
 
-    cv::Mat img = cv::imread("relicTitleScreenshot.png");
+    cv::Mat img = cv::imread(fileName+".png");
     if (img.empty()) {
         std::cerr << "Failed to load image.\n";
         exit(-1);

@@ -10,7 +10,7 @@ int main()
 
     if (!checkIfConfigFileExists()) {
         createConfigFile();
-        successLog("Config file successfully created. There are still some things that have to be configured, check the settings button and look for '---' parameters, they need to be filled out. \nFor tips check github repo.\n");
+        successLog("Config file successfully created. Settings have been automatically generated.");
 
     }
     Timer timer = Timer();

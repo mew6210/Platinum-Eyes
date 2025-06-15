@@ -14,7 +14,7 @@ namespace screenShotParams{
         std::string imguiSize;
     };
 
-    screenConfig screen_1920x1080 = { "to_do","to_do","to_do","to_do","to_do" };
+    screenConfig screen_1920x1080 = { "965","80","960,420","800,250","700,200" };
     screenConfig screen_3440x1440 = {"1290","90","1720,570","1200,300","1100,250"};
     screenConfig screen_NotSpecified= { "---","---","---","---","---" };
 

@@ -210,7 +210,7 @@ std::string getClipboardItemText(std::vector<Item>& items) {
 
     }
 
-    returnString += " Data provided by Platinum-Eyes on github";
+    returnString += " Lowest prices from warframe market provided by Platinum-Eyes on github";
 
     return returnString;
 }
