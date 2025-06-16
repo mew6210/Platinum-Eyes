@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(TESSERACT_TRAINING_ENG ${CMAKE_SOURCE_DIR}/eng_fast.traineddata)
 set(TESSERACT_TRAINING_ENG_DESTINATION ${CMAKE_BINARY_DIR}/eng_fast.traineddata)
 
-set(FONT ${CMAKE_SOURCE_DIR}/fonts/Lexend-Regular.ttf)
-set(FONT_DESTINATION ${CMAKE_BINARY_DIR}/fonts/Lexend-Regular.ttf)
+set(FONT ${CMAKE_SOURCE_DIR}/assets/fonts/Lexend-Regular.ttf)
+set(FONT_DESTINATION ${CMAKE_BINARY_DIR}/assets/fonts/Lexend-Regular.ttf)
 
 
 set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
@@ -46,27 +46,25 @@ liblzma::liblzma
 
 add_executable (
     ${PROJECT_NAME} 
-        "main.cpp" 
-        "platinumEyes.h" 
-        "modules/utilities/functions.cpp" 
-        "modules/utilities/trim.cpp" 
-        "modules/gui/guiUtilities.cpp" 
-        "modules/keybindings/keyBindings.cpp" 
-        "modules/config/configUtilities.cpp" 
-        "modules/ocr/readingItems.cpp" 
-        "modules/gui/settingsMenu.cpp"
-        "modules/ocr/tesseract.cpp"
-         
-        "modules/ocr/ocrfunctions.cpp" 
-        "modules/gui/settingsChanges.cpp" 
-        "modules/gui/settingsChanged.h" 
-        "modules/relics/relicDatabase.cpp" 
-        "modules/ocr/ocr.h" 
-        "modules/config/config.h" 
-        "modules/utilities/utilities.h" 
-        "modules/gui/gui.h" 
-        "modules/keybindings/keybindings.h" 
-        "modules/relics/relics.h")
+        "src/main.cpp" 
+        "src/core.h" 
+        "src/utilities/functions.cpp" 
+        "src/utilities/trim.cpp" 
+        "src/gui/guiUtilities.cpp" 
+        "src/keybindings/keyBindings.cpp" 
+        "src/config/configUtilities.cpp" 
+        "src/ocr/readingItems.cpp" 
+        "src/gui/settingsMenu.cpp"
+        "src/ocr/tesseract.cpp" 
+        "src/ocr/ocrfunctions.cpp" 
+        "src/gui/settingsChanges.cpp" 
+        "src/relics/relicDatabase.cpp" 
+        "src/ocr/ocr.h" 
+        "src/config/config.h" 
+        "src/utilities/utilities.h" 
+        "src/gui/gui.h" 
+        "src/keybindings/keybindings.h" 
+        "src/relics/relics.h")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

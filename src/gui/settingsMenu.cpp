@@ -1,7 +1,6 @@
 #include "gui.h"
 #include <functional>
 #include <imgui_stdlib.h>
-#include "settingsChanged.h"
 
 
 void configParameter(std::string& s,int counter,const char* label) {

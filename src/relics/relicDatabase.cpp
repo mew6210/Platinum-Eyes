@@ -190,7 +190,7 @@ bool doesDatabaseExist() {
 bool is_first_launch(ToolConfig& config) {
 
     if (config["data_LastTimeLaunched"] == "0 0 0" && config["data_LatestUpdate"] == "0 0 0") {
-        std::cout << "first launch";
+        successLog("First launch, hello!");
         return true;
     
     } 

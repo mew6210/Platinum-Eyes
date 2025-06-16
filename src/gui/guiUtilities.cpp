@@ -234,7 +234,7 @@ void customizeWindow(sf::RenderWindow& w,WindowParameters& sfmlParameters) {
 void setNewFont(ToolConfig& config) {
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->Clear();
-	std::string filename = "fonts/" + config["fontFile"];
+	std::string filename = "assets/fonts/" + config["fontFile"];
 	float size_pixels = std::stof(config["fontSize"]);
 	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 
@@ -253,7 +253,7 @@ void setImGuiStyle(ToolConfig& config) {
 
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->Clear(); 
-	std::string filename = "fonts/" + config["fontFile"];
+	std::string filename = "assets/fonts/" + config["fontFile"];
 	float size_pixels = std::stof(config["fontSize"]);
 	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 	

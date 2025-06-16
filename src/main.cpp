@@ -1,4 +1,4 @@
-﻿#include "platinumEyes.h"
+﻿#include "core.h"
 
 
 int main()
@@ -16,17 +16,12 @@ int main()
     Timer timer = Timer();
     ToolConfig toolConfig = readConfigFile();
     loadRelicDatabase(toolConfig);
-  
 
 
     std::vector<std::string> allAvalibleItems = loadAllAvalibleItemsToVector();
 
     tesseract::TessBaseAPI tesseractapi;
     tesseractInit(tesseractapi);
-
-    timer.start();
-
-    timer.stop();
 
 
     registerHotkeys(toolConfig);

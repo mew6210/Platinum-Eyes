@@ -1,4 +1,4 @@
-//#include "../platinumEyes.h"
+//#include "../core.h"
 #include "ocr.h"
 #include <sstream>
 

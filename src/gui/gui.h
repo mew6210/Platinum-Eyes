@@ -1,5 +1,5 @@
 #pragma once
-#include "../../platinumEyes.h"
+#include "../core.h"
 
 void generateImGuiTable(AppState state);
 HRESULT setTransparency(HWND hWnd);
