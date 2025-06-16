@@ -2,11 +2,12 @@
 #include <regex>
 #include <ctime>
 
+using std::vector, std::string, std::pair;
 
-std::vector<std::string> explode(const std::string& s, const char& c)
+vector<string> explode(const string& s, const char& c)
 {
-    std::string buff{ "" };
-    std::vector<std::string> v;
+    string buff{ "" };
+    vector<string> v;
 
     for (auto n : s)
     {
@@ -17,21 +18,29 @@ std::vector<std::string> explode(const std::string& s, const char& c)
 
     return v;
 }
-std::pair<std::string,std::string> readRelicItem(std::string& line,int& cursor) {
 
-    std::pair<std::string, std::string> item;
-    int item1start = line.find("td", cursor);
+
+/*
+    -parses html line into a pair of strings, one for the name and one for the rarity. Example: 
+    <tr><td>Akstiletto Prime Barrel</td><td>Uncommon (11.00%)</td></tr> -> <Aksiletto Prime Barrel,Uncommon (11.00%)>
+    -then modifies cursor, to be set at the end of this expression, so that when used in a loop will find all occurences of such items in a line.
+    -TODO: throwing exceptions when str.find fails
+*/
+pair<string,string> parseItemFromHtmlLine(const string& line,int& cursor) {
+
+    pair<string,string> item;
+    size_t item1start = line.find("td", cursor);
     item1start += 3;
     cursor = item1start;
-    int item1end = line.find("<", cursor);
+    size_t item1end = line.find("<", cursor);
     std::string item1 = line.substr(cursor, item1end - item1start);
     cursor += item1.size();
     item.first = item1;
 
-    int item2start = line.find("<td>",cursor);
+    size_t item2start = line.find("<td>",cursor);
     item2start += 4;
     cursor = item2start;
-    int item2end = line.find("<",cursor);
+    size_t item2end = line.find("<",cursor);
     std::string item2 = line.substr(cursor, item2end - item2start);
     item.second = item2;
     cursor += item2.size();
@@ -43,7 +52,7 @@ std::pair<std::string,std::string> readRelicItem(std::string& line,int& cursor) 
 }
 
 
-int monthToInt(std::string s) {
+int monthToInt(const string& s) {
 
     if (s == "January") {
         return 1;
@@ -127,14 +136,19 @@ Date getCurrentDate() {
     return Date{ dateInfo->tm_mday,(dateInfo->tm_mon) + 1,1900+(dateInfo->tm_year) };
 }
 
+/*
+- converts string date, that is found on warframe pc drops into a Date struct
+- example: "22 May, 2025" -> <22,5,2025>
 
-Date stringToDate(std::string s) {
+TODO: Add throwing exceptions if std::stoi fails.
+*/
+Date stringToDate(const string& s) {
 
     std::stringstream ss(s);
 
-    std::string word;
+    string word;
 
-    std::vector<std::string> words;
+    vector<string> words;
 
     while (getline(ss, word, ' ')) {
         words.push_back(word);
@@ -167,12 +181,14 @@ Date stringToDate(std::string s) {
 
 
 
-void replaceAmps(std::string& s) {
+void replaceAmp(string& s) {
 
-    int pos = s.find("&amp;");
+    string amp = "&amp;";
+
+    size_t pos = s.find(amp);
 
     if (pos != std::string::npos)
-        s.replace(pos, 5, "&");
+        s.replace(pos, amp.length(), "&");
 }
 
 bool doesDatabaseExist() {
@@ -429,12 +445,12 @@ int determineRelicType(std::string& relicname) {
 
 void writeToRelicFile(std::ofstream& outputFile,std::string& relicname,std::string& line,int& cursor) {
     outputFile << relicname << "\n";
-    std::pair<std::string, std::string> item = readRelicItem(line, cursor);
+    std::pair<std::string, std::string> item = parseItemFromHtmlLine(line, cursor);
     outputFile << "\t" << item.first << "---" << item.second << "\n";
 
     for (int i = 0; i < 5; i++) {
 
-        item = readRelicItem(line, cursor);
+        item = parseItemFromHtmlLine(line, cursor);
         outputFile << "\t" << item.first << "---" << item.second << "\n";
     }
 }
@@ -564,7 +580,7 @@ errorLog("Error opening input file!");
     while (getline(inputFile,line)) {
         int relictype = 0;
         
-        replaceAmps(line);
+        replaceAmp(line);
         int cursor = 1;
         if (line.starts_with("    <tr class=")) continue;
         if (line.find("<th colspan=")!=-1) {

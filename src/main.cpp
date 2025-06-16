@@ -1,9 +1,10 @@
 ﻿#include "core.h"
 
+using std::vector, std::string;
 
 int main()
 {
-    std::vector<Item> currentFissureItems;
+    vector<Item> currentFissureItems;
     currentFissureItems.push_back(Item("placeholder","placeholder",ItemDetails()));
 
     RelicInfo currentRelic;
@@ -17,7 +18,7 @@ int main()
     WindowParameters imguiSize = getWindowSize("imgui", toolConfig);
 
 
-    std::vector<std::string> allAvalibleItems = loadAllAvalibleItemsToVector();
+    vector<string> allAvalibleItems = loadAllAvalibleItemsToVector();
 
     tesseract::TessBaseAPI tesseractapi;
     tesseractInit(tesseractapi);
