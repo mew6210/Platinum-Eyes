@@ -4,18 +4,17 @@
 int main()
 {
     std::vector<Item> currentFissureItems;
-    
     currentFissureItems.push_back(Item("placeholder","placeholder",ItemDetails()));
+
     RelicInfo currentRelic;
 
-    if (!checkIfConfigFileExists()) {
-        createConfigFile();
-        successLog("Config file successfully created. Settings have been automatically generated.");
-
-    }
-    Timer timer = Timer();
-    ToolConfig toolConfig = readConfigFile();
+    ToolConfig toolConfig = initConfig();
     loadRelicDatabase(toolConfig);
+    registerHotkeys(toolConfig);
+
+
+    WindowParameters sfmlSize = getWindowSize("sfml", toolConfig);
+    WindowParameters imguiSize = getWindowSize("imgui", toolConfig);
 
 
     std::vector<std::string> allAvalibleItems = loadAllAvalibleItemsToVector();
@@ -24,10 +23,6 @@ int main()
     tesseractInit(tesseractapi);
 
 
-    registerHotkeys(toolConfig);
-    
-    WindowParameters sfmlSize = getWindowSize("sfml",toolConfig);
-    WindowParameters imguiSize = getWindowSize("imgui",toolConfig);
 
     sf::RenderWindow window(sf::VideoMode(sfmlSize.width, sfmlSize.height), "Warframe tool", sf::Style::None);
     
@@ -40,7 +35,6 @@ int main()
     bool shouldReSizeImGui = false;
     bool itemDisplayFlag = ITEMTYPE_fissureItems;
     bool shouldUpdateFonts = false;
-    allAvalibleItems;
     AppState state(
         currentFissureItems,
         toolConfig,
@@ -101,7 +95,7 @@ int main()
         ImGui::SFML::Update(window, deltaClock.restart());
 
         
-        createImGuiWindow(running,state.imguiSize,state.sfmlSize,state.settingsVisible,state,shouldReSizeImGui);
+        createImGuiWindow(running,state);
         generateImGuiTable(state);
         //ImGui::ShowDemoWindow(&running);
 

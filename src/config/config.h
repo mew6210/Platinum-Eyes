@@ -63,3 +63,5 @@ void createConfigFile();
 ToolConfig readConfigFile();
 WindowParameters getWindowSize(std::string s, ToolConfig& toolconfig);
 void rewriteConfigFile(ToolConfig& config);
+
+ToolConfig initConfig();

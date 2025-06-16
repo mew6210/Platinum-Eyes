@@ -266,25 +266,25 @@ void setImGuiStyle(ToolConfig& config) {
 
 
 
-void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowParameters& sfmlParameters,bool& settingsOpen,AppState state, bool& shouldReSizeImGui) {
+void createImGuiWindow(bool& isRunning,AppState state) {
 
 	
-	int heightDiff = sfmlParameters.height - imguiParameters.height;
-	int widthDiff = sfmlParameters.width - imguiParameters.width;
+	int heightDiff = state.sfmlSize.height - state.imguiSize.height;
+	int widthDiff = state.sfmlSize.width - state.imguiSize.width;
 
 	ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar;
 	flags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGuiCond cond = ImGuiCond_Once;
 	ImGui::SetNextWindowBgAlpha(0.7);
-	if (shouldReSizeImGui) {
-		heightDiff = sfmlParameters.height - imguiParameters.height;
-		widthDiff = sfmlParameters.width - imguiParameters.width;
-		ImGui::SetNextWindowSize(ImVec2(imguiParameters.width, imguiParameters.height),ImGuiCond_Always);
+	if (state.shouldReSizeImGui) {
+		heightDiff = state.sfmlSize.height - state.imguiSize.height;
+		widthDiff = state.sfmlSize.width - state.imguiSize.width;
+		ImGui::SetNextWindowSize(ImVec2(state.imguiSize.width, state.imguiSize.height),ImGuiCond_Always);
 		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), ImGuiCond_Always);
-		shouldReSizeImGui = !shouldReSizeImGui;
+		state.shouldReSizeImGui = !state.shouldReSizeImGui;
 	}
 	else {
-		ImGui::SetNextWindowSize(ImVec2(imguiParameters.width, imguiParameters.height), cond);
+		ImGui::SetNextWindowSize(ImVec2(state.imguiSize.width, state.imguiSize.height), cond);
 		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), cond);
 	}
 		
@@ -292,10 +292,10 @@ void createImGuiWindow(bool& isRunning,WindowParameters& imguiParameters,WindowP
 	
 
 	if (ImGui::SmallButton("Config")) {
-		settingsOpen = !settingsOpen; //flip the settingsOpen
+		state.settingsVisible= !state.settingsVisible; //flip the settingsOpen
 	}
-	if (settingsOpen == true) {
-		showSettingsMenu(&settingsOpen,state);
+	if (state.settingsVisible == true) {
+		showSettingsMenu(&state.settingsVisible,state);
 	}
 }
 

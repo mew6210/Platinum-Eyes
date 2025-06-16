@@ -360,3 +360,21 @@ void rewriteConfigFile(ToolConfig& config) {
 
 }
 
+/*
+- Reads config, if it exists and creates it if it doesnt.
+- Loads database, and registers hotkeys also.
+*/
+ToolConfig initConfig() {
+
+
+    if (!checkIfConfigFileExists()) {
+        createConfigFile();
+        successLog("Config file successfully created. Settings have been automatically generated.");
+
+    }
+    ToolConfig toolConfig = readConfigFile();
+
+
+    return toolConfig;
+
+}
