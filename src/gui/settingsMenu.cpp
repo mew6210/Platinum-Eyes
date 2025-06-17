@@ -119,7 +119,7 @@ struct SettingsSection {
 };
 
 
-void handleConfigChanges(ToolConfig newConfig, AppState state) {
+void handleConfigChanges(ToolConfig& newConfig, AppState& state) {
 
 	if (newConfig == state.config) {
 		std::cout << "You haven't changed anything\n";
@@ -155,7 +155,7 @@ void handleConfigChanges(ToolConfig newConfig, AppState state) {
 
 }
 
-void renderLeftPanel(vector<SettingsSection> sections,int& selected) {
+void renderLeftPanel(vector<SettingsSection>& sections,int& selected) {
 
 	
 		ImGui::BeginChild("left pane", ImVec2(150, 0), ImGuiChildFlags_Border);
@@ -173,7 +173,7 @@ void renderLeftPanel(vector<SettingsSection> sections,int& selected) {
 
 }
 
-void renderRightPanel(vector<SettingsSection> sections, int& selected) {
+void renderRightPanel(vector<SettingsSection>& sections, int& selected) {
 	
 	ImGui::BeginGroup();
 	ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
@@ -201,7 +201,7 @@ void renderRightPanel(vector<SettingsSection> sections, int& selected) {
 }
 
 
-void showSettingsMenu(bool* p_open,AppState state)
+void showSettingsMenu(bool* p_open,AppState& state)
 {
 	static vector<SettingsSection> sections;
 	static ToolConfig newConfig = state.config;
