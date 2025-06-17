@@ -266,12 +266,12 @@ void fetchRelicTable() {
 
     std::ifstream inputFile("droptable-raw.html");
     if (!inputFile.is_open()) {
-        errorLog("Error opening input file!");
+        errorLog("Error opening input file!",false);
         exit(1);
     }
     std::ofstream outputFile("relictable.html");
     if (!outputFile.is_open()) {
-        errorLog("Error opening input file!");
+        errorLog("Error opening input file!",false);
         exit(0);
     }
 
@@ -383,7 +383,7 @@ void updateDatabase(ToolConfig& config,bool forced) {
         }
     }
     else {
-        errorLog("Couldn't download raw html droptable. Status code: "+r.status_code);
+        errorLog("Couldn't download raw html droptable. Status code: "+r.status_code,false);
         exit(0);
     }
    
@@ -540,34 +540,34 @@ int parseRelicData() {
     // Input HTML-like file
     std::ifstream inputFile("relictable.html");
     if (!inputFile.is_open()) {
-errorLog("Error opening input file!");
+    errorLog("Error opening input file!",false);
         return 1;
     }
 
     // Output file to save parsed data
     std::ofstream outputFile_others("relictable_others.txt");
     if (!outputFile_others.is_open()) {
-errorLog("Error opening input file!");
+    errorLog("Error opening input file!",false);
         return 1;
     }
     std::ofstream outputFileLith("relictable_lith.txt");
     if (!outputFileLith.is_open()) {
-errorLog("Error opening input file!");
+    errorLog("Error opening input file!",false);
         return 1;
     }
     std::ofstream outputFileMeso("relictable_meso.txt");
     if (!outputFileMeso.is_open()) {
-errorLog("Error opening input file!");
+    errorLog("Error opening input file!",false);
         return 1;
     }
     std::ofstream outputFileNeo("relictable_neo.txt");
     if (!outputFileNeo.is_open()) {
-errorLog("Error opening input file!");
+    errorLog("Error opening input file!",false);
         return 1;
     }
     std::ofstream outputFileAxi("relictable_axi.txt");
     if (!outputFileAxi.is_open()) {
-errorLog("Error opening input file!");
+    errorLog("Error opening input file!",false);
         return 1;
     }
     std::ofstream outputFile;
@@ -636,22 +636,22 @@ errorLog("Error opening input file!");
 
     std::ifstream inputFileLith("relictable_lith.txt");
     if (!inputFileLith.is_open()) {
-errorLog("Error opening input file!");
+        errorLog("Error opening input file!",false);
         return 1;
     }
     std::ifstream inputFileMeso("relictable_meso.txt");
     if (!inputFileMeso.is_open()) {
-errorLog("Error opening input file!");
+        errorLog("Error opening input file!",false);
         return 1;
     }
     std::ifstream inputFileNeo("relictable_neo.txt");
     if (!inputFileNeo.is_open()) {
-errorLog("Error opening input file!");
+        errorLog("Error opening input file!",false);
         return 1;
     }
     std::ifstream inputFileAxi("relictable_axi.txt");
     if (!inputFileAxi.is_open()) {
-errorLog("Error opening input file!");
+        errorLog("Error opening input file!",false);
         return 1;
     }
 
@@ -695,7 +695,7 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
     }
 
     if (!inputFile.is_open()) {
-errorLog("Error opening input file!");
+        errorLog("Error opening input file!",false);
         exit(1);
     }
 

@@ -21,7 +21,6 @@
 #include <dwmapi.h>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
-#include "lodepng.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 
@@ -36,7 +35,7 @@ using json = nlohmann::json;
 #define ITEMTYPE_fissureItems true
 #define ITEMTYPE_relicItems false
 
-void errorLog(const std::string& s);
+void errorLog(const std::string& s,bool shouldCrash);
 void warningLog(const std::string& s);
 void successLog(const std::string& s);
 
@@ -147,6 +146,11 @@ public:
 		std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms] " << s << std::endl;
 	}
 
+	void stop(const std::string& s) {
+		end = std::chrono::steady_clock::now();
+		std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms] " << s << std::endl;
+	}
+
 };
 
 
@@ -194,7 +198,7 @@ class ToolConfig {
 			return propertyValue;
 		}
 		else {
-			errorLog("Not found property in config: "+ key);
+			errorLog("Not found property in config: "+ key,false);
 			return "not found";
 		}
 
@@ -215,7 +219,7 @@ public:
 
 		}
 		else {
-			errorLog("Couldnt find " + key + " key in ToolConfig");
+			errorLog("Couldnt find " + key + " key in ToolConfig",false);
 			return;
 		}
 

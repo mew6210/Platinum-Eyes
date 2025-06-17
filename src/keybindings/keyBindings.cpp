@@ -165,7 +165,7 @@ void unregisterHotkeys() {
             successLog("Succesfully unregistered Alt + " +VirtualKeyCodeToString(p.second.getKey()));
         }
         else {
-            errorLog("Failed to unregister Alt + " + VirtualKeyCodeToString(p.second.getKey()));
+            errorLog("Failed to unregister Alt + " + VirtualKeyCodeToString(p.second.getKey()),false);
         }
     }
 

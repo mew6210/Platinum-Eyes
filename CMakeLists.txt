@@ -21,7 +21,7 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(ImGui-SFML CONFIG REQUIRED)
-find_package(lodepng CONFIG REQUIRED)
+
 find_package(OpenCV REQUIRED)
 find_package(liblzma CONFIG REQUIRED)
 find_path(TERMCOLOR_INCLUE_DIRS "termcolor/termcolor.hpp")
@@ -37,7 +37,7 @@ imgui::imgui
 ImGui-SFML::ImGui-SFML
 Dwmapi.lib
 Tesseract::libtesseract
-lodepng
+
 ${OpenCV_LIBS}
 liblzma::liblzma
 )

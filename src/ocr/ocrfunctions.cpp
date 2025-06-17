@@ -67,10 +67,6 @@ HBITMAP takeScreenshot(int imageWidth, int imageHeight, Point p)
     int width = GetDeviceCaps(hScreen, HORZRES);
     int height = GetDeviceCaps(hScreen, VERTRES);
 
-    std::cout << "\nScreenParameters: " << std::endl;
-    std::cout << "Width: " << width << std::endl;
-    std::cout << "Height: " << height << std::endl;
-
 
 
     //int imageWidth = 1200;

@@ -380,7 +380,6 @@ std::string getFormatedAveragePrices(std::vector<int>& lowestPrices) {
 
 void printItemPrices(std::vector<Item>& itemPrices) {
     std::cout << "Item prices: " << std::endl;
-    std::cout << "<------------------------------------------------------------------------->" << std::endl;
 
     for (Item item : itemPrices) {
 
