@@ -3,15 +3,7 @@
 #include <imgui_stdlib.h>
 
 
-
-
-
 using std::string, std::vector, std::pair;
-
-
-
-
-
 
 
 void configParameter(string& s,int counter,const char* label) {
@@ -43,7 +35,6 @@ void comboParameter(string& s1,const char* label,static const char* options[],in
 		s1 = options[selecteditem];
 	}
 }
-
 
 
 struct configParam {
