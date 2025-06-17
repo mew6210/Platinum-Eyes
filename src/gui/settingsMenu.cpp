@@ -204,50 +204,58 @@ void renderRightPanel(vector<SettingsSection> sections, int& selected) {
 void showSettingsMenu(bool* p_open,AppState state)
 {
 	static vector<SettingsSection> sections;
-	static int should = 1;
 	static ToolConfig newConfig = state.config;
 
+	#define INITREVERTVAR(k) static const string k##ForRevert = newConfig[#k]
+
+	INITREVERTVAR(screenShotFilePath);
+	INITREVERTVAR(coordinatesOfScreenShotCenter);
+	INITREVERTVAR(screenShotWidth);
+	INITREVERTVAR(screenShotHeight);
+
+	INITREVERTVAR(sfmlSize);
+	INITREVERTVAR(imguiSize);
+
+	INITREVERTVAR(keyBind_ReadItemsFromScreen);
+	INITREVERTVAR(keyBind_EscapeProgram);
+	INITREVERTVAR(keyBind_ReadPreviousItems);
+	INITREVERTVAR(keyBind_WindowVisibility);
+	INITREVERTVAR(keyBind_BackupConfig);
+	INITREVERTVAR(keyBind_ExampleItems);
+	INITREVERTVAR(keyBind_ReadRelicTitle);
+
+	INITREVERTVAR(fontFile);
+	INITREVERTVAR(fontSize);
+
+	INITREVERTVAR(updatingType);
+
+
+
+
+	#define INITCONFIGVAR(k) static string k=newConfig[#k]
 	
-	static const string  screenShotFilePathForRevert = newConfig["screenShotFilePath"];
-	static const string  coordinatesOfScreenShotCenterForRevert = newConfig["coordinatesOfScreenShotCenter"];
-	static const string  screenShotWidthForRevert = newConfig["screenShotWidth"];
-	static const string  screenShotHeightForRevert = newConfig["screenShotHeight"];
-	static const string  sfmlSizeForRevert = newConfig["sfmlSize"];
-	static const string  imguiSizeForRevert = newConfig["imguiSize"];
-	static const string  keyBind_ReadItemsFromScreenForRevert = newConfig["keyBind_ReadItemsFromScreen"];
-	static const string  keyBind_EscapeProgramForRevert = newConfig["keyBind_EscapeProgram"];
-	static const string  keyBind_ReadPreviousItemsForRevert = newConfig["keyBind_ReadPreviousItems"];
-	static const string  keyBind_WindowVisibilityForRevert = newConfig["keyBind_WindowVisibility"];
-	static const string  keyBind_BackupConfigForRevert = newConfig["keyBind_BackupConfig"];
-	static const string  keyBind_ExampleItemsForRevert = newConfig["keyBind_ExampleItems"];
-	static const string  keyBind_ReadRelicTitleForRevert = newConfig["keyBind_ReadRelicTitle"];
+	
+	INITCONFIGVAR(screenShotFilePath);
+	INITCONFIGVAR(coordinatesOfScreenShotCenter);
+	INITCONFIGVAR(screenShotWidth);
+	INITCONFIGVAR(screenShotHeight);
 
-	static const string  fontFileForRevert= newConfig["fontFile"];
-	static const string  fontSizeForRevert = newConfig["fontSize"];
+	INITCONFIGVAR(sfmlSize);
+	INITCONFIGVAR(imguiSize);
 
-	static const string  updatingTypeForRevert= newConfig["updatingType"];
+	INITCONFIGVAR(keyBind_ReadItemsFromScreen);
+	INITCONFIGVAR(keyBind_EscapeProgram);
+	INITCONFIGVAR(keyBind_ReadPreviousItems);
+	INITCONFIGVAR(keyBind_WindowVisibility);
+	INITCONFIGVAR(keyBind_BackupConfig);
+	INITCONFIGVAR(keyBind_ExampleItems);
+	INITCONFIGVAR(keyBind_ReadRelicTitle);
 
+	INITCONFIGVAR(fontFile);
+	INITCONFIGVAR(fontSize);
 
-
-	static string  screenShotFilePath=newConfig["screenShotFilePath"];
-	static string  coordinatesOfScreenShotCenter=newConfig["coordinatesOfScreenShotCenter"];
-	static string  screenShotWidth=newConfig["screenShotWidth"];
-	static string  screenShotHeight=newConfig["screenShotHeight"];
-	static string  sfmlSize=newConfig["sfmlSize"];
-	static string  imguiSize=newConfig["imguiSize"];
-	static string  keyBind_ReadItemsFromScreen = newConfig["keyBind_ReadItemsFromScreen"];
-	static string  keyBind_EscapeProgram = newConfig["keyBind_EscapeProgram"];
-	static string  keyBind_ReadPreviousItems = newConfig["keyBind_ReadPreviousItems"];
-	static string  keyBind_WindowVisibility = newConfig["keyBind_WindowVisibility"];
-	static string  keyBind_BackupConfig = newConfig["keyBind_BackupConfig"];
-	static string  keyBind_ExampleItems = newConfig["keyBind_ExampleItems"];
-	static string  keyBind_ReadRelicTitle = newConfig["keyBind_ReadRelicTitle"];
-
-	static string  fontFile= newConfig["fontFile"];
-	static string  fontSize= newConfig["fontSize"];
-
-	static string updatingType = newConfig["updatingType"];
-
+	INITCONFIGVAR(updatingType);
+	
 
 	sections = {
 	{"Screenshot parameters"
