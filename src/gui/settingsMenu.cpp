@@ -284,15 +284,6 @@ void showSettingsMenu(bool* p_open,AppState state)
 	ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
 	if (ImGui::Begin("Settings", p_open, ImGuiWindowFlags_MenuBar))
 	{
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				if (ImGui::MenuItem("Close", "Ctrl+W")) { *p_open = false; }
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenuBar();
-		}
 		// Left
 		static int selected = 0;
 		renderLeftPanel(sections,selected);
