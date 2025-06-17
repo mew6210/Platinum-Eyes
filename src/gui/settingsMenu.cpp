@@ -3,15 +3,26 @@
 #include <imgui_stdlib.h>
 
 
-void configParameter(std::string& s,int counter,const char* label) {
 
-	std::string labelData(label);
-	std::string labelText = labelData + ": ";
+
+
+using std::string, std::vector, std::pair;
+
+
+
+
+
+
+
+void configParameter(string& s,int counter,const char* label) {
+
+	string labelData(label);
+	string labelText = labelData + ": ";
 	ImGui::Text(labelText.c_str());
 	ImGui::SameLine();
 
-	std::string idNumber= std::to_string(counter);
-	std::string id = "##label" + idNumber;
+	string idNumber= std::to_string(counter);
+	string id = "##label" + idNumber;
 	
 	ImGui::InputText(id.c_str(), &s);
 
@@ -19,7 +30,7 @@ void configParameter(std::string& s,int counter,const char* label) {
 }
 
 
-void comboParameter(std::string& s1,const char* label,static const char* options[],int itemsCount) {
+void comboParameter(string& s1,const char* label,static const char* options[],int itemsCount) {
 	
 	static int selecteditem = 0;
 	s1 = options[selecteditem];
@@ -34,56 +45,74 @@ void comboParameter(std::string& s1,const char* label,static const char* options
 }
 
 
-struct rightPane {
-	std::string description;
-	std::function<void(ToolConfig&)> details;
+
+struct configParam {
+	std::string& ref;
+	const char* label;
 };
 
+void renderConfigParams(vector<configParam> params, int baseId){
 
-
-void screenshotSettings(std::string& s1, std::string& s2, std::string& s3, std::string& s4) {
-
-	configParameter(s1, 4, "screenShotFilePath");
-	configParameter(s2, 5, "coordinatesOfScreenShotCenter");
-	configParameter(s3, 6, "screenShotWidth");
-	configParameter(s4, 7, "screenShotHeight");
-
-
-
+	for (int i = 0; i < params.size(); i++) {
+		configParameter(params[i].ref, baseId + i, params[i].label);
+	}
 }
 
-void windowSizesSettings(std::string& s1, std::string& s2) {
+void screenshotSettings(string& s1, string& s2, string& s3, string& s4) {
 
-	configParameter(s1, 8, "sfmlSize");
-	configParameter(s2, 9, "imguiSize");
+	renderConfigParams({
 
-
-}
-
-void keybindingsSettings(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6,std::string& s7) {
+		{s1,"screenShotFilePath"},
+		{s2,"coordinatesOfScreenShotCenter"},
+		{s3,"screenShotWidth"},
+		{s4,"screenShotHeight"}
+		
+		}, 4);
 	
+
+
+}
+
+void windowSizesSettings(string& s1, string& s2) {
+
+	renderConfigParams(
+		{ 
+
+			{s1,"sfmlSize"},
+			{s2,"imguiSize"}
+
+		}, 8);
 	
-	configParameter(s1, 10, "keyBind_ReadItemsFromScreen");
-	configParameter(s2, 11, "keyBind_EscapeProgram");
-	configParameter(s3, 12, "keyBind_ReadPreviousItems");
-	configParameter(s4, 13, "keyBind_WindowVisibility");
-	configParameter(s5, 14, "keyBind_BackupConfig");
-	configParameter(s6, 15, "keyBind_ExampleItems");
-	configParameter(s7, 16, "keyBind_ReadRelicTitle");
+}
 
+void keybindingsSettings(string& s1, string& s2, string& s3, string& s4, string& s5, string& s6,string& s7) {
+	
+	renderConfigParams({
 
+		{s1,"keyBind_ReadItemsFromScreen"},
+		{s2,"keyBind_EscapeProgram"},
+		{s3,"keyBind_ReadPreviousItems"},
+		{s4,"keyBind_WindowVisibility"},
+		{s5,"keyBind_BackupConfig"},
+		{s6,"keyBind_ExampleItems"},
+		{s7,"keyBind_ReadRelicTitle"}
+	
+		}, 10);
 
 }
 
-void fontsSettings(std::string& s1, std::string& s2) {
+void fontsSettings(string& s1, string& s2) {
 
-	configParameter(s1, 17, "fontFile");
-	configParameter(s2, 18, "fontSize");
+	renderConfigParams({ 
 
+		{s1,"fontFile"},
+		{s2,"fontSize"}
+		
+		}, 17);
 
 }
 
-void itemDatabaseSettings(std::string& s1) {
+void itemDatabaseSettings(string& s1) {
 	static const char* options[]{ "Once per day","Always","Never" };
 	comboParameter(s1,"updating type",options,IM_ARRAYSIZE(options));
 
@@ -92,118 +121,165 @@ void itemDatabaseSettings(std::string& s1) {
 }
 
 
-
-struct settingsStructure{
-	static const int length = 5;
-	std::vector<std::string> leftPanes = {"Screenshot parameters","Window sizes","Keybindings","Fonts","Item Database"};
-	
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>> screenShotParameters;
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> windowSizes;
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>> keyBindings;
-	std::pair < std::string, std::function<void(std::string& s1, std::string& s2)>> fonts;
-	std::pair < std::string, std::function<void(std::string& s1)>> itemDatabase;
-
+struct SettingsSection {
+	string title;
+	string description;
+	std::function<void()> render;
 };
 
 
-void appendToSettingsStructure(int& should, settingsStructure& structure, AppState state) {
+void handleConfigChanges(ToolConfig newConfig, AppState state) {
 
-	if (should) {
-		
-		
-
-
-		structure.screenShotParameters=
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4)>>
-			( "Here u give the center of the screenshot, how wide and tall it should be."
-			"U also include the path where u want to store the screenshot the app will be taking",screenshotSettings);
-
-
-		structure.windowSizes=
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2)>>
-			( "Here u give how big the window size should be. Both the sfml(the one more to the back), and imgui (the one on top).",windowSizesSettings);
-
-
-		structure.keyBindings=
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2, std::string& s3, std::string& s4, std::string& s5, std::string& s6, std::string& s7)>>
-			( "Keybindings, every keybind is treated as 'Alt + <keybind>'\nIt's important to remember, that keybinds should be 1 character in length, except esc.",keybindingsSettings);
-
-
-		structure.fonts= 
-			std::pair<std::string, std::function<void(std::string& s1, std::string& s2)>>
-			("All about fonts, fontFile is your path to the .tff file in fonts folder. \nfontSize is the size of the font u want to have", fontsSettings);
-
-		structure.itemDatabase=
-			std::pair<std::string, std::function<void(std::string& s1)>>
-			("Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet."
-				, itemDatabaseSettings);
-
-
-		should = 0;
-		
+	if (newConfig == state.config) {
+		std::cout << "You haven't changed anything\n";
 	}
 	else {
-		return;
+		std::cout << "New configuration detected\n";
+		std::vector<string> differences = state.config.getDifferenceList(newConfig);
+
+
+
+		state.config = newConfig;
+		rewriteConfigFile(state.config);
+
+		if (keyBindsChanged(differences)) {
+			reRegisterHotkeys(state.config);
+		}
+		if (windowSizesChanged(differences)) {
+			WindowParameters parameterssfml = getWindowSize("sfml", state.config);
+			reSizeSfmlWindow(state.window, parameterssfml);
+			WindowParameters parametersimgui = getWindowSize("imgui", state.config);
+
+			state.sfmlSize = parameterssfml;
+			state.imguiSize = parametersimgui;
+			state.shouldReSizeImGui = true;
+		}
+		if (fontsChanged(differences)) {
+			state.shouldUpdateFonts = true;
+		}
+
+
 	}
 
 
 }
 
+void renderLeftPanel(vector<SettingsSection> sections,int& selected) {
 
+	
+		ImGui::BeginChild("left pane", ImVec2(150, 0), ImGuiChildFlags_Border);
+		for (int i = 0; i < sections.size(); i++)
+		{
+			char* label = sections[i].title.data();
+
+			sprintf(label, label);
+			if (ImGui::Selectable(label, selected == i))
+				selected = i;
+		}
+		ImGui::EndChild();
+	
+
+
+}
+
+void renderRightPanel(vector<SettingsSection> sections, int& selected) {
+	
+	ImGui::BeginGroup();
+	ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
+	ImGui::Text(sections[selected].title.data());
+	ImGui::Separator();
+	if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+	{
+		if (ImGui::BeginTabItem("Description"))
+		{
+
+			ImGui::TextWrapped(sections[selected].description.data());
+
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Details"))
+		{
+
+			sections[selected].render();
+
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+	ImGui::EndChild();
+}
 
 
 void showSettingsMenu(bool* p_open,AppState state)
 {
-	static settingsStructure structure;
+	static vector<SettingsSection> sections;
 	static int should = 1;
 	static ToolConfig newConfig = state.config;
 
 	
-	static const std::string  screenShotFilePathForRevert = newConfig["screenShotFilePath"];
-	static const std::string  coordinatesOfScreenShotCenterForRevert = newConfig["coordinatesOfScreenShotCenter"];
-	static const std::string  screenShotWidthForRevert = newConfig["screenShotWidth"];
-	static const std::string  screenShotHeightForRevert = newConfig["screenShotHeight"];
-	static const std::string  sfmlSizeForRevert = newConfig["sfmlSize"];
-	static const std::string  imguiSizeForRevert = newConfig["imguiSize"];
-	static const std::string  keyBind_ReadItemsFromScreenForRevert = newConfig["keyBind_ReadItemsFromScreen"];
-	static const std::string  keyBind_EscapeProgramForRevert = newConfig["keyBind_EscapeProgram"];
-	static const std::string  keyBind_ReadPreviousItemsForRevert = newConfig["keyBind_ReadPreviousItems"];
-	static const std::string  keyBind_WindowVisibilityForRevert = newConfig["keyBind_WindowVisibility"];
-	static const std::string  keyBind_BackupConfigForRevert = newConfig["keyBind_BackupConfig"];
-	static const std::string  keyBind_ExampleItemsForRevert = newConfig["keyBind_ExampleItems"];
-	static const std::string  keyBind_ReadRelicTitleForRevert = newConfig["keyBind_ReadRelicTitle"];
+	static const string  screenShotFilePathForRevert = newConfig["screenShotFilePath"];
+	static const string  coordinatesOfScreenShotCenterForRevert = newConfig["coordinatesOfScreenShotCenter"];
+	static const string  screenShotWidthForRevert = newConfig["screenShotWidth"];
+	static const string  screenShotHeightForRevert = newConfig["screenShotHeight"];
+	static const string  sfmlSizeForRevert = newConfig["sfmlSize"];
+	static const string  imguiSizeForRevert = newConfig["imguiSize"];
+	static const string  keyBind_ReadItemsFromScreenForRevert = newConfig["keyBind_ReadItemsFromScreen"];
+	static const string  keyBind_EscapeProgramForRevert = newConfig["keyBind_EscapeProgram"];
+	static const string  keyBind_ReadPreviousItemsForRevert = newConfig["keyBind_ReadPreviousItems"];
+	static const string  keyBind_WindowVisibilityForRevert = newConfig["keyBind_WindowVisibility"];
+	static const string  keyBind_BackupConfigForRevert = newConfig["keyBind_BackupConfig"];
+	static const string  keyBind_ExampleItemsForRevert = newConfig["keyBind_ExampleItems"];
+	static const string  keyBind_ReadRelicTitleForRevert = newConfig["keyBind_ReadRelicTitle"];
 
-	static const std::string  fontFileForRevert= newConfig["fontFile"];
-	static const std::string  fontSizeForRevert = newConfig["fontSize"];
+	static const string  fontFileForRevert= newConfig["fontFile"];
+	static const string  fontSizeForRevert = newConfig["fontSize"];
 
-	static const std::string  updatingTypeForRevert= newConfig["updatingType"];
-
-
+	static const string  updatingTypeForRevert= newConfig["updatingType"];
 
 
-	
-	static std::string  screenShotFilePath=newConfig["screenShotFilePath"];
-	static std::string  coordinatesOfScreenShotCenter=newConfig["coordinatesOfScreenShotCenter"];
-	static std::string  screenShotWidth=newConfig["screenShotWidth"];
-	static std::string  screenShotHeight=newConfig["screenShotHeight"];
-	static std::string  sfmlSize=newConfig["sfmlSize"];
-	static std::string  imguiSize=newConfig["imguiSize"];
-	static std::string  keyBind_ReadItemsFromScreen = newConfig["keyBind_ReadItemsFromScreen"];
-	static std::string  keyBind_EscapeProgram = newConfig["keyBind_EscapeProgram"];
-	static std::string  keyBind_ReadPreviousItems = newConfig["keyBind_ReadPreviousItems"];
-	static std::string  keyBind_WindowVisibility = newConfig["keyBind_WindowVisibility"];
-	static std::string  keyBind_BackupConfig = newConfig["keyBind_BackupConfig"];
-	static std::string  keyBind_ExampleItems = newConfig["keyBind_ExampleItems"];
-	static std::string  keyBind_ReadRelicTitle = newConfig["keyBind_ReadRelicTitle"];
 
-	static std::string  fontFile= newConfig["fontFile"];
-	static std::string  fontSize= newConfig["fontSize"];
+	static string  screenShotFilePath=newConfig["screenShotFilePath"];
+	static string  coordinatesOfScreenShotCenter=newConfig["coordinatesOfScreenShotCenter"];
+	static string  screenShotWidth=newConfig["screenShotWidth"];
+	static string  screenShotHeight=newConfig["screenShotHeight"];
+	static string  sfmlSize=newConfig["sfmlSize"];
+	static string  imguiSize=newConfig["imguiSize"];
+	static string  keyBind_ReadItemsFromScreen = newConfig["keyBind_ReadItemsFromScreen"];
+	static string  keyBind_EscapeProgram = newConfig["keyBind_EscapeProgram"];
+	static string  keyBind_ReadPreviousItems = newConfig["keyBind_ReadPreviousItems"];
+	static string  keyBind_WindowVisibility = newConfig["keyBind_WindowVisibility"];
+	static string  keyBind_BackupConfig = newConfig["keyBind_BackupConfig"];
+	static string  keyBind_ExampleItems = newConfig["keyBind_ExampleItems"];
+	static string  keyBind_ReadRelicTitle = newConfig["keyBind_ReadRelicTitle"];
 
-	static std::string updatingType = newConfig["updatingType"];
-	myAssert(structure.length == structure.leftPanes.size(), "length and length of descriptions in settings structure doesnt match");
-	appendToSettingsStructure(should, structure, state);
+	static string  fontFile= newConfig["fontFile"];
+	static string  fontSize= newConfig["fontSize"];
 
-	
+	static string updatingType = newConfig["updatingType"];
+
+
+	sections = {
+	{"Screenshot parameters"
+	,"Here u give the center of the screenshot, how wide and tall it should be.You also include the path where u want to store the screenshot the app will be taking",	
+		[]() {screenshotSettings(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); } },
+
+	{"Window sizes",
+		"Here u give how big the window size should be. Both the sfml(the one more to the back), and imgui (the one on top)."
+		,[]() {windowSizesSettings(sfmlSize, imguiSize); } },
+
+		{"Keybindings",
+		"Keybindings, every keybind is treated as 'Alt + <keybind>'\nIt's important to remember, that keybinds should be 1 character in length, except esc.",
+		[]() {keybindingsSettings(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); } },
+
+		{"Fonts",
+		"All about fonts, fontFile is your path to the .tff file in fonts folder. \nfontSize is the size of the font u want to have",
+		[]() {fontsSettings(fontFile, fontSize); } },
+		
+		{"Item Database",
+		"Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet."
+		,[]() {itemDatabaseSettings(updatingType); } }
+	};
+
 
 	ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
 	if (ImGui::Begin("Settings", p_open, ImGuiWindowFlags_MenuBar))
@@ -219,150 +295,59 @@ void showSettingsMenu(bool* p_open,AppState state)
 		}
 		// Left
 		static int selected = 0;
-		{
-			ImGui::BeginChild("left pane", ImVec2(150, 0), ImGuiChildFlags_Border);
-			for (int i = 0; i < structure.length; i++)
-			{
-				char* label = structure.leftPanes[i].data();
+		renderLeftPanel(sections,selected);
 
-				sprintf(label, label);
-				if (ImGui::Selectable(label, selected == i))
-					selected = i;
-			}
-			ImGui::EndChild();
-		}
 		ImGui::SameLine();
 
 		// Right
 		{
-			ImGui::BeginGroup();
-			ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
-			ImGui::Text(structure.leftPanes[selected].data());
-			ImGui::Separator();
-			if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
-			{
-				if (ImGui::BeginTabItem("Description"))
-				{
-
-					switch (selected) {
-					
-					case 0: ImGui::TextWrapped(structure.screenShotParameters.first.c_str()); break;
-					case 1: ImGui::TextWrapped(structure.windowSizes.first.c_str()); break;
-					case 2: ImGui::TextWrapped(structure.keyBindings.first.c_str()); break;
-					case 3: ImGui::TextWrapped(structure.fonts.first.c_str()); break;
-					case 4: ImGui::TextWrapped(structure.itemDatabase.first.c_str()); break;
-						
-						
-						//ImGui::TextWrapped(structure.rightPanes[selected].description.data());
-					}
-
-					ImGui::EndTabItem();
-				}
-				if (ImGui::BeginTabItem("Details"))
-				{
-					switch (selected) {
-
-					
-					case 0: structure.screenShotParameters.second(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); break;
-					case 1: structure.windowSizes.second(sfmlSize, imguiSize); break;
-					case 2: structure.keyBindings.second(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); break;
-					case 3: structure.fonts.second(fontFile, fontSize); break;
-					case 4: structure.itemDatabase.second(updatingType); break;
-
-						//structure.rightPanes[selected].details(newConfig);
-
-					}
-					ImGui::EndTabItem();
-				}
-				ImGui::EndTabBar();
-			}
-			ImGui::EndChild();
+			renderRightPanel(sections,selected);
 			
 			if (ImGui::Button("Revert")) {
 
+				#define REVERT(k) k = k##ForRevert;
 
-				screenShotFilePath = screenShotFilePathForRevert;
-				coordinatesOfScreenShotCenter = coordinatesOfScreenShotCenterForRevert;
-				screenShotWidth = screenShotWidthForRevert;
-				screenShotHeight = screenShotHeightForRevert;
-				sfmlSize = sfmlSizeForRevert;
-				imguiSize = imguiSizeForRevert;
-				keyBind_ReadItemsFromScreen = keyBind_ReadItemsFromScreenForRevert;
-				keyBind_EscapeProgram = keyBind_EscapeProgramForRevert;
-				keyBind_ReadPreviousItems = keyBind_ReadPreviousItemsForRevert;
-				keyBind_WindowVisibility = keyBind_WindowVisibilityForRevert;
-				keyBind_BackupConfig = keyBind_BackupConfigForRevert;
-				keyBind_ExampleItems = keyBind_ExampleItemsForRevert;
-				keyBind_ReadRelicTitle = keyBind_ReadRelicTitleForRevert;
-				fontFile = fontFileForRevert;
-				fontSize = fontSizeForRevert;
-				updatingType = updatingTypeForRevert;
-
-
-
-
+				REVERT(screenShotFilePath)
+				REVERT(coordinatesOfScreenShotCenter)
+				REVERT(screenShotWidth)
+				REVERT(screenShotHeight)
+				REVERT(sfmlSize)
+				REVERT(imguiSize)
+				REVERT(keyBind_ReadItemsFromScreen)
+				REVERT(keyBind_EscapeProgram)
+				REVERT(keyBind_ReadPreviousItems)
+				REVERT(keyBind_WindowVisibility)
+				REVERT(keyBind_BackupConfig)
+				REVERT(keyBind_ExampleItems)
+				REVERT(keyBind_ReadRelicTitle)
+				REVERT(fontFile)
+				REVERT(fontSize)
+				REVERT(updatingType)
+				
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Save")) {
 			
+				#define SAVE(k) newConfig.setPropertyValue(#k, k);
 
-				newConfig.setPropertyValue("screenShotFilePath", screenShotFilePath);
-				newConfig.setPropertyValue("coordinatesOfScreenShotCenter", coordinatesOfScreenShotCenter);
-				newConfig.setPropertyValue("screenShotWidth", screenShotWidth);
-				newConfig.setPropertyValue("screenShotHeight", screenShotHeight);
-				newConfig.setPropertyValue("sfmlSize", sfmlSize);
-				newConfig.setPropertyValue("imguiSize", imguiSize);
-				
-				newConfig.setPropertyValue("keyBind_ReadItemsFromScreen", keyBind_ReadItemsFromScreen);
-				newConfig.setPropertyValue("keyBind_EscapeProgram", keyBind_EscapeProgram);
-				newConfig.setPropertyValue("keyBind_ReadPreviousItems", keyBind_ReadPreviousItems);
-				newConfig.setPropertyValue("keyBind_WindowVisibility", keyBind_WindowVisibility);
-				newConfig.setPropertyValue("keyBind_BackupConfig", keyBind_BackupConfig);
-				newConfig.setPropertyValue("keyBind_ExampleItems", keyBind_ExampleItems);
-				newConfig.setPropertyValue("keyBind_ReadRelicTitle", keyBind_ReadRelicTitle);
-				newConfig.setPropertyValue("fontFile", fontFile);
-				newConfig.setPropertyValue("fontSize", fontSize);
-				newConfig.setPropertyValue("updatingType", updatingType);
+				SAVE(screenShotFilePath);
+				SAVE(coordinatesOfScreenShotCenter);
+				SAVE(screenShotWidth);
+				SAVE(screenShotHeight);
+				SAVE(sfmlSize);
+				SAVE(imguiSize);
+				SAVE(keyBind_ReadItemsFromScreen);
+				SAVE(keyBind_EscapeProgram);
+				SAVE(keyBind_ReadPreviousItems);
+				SAVE(keyBind_WindowVisibility);
+				SAVE(keyBind_BackupConfig);
+				SAVE(keyBind_ExampleItems);
+				SAVE(keyBind_ReadRelicTitle);
+				SAVE(fontFile);
+				SAVE(fontSize);
+				SAVE(updatingType);
 
-
-
-				
-
-				if (newConfig == state.config) {
-					std::cout << "You haven't changed anything\n";
-				}
-				else {
-					std::cout << "New configuration detected\n";
-					std::vector<std::string> differences=state.config.getDifferenceList(newConfig);
-
-					
-
-					state.config = newConfig;
-					rewriteConfigFile(state.config);
-
-					if (keyBindsChanged(differences)) {
-						reRegisterHotkeys(state.config);
-					}
-					if (windowSizesChanged(differences)) {
-						WindowParameters parameterssfml = getWindowSize("sfml", state.config);
-						reSizeSfmlWindow(state.window, parameterssfml);
-						WindowParameters parametersimgui = getWindowSize("imgui", state.config);
-
-						state.sfmlSize = parameterssfml;
-						state.imguiSize = parametersimgui;
-						state.shouldReSizeImGui = true;
-					}
-					if (fontsChanged(differences)) {
-						state.shouldUpdateFonts = true;
-					}
-					
-
-				}
-
-
-
-
-
+				handleConfigChanges(newConfig, state);
 
 			}
 			ImGui::EndGroup();
