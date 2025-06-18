@@ -211,10 +211,10 @@ void handleEvents(AppState state) {
             state.window.setVisible(state.isVisible);
 
             if (state.isVisible) {
-                state.window.setFramerateLimit(60);
+                state.window.setFramerateLimit(state.fpsVisible);
             }
             else {
-                state.window.setFramerateLimit(5);
+                state.window.setFramerateLimit(state.fpsHidden);
             }
 
         }

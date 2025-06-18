@@ -1,6 +1,7 @@
 #pragma once
 #include "../core.h"
 
+void updateFps(AppState& state);
 void generateImGuiTable(AppState state);
 HRESULT setTransparency(HWND hWnd);
 void customizeWindow(sf::RenderWindow& w, WindowParameters& state);

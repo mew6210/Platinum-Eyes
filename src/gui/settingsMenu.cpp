@@ -111,6 +111,19 @@ void itemDatabaseSettings(string& s1) {
 
 }
 
+void fpsSettings(string& s1, string& s2) {
+
+	renderConfigParams({
+
+		{s1,"fpsVisible"},
+		{s2,"fpsHidden"}
+
+		}, 19);
+
+
+
+}
+
 
 struct SettingsSection {
 	string title;
@@ -147,6 +160,9 @@ void handleConfigChanges(ToolConfig& newConfig, AppState& state) {
 		}
 		if (fontsChanged(differences)) {
 			state.shouldUpdateFonts = true;
+		}
+		if (fpsChanged(differences)) {
+			updateFps(state);
 		}
 
 
@@ -229,6 +245,8 @@ void showSettingsMenu(bool* p_open,AppState& state)
 
 	INITREVERTVAR(updatingType);
 
+	INITREVERTVAR(fpsVisible);
+	INITREVERTVAR(fpsHidden);
 
 
 
@@ -255,6 +273,9 @@ void showSettingsMenu(bool* p_open,AppState& state)
 	INITCONFIGVAR(fontSize);
 
 	INITCONFIGVAR(updatingType);
+
+	INITCONFIGVAR(fpsVisible);
+	INITCONFIGVAR(fpsHidden);
 	
 
 	sections = {
@@ -276,7 +297,10 @@ void showSettingsMenu(bool* p_open,AppState& state)
 		
 		{"Item Database",
 		"Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet."
-		,[]() {itemDatabaseSettings(updatingType); } }
+		,[]() {itemDatabaseSettings(updatingType); } },
+		{"Fps","Sets a desired fps limit, both for when window is visible, and when its hidden. 1-whatever, but when its hidden it usually doesnt need to go above 10",[]() {fpsSettings(fpsVisible,fpsHidden); }}
+
+
 	};
 
 
@@ -313,6 +337,9 @@ void showSettingsMenu(bool* p_open,AppState& state)
 				REVERT(fontFile)
 				REVERT(fontSize)
 				REVERT(updatingType)
+
+				REVERT(fpsVisible)
+				REVERT(fpsHidden)
 				
 			}
 			ImGui::SameLine();
@@ -336,6 +363,9 @@ void showSettingsMenu(bool* p_open,AppState& state)
 				SAVE(fontFile);
 				SAVE(fontSize);
 				SAVE(updatingType);
+				SAVE(fpsVisible);
+				SAVE(fpsHidden);
+
 
 				handleConfigChanges(newConfig, state);
 

@@ -308,3 +308,21 @@ void handleBetweenFrameImGuiUpdates(AppState state) {
 
 
 }
+
+void updateFps(AppState& state) {
+
+	//TODO: ADD STOI ERROR HANDLING
+
+	int newVisibleFps = stoi(state.config["fpsVisible"]);
+	int newHiddenFps = stoi(state.config["fpsHidden"]);
+
+	if (state.isVisible) {
+		state.window.setFramerateLimit(newVisibleFps);
+	}
+	else {
+		state.window.setFramerateLimit(newHiddenFps);
+	}
+	state.fpsVisible = newVisibleFps;
+	state.fpsHidden = newHiddenFps;
+
+}

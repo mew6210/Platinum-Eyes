@@ -252,7 +252,12 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "updatingType") {
             configFile << "Once per day";
         }
-    
+        else if (configProperty == "fpsVisible") {
+            configFile << "60";
+        }
+        else if (configProperty == "fpsHidden") {
+            configFile << "10";
+        }
     
     
     

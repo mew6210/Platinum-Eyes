@@ -36,6 +36,10 @@ int main()
     bool shouldReSizeImGui = false;
     bool itemDisplayFlag = ITEMTYPE_fissureItems;
     bool shouldUpdateFonts = false;
+    int fpsVisible = std::stoi(toolConfig["fpsVisible"]);
+    int fpsHidden = std::stoi(toolConfig["fpsHidden"]);
+
+
     AppState state(
         currentFissureItems,
         toolConfig,
@@ -51,7 +55,9 @@ int main()
         itemDisplayFlag,
         currentRelic,
         shouldUpdateFonts,
-        allAvalibleItems
+        allAvalibleItems,
+        fpsVisible,
+        fpsHidden
     );
     
 

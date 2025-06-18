@@ -33,3 +33,9 @@ bool windowSizesChanged(std::vector<std::string> differences) {
 bool fontsChanged(std::vector<std::string> differences) {
 	return contains(fontNames, differences);
 }
+
+bool fpsChanged(std::vector<std::string> differences) {
+
+	return contains(fpsNames,differences);
+
+}

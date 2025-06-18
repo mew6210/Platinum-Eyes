@@ -56,7 +56,11 @@ const int IMGUIWINDOWSIZEY = SFMLWINDOWSIZEY - 100;
 
 
 
-//should be a sum of vectors in config.h
+/* 
+should be a sum of vectors in config.h
+its default property should also be coded in fillOutConfigFile
+it should also probably have its own representation in settingsMenu
+*/
 const std::string CONFIGPROPERTIES[] = {
 
 	"screenShotFilePath",
@@ -90,7 +94,10 @@ const std::string CONFIGPROPERTIES[] = {
 	"data_LatestUpdate",
 
 
-	"updatingType"
+	"updatingType",
+
+	"fpsVisible",
+	"fpsHidden"
 
 };
 
@@ -346,6 +353,8 @@ struct AppState {
 	RelicInfo& currentRelic;
 	bool& shouldUpdateFonts;
 	std::vector<std::string>& allAvalibleItems;
+	int& fpsVisible;
+	int& fpsHidden;
 
 
 	AppState(
@@ -363,9 +372,11 @@ struct AppState {
 		bool& idf,
 		RelicInfo& cr,
 		bool& suf,
-		std::vector<std::string>& aai
+		std::vector<std::string>& aai,
+		int& fv,
+		int& fh
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai) {};
+	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai),fpsVisible(fv),fpsHidden(fh) {};
 
 };
 

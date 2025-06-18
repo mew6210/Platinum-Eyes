@@ -49,12 +49,19 @@ const std::vector<std::string> databaseNames = {
 
 };
 
+const std::vector<std::string> fpsNames = {
+
+	"fpsVisible",
+	"fpsHidden"
+
+};
+
 
 bool contains(std::vector<std::string> targets, std::vector<std::string> differences);
 bool keyBindsChanged(std::vector<std::string> differences);
 bool windowSizesChanged(std::vector<std::string> differences);
 bool fontsChanged(std::vector<std::string> differences);
-
+bool fpsChanged(std::vector<std::string> differences);
 
 
 void copyConfigToOldFile();
