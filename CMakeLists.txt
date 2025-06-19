@@ -47,7 +47,7 @@ liblzma::liblzma
 add_executable (
     ${PROJECT_NAME} 
         "src/main.cpp" 
-        "src/core.h" 
+        "src/core/core.h" 
         "src/utilities/functions.cpp" 
         "src/utilities/trim.cpp" 
         "src/gui/guiUtilities.cpp" 
@@ -64,7 +64,7 @@ add_executable (
         "src/utilities/utilities.h" 
         "src/gui/gui.h" 
         "src/keybindings/keybindings.h" 
-        "src/relics/relics.h")
+        "src/relics/relics.h" "src/core/core.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

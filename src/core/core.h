@@ -12,7 +12,7 @@
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 #include <ranges>
-#include "utilities/trim.cpp"
+#include "../utilities/trim.cpp"
 #include <SFML/Window.hpp>
 #include <SFML/OpenGl.hpp>
 #include<SFML/Graphics/RenderWindow.hpp>
@@ -402,9 +402,13 @@ const std::vector<Item> exampleItems = {
 };
 
 
-#include "ocr/ocr.h"
-#include "utilities/utilities.h"
-#include "keybindings/keybindings.h"
-#include "gui/gui.h"
-#include "config/config.h"
-#include "relics/relics.h"
+#include "../ocr/ocr.h"
+#include "../utilities/utilities.h"
+#include "../keybindings/keybindings.h"
+#include "../gui/gui.h"
+#include "../config/config.h"
+#include "../relics/relics.h"
+
+
+void mainLoop(AppState& state);
+std::pair<int, int> getFps(ToolConfig& toolConfig);

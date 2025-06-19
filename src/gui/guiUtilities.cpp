@@ -213,13 +213,13 @@ void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 }
 
 
-void customizeWindow(sf::RenderWindow& w,WindowParameters& sfmlParameters) {
-	HWND hwnd = w.getSystemHandle();
+void customizeWindow(AppState& state) {
+	HWND hwnd = state.window.getSystemHandle();
 
-	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - (sfmlParameters.width+25), 25));
+	state.window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - (state.sfmlSize.width+25), 25));
 	
-	w.setFramerateLimit(60);
-	ImGui::SFML::Init(w);
+	state.window.setFramerateLimit(state.fpsVisible);
+	ImGui::SFML::Init(state.window);
 
 	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
@@ -312,9 +312,25 @@ void handleBetweenFrameImGuiUpdates(AppState state) {
 void updateFps(AppState& state) {
 
 	//TODO: ADD STOI ERROR HANDLING
+	int newVisibleFps = state.fpsVisible;
+	int newHiddenFps = state.fpsHidden;
+	
+	try {
+		newVisibleFps = stoi(state.config["fpsVisible"]);
+	}
+	catch (const std::exception& e) {
+		warningLog("visibleFps inputted is not a number, defaulting to 30");
+		newVisibleFps = 30;
+	}
 
-	int newVisibleFps = stoi(state.config["fpsVisible"]);
-	int newHiddenFps = stoi(state.config["fpsHidden"]);
+	try {
+		newHiddenFps = stoi(state.config["fpsHidden"]);
+	}
+	catch (const std::exception& e) {
+		warningLog("hiddenFps inputted is not a number, defaulting to 30");
+	}
+	
+
 
 	if (state.isVisible) {
 		state.window.setFramerateLimit(newVisibleFps);

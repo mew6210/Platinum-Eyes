@@ -1,10 +1,10 @@
 #pragma once
-#include "../core.h"
+#include "../core/core.h"
 
 void updateFps(AppState& state);
 void generateImGuiTable(AppState state);
 HRESULT setTransparency(HWND hWnd);
-void customizeWindow(sf::RenderWindow& w, WindowParameters& state);
+void customizeWindow(AppState& state);
 void createImGuiWindow(bool& isRunning,AppState state);
 void showSettingsMenu(bool* p_open, AppState& state);
 void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters);
