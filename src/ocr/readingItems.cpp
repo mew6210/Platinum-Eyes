@@ -247,7 +247,7 @@ ItemDetails getAveragePrice(const json& list) {
     std::priority_queue<int> lowestPrices;
 
     for (const json& product : list) {
-        if (product["user"]["status"] == "ingame" && product["order_type"] == "sell") {
+        if (product["user"]["status"] == "ingame" && product["type"] == "sell") {
             int price = product["platinum"];
             sum += price;
             count++;
@@ -289,27 +289,26 @@ ItemDetails getAveragePrice(const json& list) {
 ItemDetails fetchItemPrice(const std::string& item) {
 
 
-    cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v1/items/" + item + "/orders?include=item" },
+    cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v2/orders/item/" + item},
         cpr::Header{{"User-Agent","PlatinumEyes/1.0"}}
-        
-        
-
     );
+    /*
     r.status_code;                  // 200
     r.header["content-type"];       // application/json; charset=utf-8
     r.text;                         // JSON text string
-
+    */
+    
 
     json data = json::parse(r.text);
 
 
-    json products = data["payload"]["orders"];
+    json products = data["data"];
 
     ItemDetails price = getAveragePrice(products);
 
     
     if(price.lowestPrices!=std::vector<int>{0,0,0,0,0})
-    determineRarity(price, data["include"]["item"]);
+    //determineRarity(price, data["include"]["item"]);
     //TODO: should be replaced with determining rarity by percentages in warframe pc drops table
 
     return price;
