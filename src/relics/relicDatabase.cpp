@@ -461,7 +461,7 @@ std::vector<std::string> loadAllAvalibleItemsToVector() {
     std::vector<std::string> allItems = {};
 
     std::ifstream inputFile("allItemsFile.txt");
-
+    
     std::string line = "";
 
     while (getline(inputFile, line)) {

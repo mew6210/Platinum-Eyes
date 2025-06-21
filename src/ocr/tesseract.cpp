@@ -5,12 +5,12 @@
 using std::vector, std::string, std::pair;
 
 
-std::vector<std::string> itemsSmallerThan2 = { "bo" };      //all the items that are smaller in name size than 2, should probably do it programatically somehow, but ill do it later TODO
+vector<string> itemsSmallerThan2 = { "bo" };      //all the items that are smaller in name size than 2, should probably do it programatically somehow, but ill do it later TODO
 
 
-std::string filterResults(const std::string& script, const char* charMap, size_t mapSize) {
+string filterResults(const string& script, const char* charMap, size_t mapSize) {
     std::unordered_set<char> allowedChars(charMap, charMap + mapSize);
-    std::string filteredScript;
+    string filteredScript;
 
     for (char c : script) {
         char upperC = std::toupper(c);  // Convert to uppercase
@@ -22,13 +22,13 @@ std::string filterResults(const std::string& script, const char* charMap, size_t
     return filteredScript;
 }
 
-std::string removeShortWords(std::string& item) {
+string removeShortWords(string& item) {
 
     std::stringstream ss(item);
 
-    std::string word;
+    string word;
 
-    std::vector<std::string> words;
+    vector<string> words;
 
     while (getline(ss, word, ' ')) {
         words.push_back(word);
@@ -36,7 +36,7 @@ std::string removeShortWords(std::string& item) {
 
 
 
-    std::string returnItem;
+    string returnItem;
 
 
     for (auto& word : words) {
@@ -60,7 +60,7 @@ std::string removeShortWords(std::string& item) {
 
 
 
-std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,const string& fileName) {
+vector<string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,const string& fileName) {
     Timer timer = Timer();
     cv::Mat img = cv::imread(fileName);
     if (img.empty()) {
@@ -86,7 +86,7 @@ std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t ite
         cv::Mat fourth_item
             = img(cv::Range(30, img.rows), cv::Range((img.cols / 2 + img.cols / 4), img.cols - 1));
 
-        std::vector<std::string> items;
+        std::vector<string> items;
 
 
         items.push_back(readItemTesseract(first_item, api,false));
@@ -112,7 +112,7 @@ std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t ite
         cv::Mat third_item
             = img(cv::Range(30, img.rows), cv::Range((img.cols / 2), (img.cols / 2 + img.cols / 4 - 1))+space);
         
-        std::vector<std::string> items;
+        std::vector<string> items;
 
 
         items.push_back(readItemTesseract(first_item, api,false));
@@ -137,7 +137,7 @@ std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t ite
         cv::Mat second_item
             = img(cv::Range(30, img.rows), cv::Range(img.cols / 2, img.cols));
 
-        std::vector<std::string> items;
+        std::vector<string> items;
 
 
         items.push_back(readItemTesseract(first_item, api, false));
@@ -155,7 +155,7 @@ std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t ite
 
         cv::Mat first_item
             = img(cv::Range(30, img.rows), cv::Range(0, img.cols));
-        std::vector<std::string> items;
+        std::vector<string> items;
 
         items.push_back(readItemTesseract(first_item, api, false));
         return items;
@@ -167,7 +167,7 @@ std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t ite
     {
 
 
-        std::vector<std::string> items;
+        vector<string> items;
         return items;
 
     }
@@ -184,7 +184,7 @@ std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api,size_t ite
 
 
 //TODO: THESE 3 FUNCTIONS DO EXACTLY THE SAME THING BUT WITH DIFFERENT FILTER MASKS
-std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path,bool showImage) {
+string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path,bool showImage) {
     cv::Mat image = cv::imread(path);
 
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
@@ -195,9 +195,9 @@ std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path,boo
 
 
 
-    static std::string name = "aaa";
+    static string name = "aaa";
     api.SetImage((uchar*)image.data, image.size().width, image.size().height, image.channels(), image.step1());
-    std::string text = api.GetUTF8Text();
+    string text = api.GetUTF8Text();
 
     const char charMap[] = {
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -208,7 +208,7 @@ std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path,boo
     };
     size_t mapSize = sizeof(charMap) / sizeof(charMap[0]);
 
-    std::string result = filterResults(text, charMap, mapSize);
+    string result = filterResults(text, charMap, mapSize);
     if (showImage)cv::imshow(name, image);
     name.append("a");
     //result = replaceChar(result, '\n', " ");
@@ -226,7 +226,7 @@ std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path,boo
 }
 
 
-std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage) {
+string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage) {
     cv::Mat image = cv::imread(path);
 
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
@@ -241,9 +241,9 @@ std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* pat
     cv::threshold(image, image, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
 
 
-    static std::string name = "aaa";
+    static string name = "aaa";
     api.SetImage((uchar*)image.data, image.size().width, image.size().height, image.channels(), image.step1());
-    std::string text = api.GetUTF8Text();
+    string text = api.GetUTF8Text();
 
     const char charMap[] = {
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -254,7 +254,7 @@ std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* pat
     };
     size_t mapSize = sizeof(charMap) / sizeof(charMap[0]);
 
-    std::string result = filterResults(text, charMap, mapSize);
+    string result = filterResults(text, charMap, mapSize);
     if (showImage)cv::imshow(name, image);
     name.append("a");
 
@@ -272,7 +272,7 @@ std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* pat
 
 
 
-std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showImage) {
+string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showImage) {
 
 
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
@@ -295,9 +295,9 @@ std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool s
 
 
 
-    static std::string name = "aaa";
+    static string name = "aaa";
     api.SetImage((uchar*)image.data, image.size().width, image.size().height, image.channels(), image.step1());
-    std::string text = api.GetUTF8Text();
+    string text = api.GetUTF8Text();
 
     const char charMap[] = {
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -305,7 +305,7 @@ std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool s
     };
     size_t mapSize = sizeof(charMap) / sizeof(charMap[0]);
 
-    std::string result = filterResults(text, charMap, mapSize);
+    string result = filterResults(text, charMap, mapSize);
     if(showImage)cv::imshow(name,image);
     name.append("a");
     result = replaceChar(result, '\n', " ");
@@ -353,7 +353,7 @@ std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
 /*
  - takes a screenshot and saves it to the fileName
 */
-void takeScreenshotAndSaveToFile(const int width, const int height,const Point p,std::string& fileName) {
+void takeScreenshotAndSaveToFile(const int width, const int height,const Point p,string& fileName) {
     Timer timer = Timer();
 
     timer.start();
@@ -377,7 +377,7 @@ void takeScreenshotAndSaveToFile(const int width, const int height,const Point p
 /*
  - takes a screenshot and saves it to the fileName
 */
-void takeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, std::string& fileName) {
+void takeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, string& fileName) {
     Timer timer = Timer();
 
     timer.start();
@@ -437,13 +437,13 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     px = coordinatex;
     py = coordinatey;
 
-    std::string fileName = "relicTitleScreenshot.bmp";
+    string fileName = "relicTitleScreenshot.bmp";
     takeScreenshotAndSaveToFile(titleWidth,40,px-5,py-5,fileName);
 
 
 
-    std::string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
-    std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
+    string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
+    string relicParsed = relicMenuTitleStringToRelicString(relicRead);
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
     return relic;
@@ -491,12 +491,12 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     //std::cout << "shift: " << x_shift;
     //std::cout << "new position: " << (px + x_shift) - 5;
     
-    std::string fileName = "relicTitleScreenshot.bmp";
+    string fileName = "relicTitleScreenshot.bmp";
     takeScreenshotAndSaveToFile(titleWidth - titleWidth / 5,40,(px-x_shift)-5,py-5,fileName);
    
 
-    std::string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
-    std::string relicParsed = relicMenuTitleStringToRelicString(relicRead);
+    string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
+    string relicParsed = relicMenuTitleStringToRelicString(relicRead);
     RelicInfo relic = FetchRelicItemPrices(relicParsed);
 
     return relic;
@@ -509,7 +509,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
 
 
 
-bool arePricesEmpty(std::map<std::string, ItemDetails>& itemPrices) {
+bool arePricesEmpty(std::map<string, ItemDetails>& itemPrices) {
 
     for (auto& item : itemPrices) {
         if (item.second.averagePrice != 0) {
@@ -568,7 +568,7 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
     p.y = coordinates.second;
 
    
-    std::string fileName = state.config["screenShotFilePath"];
+    string fileName = state.config["screenShotFilePath"];
     takeScreenshotAndSaveToFile(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]),p,fileName);
 
 
@@ -585,7 +585,7 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
 //your mom
 std::vector<Item> readPreviousFissureRewardsScreen(AppState state) {
 
-    std::string fileName = state.config["screenShotFilePath"];
+    string fileName = state.config["screenShotFilePath"];
     auto itemPrices = screenshotToItems(state,fileName);
 
     return itemPrices;
