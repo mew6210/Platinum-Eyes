@@ -362,12 +362,7 @@ void takeScreenshotAndSaveToFile(const int width, const int height,const Point p
     timer.print("take screenshot");
 
 
-    timer.start();
-
-    
     SaveHBITMAPToFile(bitmap, fileName.c_str());
-    timer.stop();
-    timer.print("saving to file");
     DeleteObject(bitmap);
 
 
@@ -386,34 +381,10 @@ void takeScreenshotAndSaveToFile(const int width, const int height, const int px
     timer.print("take screenshot");
 
 
-    timer.start();
 
 
     SaveHBITMAPToFile(bitmap, fileName.c_str());
-    timer.stop();
-    timer.print("saving to file");
     DeleteObject(bitmap);
-
-
-    /*
-    fileName.pop_back();
-    fileName.pop_back();
-    fileName.pop_back();
-    fileName.pop_back();
-
-    int error = convertBMPtoPNG(fileName);
-
-    myAssert(error != 0, "Error converting bmp to png");
-
-    cv::Mat img = cv::imread("relicTitleScreenshot.png");
-    if (img.empty()) {
-        std::cerr << "Failed to load image.\n";
-        exit(-1);
-    }
-
-    fileName += ".png";
-    */
-
 
 }
 

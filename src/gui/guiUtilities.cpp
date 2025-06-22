@@ -311,7 +311,6 @@ void handleBetweenFrameImGuiUpdates(AppState state) {
 
 void updateFps(AppState& state) {
 
-	//TODO: ADD STOI ERROR HANDLING
 	int newVisibleFps = state.fpsVisible;
 	int newHiddenFps = state.fpsHidden;
 	
