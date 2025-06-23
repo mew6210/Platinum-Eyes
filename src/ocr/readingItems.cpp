@@ -1,132 +1,176 @@
 #include "ocr.h"
 
+using std::string, std::vector, std::pair;
 
-int levenshtein_distance(const std::string& str1, const std::string& str2) {
-    int len_str1 = str1.length();
-    int len_str2 = str2.length();
 
-    // Create a 2D matrix to store distances
-    std::vector<std::vector<int>> matrix(len_str1 + 1, std::vector<int>(len_str2 + 1));
+//should never be used outside readingItems.cpp
+namespace {
 
-    // Initialize the matrix with the base case values
-    for (int i = 0; i <= len_str1; ++i) {
-        matrix[i][0] = i;
-    }
-    for (int j = 0; j <= len_str2; ++j) {
-        matrix[0][j] = j;
-    }
+    int levenshtein_distance(const string& str1, const string& str2) {
+        int len_str1 = str1.length();
+        int len_str2 = str2.length();
 
-    // Compute the Levenshtein distance
-    for (int i = 1; i <= len_str1; ++i) {
-        for (int j = 1; j <= len_str2; ++j) {
-            int cost = (str1[i - 1] == str2[j - 1]) ? 0 : 1;
-            matrix[i][j] = std::min({ matrix[i - 1][j] + 1,        // Deletion
-                                matrix[i][j - 1] + 1,        // Insertion
-                                matrix[i - 1][j - 1] + cost  // Substitution
-                });
+        // Create a 2D matrix to store distances
+        vector<vector<int>> matrix(len_str1 + 1, vector<int>(len_str2 + 1));
+
+        // Initialize the matrix with the base case values
+        for (int i = 0; i <= len_str1; ++i) {
+            matrix[i][0] = i;
         }
-    }
-
-    return matrix[len_str1][len_str2];
-}
-
-// Function for fuzzy search
-std::vector<std::pair<std::string, int>> fuzzy_search(const std::string& query, const std::vector<std::string>& string_list, int threshold = 3) {
-    std::vector<std::pair<std::string, int>> results;
-
-    for (const auto& str : string_list) {
-        int distance = levenshtein_distance(query, str);
-        if (distance <= threshold) {  // If distance is within the threshold, it's a match
-            results.push_back(std::make_pair(str, distance));
+        for (int j = 0; j <= len_str2; ++j) {
+            matrix[0][j] = j;
         }
-    }
 
-    return results;
-}
-
-
-
-
-int levenshtein_distance_weighted(const std::string& str1, const std::string& str2, int end_weight = 2, int begin_weight = 2) {
-    int len_str1 = str1.length();
-    int len_str2 = str2.length();
-
-    // Create a 2D matrix to store distances
-    std::vector<std::vector<int>> matrix(len_str1 + 1, std::vector<int>(len_str2 + 1));
-
-    // Initialize the matrix with the base case values
-    for (int i = 0; i <= len_str1; ++i) {
-        matrix[i][0] = i * (i == len_str1 ? end_weight : begin_weight);
-    }
-    for (int j = 0; j <= len_str2; ++j) {
-        matrix[0][j] = j * (j == len_str2 ? end_weight : begin_weight);
-    }
-
-    // Compute the Levenshtein distance
-    for (int i = 1; i <= len_str1; ++i) {
-        for (int j = 1; j <= len_str2; ++j) {
-            int cost = (str1[i - 1] == str2[j - 1]) ? 0 : 1;
-            int del_cost = matrix[i - 1][j] + (i == len_str1 ? end_weight : 1);
-            int ins_cost = matrix[i][j - 1] + (j == len_str2 ? end_weight : 1);
-            matrix[i][j] = std::min({ del_cost, ins_cost, matrix[i - 1][j - 1] + cost });
+        // Compute the Levenshtein distance
+        for (int i = 1; i <= len_str1; ++i) {
+            for (int j = 1; j <= len_str2; ++j) {
+                int cost = (str1[i - 1] == str2[j - 1]) ? 0 : 1;
+                matrix[i][j] = std::min({ matrix[i - 1][j] + 1,        // Deletion
+                                    matrix[i][j - 1] + 1,        // Insertion
+                                    matrix[i - 1][j - 1] + cost  // Substitution
+                    });
+            }
         }
+
+        return matrix[len_str1][len_str2];
     }
 
-    return matrix[len_str1][len_str2];
-}
+    // Function for fuzzy search
+    vector<pair<string, int>> fuzzy_search(const string& query, const vector<string>& string_list, int threshold = 3) {
+        vector<pair<string, int>> results;
 
-
-
-std::vector<std::pair<std::string, int>> fuzzy_search_weighted(const std::string& query, const std::vector<std::string>& string_list, int threshold = 3, int end_weight = 2, int begin_weight = 2) {
-    std::vector<std::pair<std::string, int>> results;
-
-    for (const auto& str : string_list) {
-        int distance = levenshtein_distance_weighted(query, str, end_weight, begin_weight);
-        if (distance <= threshold) {
-            results.push_back(std::make_pair(str, distance));
+        for (const auto& str : string_list) {
+            int distance = levenshtein_distance(query, str);
+            if (distance <= threshold) {  // If distance is within the threshold, it's a match
+                results.push_back(std::make_pair(str, distance));
+            }
         }
+
+        return results;
     }
 
-    return results;
-}
 
 
 
+    int levenshtein_distance_weighted(const string& str1, const string& str2, int end_weight = 2, int begin_weight = 2) {
+        int len_str1 = str1.length();
+        int len_str2 = str2.length();
 
-int checkIfItemsAreValid(std::vector<std::string>& items, std::vector<std::string>& allItems) {
+        // Create a 2D matrix to store distances
+        vector<vector<int>> matrix(len_str1 + 1, vector<int>(len_str2 + 1));
 
-    std::vector<int> distances;
-    for (const auto& item : items) {
-        std::vector<std::pair<std::string, int>> fuzzySearchResults = fuzzy_search(item, allItems, 10);
+        // Initialize the matrix with the base case values
+        for (int i = 0; i <= len_str1; ++i) {
+            matrix[i][0] = i * (i == len_str1 ? end_weight : begin_weight);
+        }
+        for (int j = 0; j <= len_str2; ++j) {
+            matrix[0][j] = j * (j == len_str2 ? end_weight : begin_weight);
+        }
 
-        
+        // Compute the Levenshtein distance
+        for (int i = 1; i <= len_str1; ++i) {
+            for (int j = 1; j <= len_str2; ++j) {
+                int cost = (str1[i - 1] == str2[j - 1]) ? 0 : 1;
+                int del_cost = matrix[i - 1][j] + (i == len_str1 ? end_weight : 1);
+                int ins_cost = matrix[i][j - 1] + (j == len_str2 ? end_weight : 1);
+                matrix[i][j] = std::min({ del_cost, ins_cost, matrix[i - 1][j - 1] + cost });
+            }
+        }
+
+        return matrix[len_str1][len_str2];
+    }
+
+
+
+    vector<pair<string, int>> fuzzy_search_weighted(const string& query, const vector<string>& string_list, int threshold = 3, int end_weight = 2, int begin_weight = 2) {
+        vector<pair<string, int>> results;
+
+        for (const auto& str : string_list) {
+            int distance = levenshtein_distance_weighted(query, str, end_weight, begin_weight);
+            if (distance <= threshold) {
+                results.push_back(std::make_pair(str, distance));
+            }
+        }
+
+        return results;
+    }
+
+
+
+    /*
+    -uses fuzzy search to find best match for needle item, in haystack allItems
+    -uses threshold MEDIUM
+    -if doesn't find anything thats closer than threshold MEDIUM then returns nullopt.
+    */
+    std::optional<pair<string, int>> findBestMatch(const string& item, vector<string>& allItems) {
+
+        vector<pair<string, int>> fuzzySearchResults = fuzzy_search(item, allItems, fuzzy_threshold::THRESHOLD_MEDIUM);
+
+
         if (!fuzzySearchResults.empty()) {
-            auto minElement = std::min_element(fuzzySearchResults.begin(), fuzzySearchResults.end(),
-                [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+
+            auto minElement = std::min_element(
+                fuzzySearchResults.begin(),
+                fuzzySearchResults.end(),
+                [](const pair<string, int>& a, const pair<string, int>& b) {
                     return a.second < b.second;
                 });
-            distances.push_back(minElement->second);
+
+            return *minElement;
         }
         else {
-            std::cout << "No results found for item: " << item << '\n';
+            warningLog("no results found for item: " + item);
+            return std::nullopt;
         }
-        
-    }
-    int lowThresholdCounter = 0;
-    for (const auto& distance : distances) {
-        if (distance <= fuzzy_threshold::THRESHOLD_LOW) lowThresholdCounter++;
+
     }
 
 
+    
+    int countItemsInsideAThreshold(const vector<int>& distances, int threshold) {
 
-    return lowThresholdCounter;
+
+        int inThresholdCounter = 0;
+        for (const auto& distance : distances) {
+            if (distance <= threshold) inThresholdCounter++;
+        }
+
+        return inThresholdCounter;
+
+    }
+
+
 }
 
 
-void fixItems(std::vector<std::string>& items, std::vector<std::string>& allItems) {
+
+
+/*
+-checks how many items are 'close enough' to be recognized as a valid item string
+-it returns 0(inclusive)-however many items are provided as an int
+-also alerts if there is no resutls for a given string of item
+*/
+int checkIfItemsAreValid(vector<string>& items, vector<string>& allItems) {
+
+    vector<int> distances;
+    for (const auto& item : items) {
+        auto bestMatch = findBestMatch(item, allItems);
+        if (bestMatch) {
+            distances.push_back(bestMatch->second);
+        } 
+    }
+
+    int inThresholdCount = (countItemsInsideAThreshold(distances, fuzzy_threshold::THRESHOLD_LOW));
+
+
+    return inThresholdCount;
+}
+
+
+void fixItems(vector<string>& items, vector<string>& allItems) {
 
     for (auto& item : items) {
-        std::vector<std::pair<std::string, int>> fuzzySearchResults = fuzzy_search_weighted(item, allItems, fuzzy_threshold::THRESHOLD_MEDIUM);
+        vector<pair<string, int>> fuzzySearchResults = fuzzy_search_weighted(item, allItems, fuzzy_threshold::THRESHOLD_MEDIUM);
 
         std::sort(fuzzySearchResults.begin(), fuzzySearchResults.end(), [](auto& left, auto& right) {
             return left.second < right.second;
@@ -136,7 +180,7 @@ void fixItems(std::vector<std::string>& items, std::vector<std::string>& allItem
 
         if (!fuzzySearchResults.empty()) {
             auto minElement = std::min_element(fuzzySearchResults.begin(), fuzzySearchResults.end(),
-                [](const std::pair<std::string, int>& a, const std::pair<std::string, int>& b) {
+                [](const pair<string, int>& a, const pair<string, int>& b) {
                     return a.second < b.second;
                 });
 
@@ -156,11 +200,11 @@ void fixItems(std::vector<std::string>& items, std::vector<std::string>& allItem
 
 
 
-void replaceAnds(std::string& s) {
+void replaceAnds(string& s) {
 
     int pos = s.find("&");
 
-    if (pos != std::string::npos)
+    if (pos != string::npos)
         s.replace(pos, 1, "and");
 }
 
@@ -168,7 +212,7 @@ void replaceAnds(std::string& s) {
 
 void determineRarity(ItemDetails& details, const json& text) {
 
-    std::string id = text["id"];
+    string id = text["id"];
     int ducatsPrice = 0;
     Rarity::level r = Rarity::level::Undefined;
     for (auto& item : text["items_in_set"]) {
@@ -195,13 +239,13 @@ void determineRarity(ItemDetails& details, const json& text) {
 
 
 
-std::vector<std::string> prepareItems(std::vector<std::string>& list) {
+vector<string> prepareItems(vector<string>& list) {
 
-    std::vector<std::string> newlist;
-    for (std::string item : list) {
+    vector<string> newlist;
+    for (string item : list) {
 
 
-        std::string newstring = replaceChar(item, ' ', "_");
+        string newstring = replaceChar(item, ' ', "_");
         replaceAnds(newstring);
         for (auto& x : newstring) {
             x = tolower(x);
@@ -216,9 +260,9 @@ std::vector<std::string> prepareItems(std::vector<std::string>& list) {
 }
 
 
-std::string replaceChar(std::string s, char a, std::string b) {
+string replaceChar(string s, char a, string b) {
 
-    std::string newstring;
+    string newstring;
 
 
     for (char c : s) {
@@ -268,7 +312,7 @@ ItemDetails getAveragePrice(const json& list) {
     }
 
     // Print the 5 lowest prices
-    std::vector<int> lowestPricesVec;
+    vector<int> lowestPricesVec;
     while (!lowestPrices.empty()) {
         lowestPricesVec.push_back(lowestPrices.top());
         lowestPrices.pop();
@@ -286,7 +330,7 @@ ItemDetails getAveragePrice(const json& list) {
 }
 
 
-ItemDetails fetchItemPrice(const std::string& item) {
+ItemDetails fetchItemPrice(const string& item) {
 
 
     cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v2/orders/item/" + item},
@@ -307,7 +351,7 @@ ItemDetails fetchItemPrice(const std::string& item) {
     ItemDetails price = getAveragePrice(products);
 
     
-    if(price.lowestPrices!=std::vector<int>{0,0,0,0,0})
+    if(price.lowestPrices!=vector<int>{0,0,0,0,0})
     //determineRarity(price, data["include"]["item"]);
     //TODO: should be replaced with determining rarity by percentages in warframe pc drops table
 
@@ -317,15 +361,15 @@ ItemDetails fetchItemPrice(const std::string& item) {
 }
 
 
-std::vector<Item> getItemPricesMap(std::vector<std::string>& preparedItems) {
+vector<Item> getItemPricesMap(vector<string>& preparedItems) {
 
 
-    std::vector<Item> itemPrices;
-    std::vector<std::future<Item>> futures;
+    vector<Item> itemPrices;
+    vector<std::future<Item>> futures;
 
 
 
-    for (std::string item : preparedItems) {
+    for (string item : preparedItems) {
        
         //skip items that dont need displaying, like '' or 'forma_blueprint'
         if (item=="") continue;     
@@ -355,9 +399,9 @@ std::vector<Item> getItemPricesMap(std::vector<std::string>& preparedItems) {
 }
 
 //change naming later
-std::string getFormatedAveragePrices(std::vector<int>& lowestPrices) {
+string getFormatedAveragePrices(vector<int>& lowestPrices) {
 
-    std::string s;
+    string s;
     s.append("(");
     for (int i = 0; i < lowestPrices.size(); i++) {
         if (i != lowestPrices.size() - 1) {
@@ -377,7 +421,7 @@ std::string getFormatedAveragePrices(std::vector<int>& lowestPrices) {
 
 
 
-void printItemPrices(std::vector<Item>& itemPrices) {
+void printItemPrices(vector<Item>& itemPrices) {
     std::cout << "Item prices: " << std::endl;
 
     for (Item item : itemPrices) {
@@ -385,7 +429,7 @@ void printItemPrices(std::vector<Item>& itemPrices) {
 
 
 
-        std::vector<int> emptyVector = { 0,0,0,0,0 };
+        vector<int> emptyVector = { 0,0,0,0,0 };
         if (item.itemDetails.averagePrice == 0 && item.itemDetails.lowestPrices== emptyVector) {
             std::cout << item.preparedName<< ": " << "COULDNT FIND ITEM ON THE MARKET" << std::endl;
         }
@@ -400,26 +444,26 @@ void printItemPrices(std::vector<Item>& itemPrices) {
 
 
 
-std::vector<Item> prepareItemsForRead(std::vector<Item>& items) {
+vector<Item> prepareItemsForRead(vector<Item>& items) {
 
-    std::vector<Item> newList = {};
+    vector<Item> newList = {};
 
     for (auto& item : items) {
-        std::string newstring = replaceChar(item.rawName, '_', " ");
+        string newstring = replaceChar(item.rawName, '_', " ");
         replaceAnds(newstring);
 
 
         //newstring[0] = std::toupper(newstring[0]);
 
         std::stringstream stream(newstring);
-        std::string word = "";
-        std::vector<std::string> words = {};
+        string word = "";
+        vector<string> words = {};
         while (stream >> word) {
             words.push_back(word);
         }
 
         
-        std::string capitalizedString = "";
+        string capitalizedString = "";
         for (auto& word : words)
         {
             word[0] = std::toupper(word[0]);

@@ -166,7 +166,7 @@ void generateImGuiTable(AppState state) {
 			ImGui::Text("Waiting for your input...");
 		}
 		else {
-			ImGui::Text("Couldn't find relic rewards :(");
+			ImGui::Text("Couldn't find requested text on screen:(\nLook to console for more info");
 		}
 	}
 	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {

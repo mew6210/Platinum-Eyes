@@ -1,6 +1,6 @@
 #pragma once
 #include "../core/core.h"
-
+#include <optional>
 
 namespace fuzzy_threshold {
 	const int THRESHOLD_LOW = 5;

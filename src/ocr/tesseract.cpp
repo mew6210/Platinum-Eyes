@@ -437,7 +437,6 @@ int calculateShiftWidth(int width, int height) {
 }
 
 
-//your mom
 RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
 
 
@@ -504,9 +503,17 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
  
   
     while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
+        
+        if (itemCount == 0) break;
+        
         itemCount--;
         readResults = readFissureItems(state.tesseractApi, itemCount, fileName);
         preparedItems = prepareItems(readResults);
+    }
+
+    if (itemCount == 0) {
+        errorLog("Could not find fissure rewards items on screen", false);
+        return {};
     }
 
     fixItems(preparedItems, state.allAvalibleItems);
@@ -529,7 +536,6 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 }
 
 
-//your mom
 std::vector<Item> readFissureRewardsScreen(AppState state) {
 
 
@@ -553,7 +559,6 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
 
 
 
-//your mom
 std::vector<Item> readPreviousFissureRewardsScreen(AppState state) {
 
     string fileName = state.config["screenShotFilePath"];
