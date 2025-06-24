@@ -69,115 +69,36 @@ vector<string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,con
     }
 
 
-        
-    switch (itemCount) {
-    case 4:
-    {
-        timer.start();
-        cv::Mat first_item
-            = img(cv::Range(30, img.rows), cv::Range(0, img.cols / 4 - 1));
+    vector<string> items;
+    if (itemCount <= 0 || itemCount > 4) return items;
 
-        cv::Mat second_item
-            = img(cv::Range(30, img.rows), cv::Range(img.cols / 2 - img.cols / 4, img.cols / 2 - 1));
+    timer.start();
 
-        cv::Mat third_item
-            = img(cv::Range(30, img.rows), cv::Range(img.cols / 2, img.cols / 2 + img.cols / 4 - 1));
+    int top = 30;
+    int bottom = img.rows;
 
-        cv::Mat fourth_item
-            = img(cv::Range(30, img.rows), cv::Range((img.cols / 2 + img.cols / 4), img.cols - 1));
+    int totalCols = img.cols;
+    int itemWidth = totalCols / 4;
+    int offset = 0;
 
-        std::vector<string> items;
-
-
-        items.push_back(readItemTesseract(first_item, api,false));
-        items.push_back(readItemTesseract(second_item, api,false));
-        items.push_back(readItemTesseract(third_item, api,false));
-        items.push_back(readItemTesseract(fourth_item, api,false));
-        timer.stop();
-        timer.print("performing tesseract ocr for 4 images");
-
-        return items;
-        break;
-
-    }
-    case 3: {
-        timer.start();
-        int space = (img.cols / 4) / 2;
-        cv::Mat first_item
-            = img(cv::Range(30, img.rows), cv::Range(space, (img.cols / 4 - 1)+space));
-
-        cv::Mat second_item
-            = img(cv::Range(30, img.rows), cv::Range((img.cols / 2 - img.cols / 4), (img.cols / 2 - 1))+space);
-
-        cv::Mat third_item
-            = img(cv::Range(30, img.rows), cv::Range((img.cols / 2), (img.cols / 2 + img.cols / 4 - 1))+space);
-        
-        std::vector<string> items;
-
-
-        items.push_back(readItemTesseract(first_item, api,false));
-        items.push_back(readItemTesseract(second_item, api,false));
-        items.push_back(readItemTesseract(third_item, api,false));
-        timer.stop();
-        timer.print("performing tesseract ocr for 3 images");
-
-        return items;
-
-
-
-
-
-        
-        } ;
-    case 2: { 
-        timer.start();
-        cv::Mat first_item
-            = img(cv::Range(30, img.rows), cv::Range(0, img.cols / 2));
-
-        cv::Mat second_item
-            = img(cv::Range(30, img.rows), cv::Range(img.cols / 2, img.cols));
-
-        std::vector<string> items;
-
-
-        items.push_back(readItemTesseract(first_item, api, false));
-        items.push_back(readItemTesseract(second_item, api, false));
-
-        timer.stop();
-        timer.print("performing tesseract ocr for 2 images");
-
-        return items;
-
-    
-    };
-    case 1:  
-    {
-
-        cv::Mat first_item
-            = img(cv::Range(30, img.rows), cv::Range(0, img.cols));
-        std::vector<string> items;
-
-        items.push_back(readItemTesseract(first_item, api, false));
-        return items;
+    if (itemCount == 3) {
+        offset = itemWidth / 2; // center the 3 items
     }
 
+    for (int i = 0; i < itemCount; ++i) {
+        int startCol = offset + i * itemWidth;
+        int endCol = (i == itemCount - 1) ? totalCols : startCol + itemWidth;
 
-
-    case 0:
-    {
-
-
-        vector<string> items;
-        return items;
-
+        cv::Mat item = img(cv::Range(top, bottom), cv::Range(startCol, endCol));
+        items.push_back(readItemTesseract(item, api, false));
     }
-    }
-    
+
+    timer.stop();
+    timer.print("performing tesseract ocr for " + std::to_string(itemCount) + " images");
+
+    return items;
 
   
-
-
-
 }
 
 
