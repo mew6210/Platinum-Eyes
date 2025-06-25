@@ -29,12 +29,9 @@ int StringToVirtualKeyCode(std::string s) {
         c = std::tolower(c);
     }
 
-
     if (s == "esc") {
         return VK_ESCAPE;
     }
-
-
 
     HKL keyboard = LoadKeyboardLayoutA("00000409", KLF_ACTIVATE);        //primary english US keyboard layout
 
@@ -128,15 +125,12 @@ void reRegisterHotkeys(ToolConfig& config) {
 
 void registerHotkeys(ToolConfig& config) {
     //every registered hotkey is assumed to be: alt+(hotkey)
-
     validateConfigKeybinds(config);
-
     initializeKeyBindingsMap(keyBindings,config);
 
     //loop through every declared hotkey
     for (auto& p : keyBindings) {
     
-
         if (RegisterHotKey(
             NULL,
             p.first,
@@ -149,12 +143,8 @@ void registerHotkeys(ToolConfig& config) {
             warningLog("Failed to register hotkey: Alt + " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
 
         }
-        
 
     }
-
-
-
 
 }
 

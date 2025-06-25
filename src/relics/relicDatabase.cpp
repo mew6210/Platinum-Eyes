@@ -254,9 +254,9 @@ std::pair<bool,bool> shouldUpdateDatabase(ToolConfig& config) {
     
     
 
-    if (is_first_launch(config)) return std::pair<bool,bool>(true,true);
-    if (!doesDatabaseExist()) return std::pair<bool,bool>(true,true);
-    if (checkUpdatingType(config)) return std::pair<bool,bool>(true,false);
+    if (is_first_launch(config)) return pair<bool,bool>(true,true);
+    if (!doesDatabaseExist()) return pair<bool,bool>(true,true);
+    if (checkUpdatingType(config)) return pair<bool,bool>(true,false);
 
 
     return std::pair<bool,bool>(false,false);
@@ -275,7 +275,7 @@ void fetchRelicTable() {
         exit(0);
     }
 
-    std::string line = "";
+    string line = "";
     bool read_flag = false;
     bool close_flag = false;
     while (std::getline(inputFile, line)) {
@@ -317,10 +317,10 @@ Date getNewestUpdateDate() {
 
     std::ifstream inputFile("droptable-raw.html");
 
-    std::string line = "";
+    string line = "";
     bool close_flag = false;
     bool read_flag = false;
-    std::string date_string = "";
+    string date_string = "";
     while (getline(inputFile, line)) {
 
         if (line == "<p><b>Last Update:</b> ") 
@@ -351,17 +351,22 @@ std::string dateToString(Date& date) {
     return currentTimeString;
 }
 
-void updateDatabase(ToolConfig& config,bool forced) {
+cpr::Response downloadFile(const std::string& downloadLink,const std::string& downloadDestination) {
 
-    Date currentDate = getCurrentDate();
-    Date latestUpdateRecorded = stringToDate(config["data_LatestUpdate"]);
-    std::ofstream of("droptable-raw.html", std::ios::binary);
-    cpr::Response r = cpr::Download(of, cpr::Url{ "https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html" });
-    
+    std::ofstream of(downloadDestination, std::ios::binary);
+    cpr::Response r = cpr::Download(of, cpr::Url{ downloadLink });
+
     of.close();
+
+    return r;
+}
+
+void handleSuccesfullDatabaseDownload(cpr::Response& r,ToolConfig& config,bool& forced) {
+    
     if (r.status_code == 200) {
-        Date droptable_raw_date=getNewestUpdateDate();
-        
+        Date latestUpdateRecorded = stringToDate(config["data_LatestUpdate"]);
+        Date droptable_raw_date = getNewestUpdateDate();
+
 
         config.setPropertyValue("data_LatestUpdate", dateToString(droptable_raw_date));
 
@@ -382,11 +387,29 @@ void updateDatabase(ToolConfig& config,bool forced) {
             successLog("Relic database is up to date!");
         }
     }
-    else {
-        errorLog("Couldn't download raw html droptable. Status code: "+r.status_code,false);
-        exit(0);
+}
+
+void handleUnSuccesfullDatabaseDownload(cpr::Response& r) {
+
+    if(r.status_code!=200){
+        errorLog("Couldn't download raw html droptable. Status code: " + r.status_code, true);
     }
+
+}
+
+
+void updateDatabase(ToolConfig& config,bool forced) {
+
+    
    
+    cpr::Response r = downloadFile("https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html", "droptable-raw.html");
+
+
+    handleSuccesfullDatabaseDownload(r,config,forced);
+    
+    handleUnSuccesfullDatabaseDownload(r);
+
+    
     rewriteConfigFile(config);
     std::remove("droptable-raw.html");
 

@@ -285,7 +285,7 @@ void createConfigFile() {
 }
 
 
-void resolveConfigLine(ToolConfig& toolConfig, std::string& line, int it) {
+void resolveConfigLine(ToolConfig& toolConfig, const std::string& line, int it) {
 
     int startingPoint = 0;
 
@@ -297,14 +297,8 @@ void resolveConfigLine(ToolConfig& toolConfig, std::string& line, int it) {
     std::string configProperty = line.substr(startingPoint, whereEnds - 1);
 
 
-
-
-
     std::string key = CONFIGPROPERTIES[it];
     toolConfig.setPropertyValue(key, configProperty);
-
-
-
 
 }
 
