@@ -167,19 +167,29 @@ int checkIfItemsAreValid(vector<string>& items, vector<string>& allItems) {
 }
 
 
-void fixItems(vector<string>& items, vector<string>& allItems) {
+/*
+- tries to find the closest items by fuzzy searching
+- returns true if it succeeded at least once
+- returns false if it failed
+*/
+bool fixItems(vector<string>& items, vector<string>& allItems) {
 
     for (auto& item : items) {
-        vector<pair<string, int>> fuzzySearchResults = fuzzy_search_weighted(item, allItems, fuzzy_threshold::THRESHOLD_MEDIUM);
+        vector<pair<string, int>> fuzzySearchResults = fuzzy_search_weighted(item, allItems, fuzzy_threshold::THRESHOLD_HIGH);
 
-        std::sort(fuzzySearchResults.begin(), fuzzySearchResults.end(), [](auto& left, auto& right) {
+        std::sort(
+            fuzzySearchResults.begin(), 
+            fuzzySearchResults.end(), 
+            [](auto& left, auto& right) {
             return left.second < right.second;
             });
 
 
 
         if (!fuzzySearchResults.empty()) {
-            auto minElement = std::min_element(fuzzySearchResults.begin(), fuzzySearchResults.end(),
+            auto minElement = std::min_element(
+                fuzzySearchResults.begin(), 
+                fuzzySearchResults.end(),
                 [](const pair<string, int>& a, const pair<string, int>& b) {
                     return a.second < b.second;
                 });
@@ -188,14 +198,13 @@ void fixItems(vector<string>& items, vector<string>& allItems) {
             
 
         }
-        else {
-            std::cout << "Couldnt fix item: " << item << "\n";
+
+        else if (items.size() == 1 && fuzzySearchResults.empty()) {
+            return false;
         }
-
-        
-
         
     }
+    return true;
 }
 
 
@@ -378,7 +387,7 @@ vector<Item> getItemPricesMap(vector<string>& preparedItems) {
 
 
         futures.push_back(std::async(std::launch::async, [item]() -> Item {
-            return  Item(item,item, fetchItemPrice(item)) ;     //to change later
+                return  Item(item,item, fetchItemPrice(item)) ;     //to change later
             }
         )
         );

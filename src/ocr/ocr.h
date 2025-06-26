@@ -28,7 +28,7 @@ void printItemPrices(std::vector<Item>& itemPrices);
 std::vector<Item> prepareItemsForRead(std::vector<Item>& items);
 
 
-std::string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api, bool showImage);
+std::pair<std::string, bool> readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api, bool showImage);
 std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api, size_t itemCount,std::string& fileName);
 std::vector<Item> readFissureRewardsScreen(AppState state);
 
@@ -49,4 +49,4 @@ int checkIfItemsAreValid(std::vector<std::string>& items, std::vector<std::strin
 
 
 
-void fixItems(std::vector<std::string>& items, std::vector<std::string>& allItems);
+bool fixItems(std::vector<std::string>& items, std::vector<std::string>& allItems);

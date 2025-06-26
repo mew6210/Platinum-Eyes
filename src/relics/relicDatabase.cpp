@@ -400,10 +400,7 @@ void handleUnSuccesfullDatabaseDownload(cpr::Response& r) {
 
 void updateDatabase(ToolConfig& config,bool forced) {
 
-    
-   
     cpr::Response r = downloadFile("https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html", "droptable-raw.html");
-
 
     handleSuccesfullDatabaseDownload(r,config,forced);
     
@@ -1137,7 +1134,7 @@ RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO 
     for (auto& item : preparedItems) {
         if (item == "") continue;
         if (item == "forma_blueprint") continue;
-
+        if (item == "2x_forma_blueprint") continue;
 
 
         futures.push_back(std::async(std::launch::async, [item]() -> std::pair<std::string, ItemDetails> {

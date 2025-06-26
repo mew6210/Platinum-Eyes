@@ -59,6 +59,47 @@ string removeShortWords(string& item) {
 }
 
 
+vector<pair<string,bool>> gatherResultsFromFissureRead(cv::Mat& img,size_t itemCount,tesseract::TessBaseAPI& api) {
+    Timer timer = Timer();
+    
+    int top = 30;
+    int bottom = img.rows;
+
+    int totalCols = img.cols;
+    int itemWidth = totalCols / 4;
+    int offset = 0;
+    vector<pair<string, bool>> results;
+    if (itemCount == 3) {
+        offset = itemWidth / 2; // center the 3 items
+    }
+    std::cout << "reading items for count "<<itemCount<<"\n";
+    timer.start();
+    for (int i = 0; i < itemCount; ++i) {
+        int startCol = offset + i * itemWidth;
+        int endCol = startCol + itemWidth;
+
+        cv::Mat item = img(cv::Range(top, bottom), cv::Range(startCol, endCol));
+
+        results.push_back(readItemTesseract(item, api, false));
+    }
+    timer.stop("items count "+std::to_string(itemCount));
+    return results;
+
+}
+
+
+int countFalseAlignments(const vector<pair<string, bool>>& results) {
+
+    int count = 0;
+    for (const auto& result : results) {
+        if (!result.second) count++;
+    }
+    return count;
+
+
+}
+
+
 
 vector<string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,const string& fileName) {
     Timer timer = Timer();
@@ -69,32 +110,25 @@ vector<string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,con
     }
 
 
+
     vector<string> items;
     if (itemCount <= 0 || itemCount > 4) return items;
 
-    timer.start();
+    auto results = gatherResultsFromFissureRead(img, itemCount, api);
 
-    int top = 30;
-    int bottom = img.rows;
+    while (countFalseAlignments(results)>0) {
+        itemCount--;
+        if (itemCount == 0) break;
+        
 
-    int totalCols = img.cols;
-    int itemWidth = totalCols / 4;
-    int offset = 0;
-
-    if (itemCount == 3) {
-        offset = itemWidth / 2; // center the 3 items
+        results = gatherResultsFromFissureRead(img, itemCount, api);
     }
 
-    for (int i = 0; i < itemCount; ++i) {
-        int startCol = offset + i * itemWidth;
-        int endCol = (i == itemCount - 1) ? totalCols : startCol + itemWidth;
-
-        cv::Mat item = img(cv::Range(top, bottom), cv::Range(startCol, endCol));
-        items.push_back(readItemTesseract(item, api, false));
+    for (const auto& [name, correctness] : results) {
+        items.push_back(name);
     }
 
-    timer.stop();
-    timer.print("performing tesseract ocr for " + std::to_string(itemCount) + " images");
+   
 
     return items;
 
@@ -193,7 +227,7 @@ string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bo
 
 
 
-string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showImage) {
+pair<string,bool> readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showImage) {
 
 
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
@@ -216,9 +250,8 @@ string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showIm
 
 
 
-    static string name = "aaa";
+    
     api.SetImage((uchar*)image.data, image.size().width, image.size().height, image.channels(), image.step1());
-    string text = api.GetUTF8Text();
 
     const char charMap[] = {
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
@@ -226,19 +259,87 @@ string readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api,bool showIm
     };
     size_t mapSize = sizeof(charMap) / sizeof(charMap[0]);
 
-    string result = filterResults(text, charMap, mapSize);
-    if(showImage)cv::imshow(name,image);
-    name.append("a");
-    result = replaceChar(result, '\n', " ");
-    trim(result);
+
+
+    api.Recognize(0);
+
+    tesseract::ResultIterator* ri = api.GetIterator();
+    tesseract::PageIteratorLevel level = tesseract::RIL_WORD;
+
+  
+    int lowestXPosition = INT_MAX;
+    int highestXPosition = 0;
+    string item = "";
+
+    if (ri != nullptr) {
+        do {
+            const char* wordPtr = ri->GetUTF8Text(level);
+            if (!wordPtr) continue;  // If nothing recognized, skip this
+
+            std::string word = wordPtr;
+            delete[] wordPtr;
+
+            float conf = ri->Confidence(level);
+
+            int x1, y1, x2, y2;
+            ri->BoundingBox(level, &x1, &y1, &x2, &y2);
+
+            std::string wordFiltered = filterResults(word, charMap, mapSize);
+            wordFiltered = replaceChar(wordFiltered, '\n', " ");
+            trim(wordFiltered);
+            wordFiltered = removeShortWords(wordFiltered);
+            trim(wordFiltered);
+
+            if (wordFiltered.empty()) continue;
+
+           
+
+
+
+
+            if (x1 < lowestXPosition) lowestXPosition = x1;
+            if (x2 > highestXPosition) highestXPosition = x2;
+
+            item += wordFiltered + " ";
+
+        } while (ri->Next(level));
+
+    }
+
+        
+        
+        static int iteration = 1;
+
+        string name = "Iteration: "+std::to_string(iteration);
+        //std::cout << "Iteration: " << std::to_string(iteration) << " Image width: " << image.size().width;
+        iteration++;
+        
+        if(showImage)cv::imshow(name,image);
+        name.append("a");
+        item = replaceChar(item, '\n', " ");
+        trim(item);
     
-    result = removeShortWords(result);
-    trim(result);
+        item = removeShortWords(item);
+        trim(item);
 
 
-    std::cout <<"Reading result: " << result << "\n";
 
-    return result;
+        int wrongAlignments = 0;
+
+        //std::cout << "Lowest position: " << lowestXPosition << "\nHighest position: " << highestXPosition << "\n";
+        if (abs((image.size().width - highestXPosition) - lowestXPosition) > image.size().width * 0.1) {
+            wrongAlignments++;
+            warningLog("Wrong item count, should retry with lower item count");
+            return { item,false };
+        }
+        else {
+            //std::cout << "Success, correct item count";
+            std::cout << "Reading result: " << item << "\n";
+            return { item,true };
+        }
+
+
+        
 
 
 }
@@ -421,8 +522,8 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 
     vector<string> readResults = readFissureItems(state.tesseractApi, itemCount, fileName);
     vector<string> preparedItems = prepareItems(readResults);
- 
-  
+    
+  /*
     while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
         
         if (itemCount == 0) break;
@@ -431,13 +532,14 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
         readResults = readFissureItems(state.tesseractApi, itemCount, fileName);
         preparedItems = prepareItems(readResults);
     }
+    */
 
-    if (itemCount == 0) {
+
+    if (!fixItems(preparedItems, state.allAvalibleItems)) {
         errorLog("Could not find fissure rewards items on screen", false);
         return {};
     }
-
-    fixItems(preparedItems, state.allAvalibleItems);
+    
 
     preparedItems = prepareItems(preparedItems);
 
