@@ -818,6 +818,36 @@ std::string rarityToString(Rarity::level r) {
 
 }
 
+bool compareWithRoundingErrors(float number,float compareTo) {
+
+    constexpr float EPSILON = 0.0001;
+
+    return std::abs(number - compareTo) < EPSILON;
+    
+
+
+}
+
+void compareRaritiesToPercentages(std::tuple<string,float,ItemDetails>& item,const vector<float>& percantages) {
+
+
+    if (percantages.size() != 3) errorLog("wrong amount of percantages in compareRaritiesToPercantages", true);
+
+
+    if (compareWithRoundingErrors(std::get<1>(item), percantages[0])) {
+        std::get<2>(item).rarity = Rarity::Common;
+    }
+    if (compareWithRoundingErrors(std::get<1>(item), percantages[1])) {
+        std::get<2>(item).rarity = Rarity::Uncommon;
+    }
+    if (compareWithRoundingErrors(std::get<1>(item), percantages[2])) {
+        std::get<2>(item).rarity = Rarity::Rare;
+    }
+
+
+
+
+}
 
 
 
@@ -825,10 +855,10 @@ void fixRarity(RelicInfo& relic) {
 
     int grade = 0;
 
-    if (relic.name.find("Intact") != -1) grade = 1;
-    if (relic.name.find("Exceptional") != -1) grade = 2;
-    if (relic.name.find("Flawless") != -1) grade = 3;
-    if (relic.name.find("Radiant") != -1) grade = 4;
+    if (relic.name.find("Intact") != std::string::npos) grade = 1;
+    else if (relic.name.find("Exceptional") != std::string::npos) grade = 2;
+    else if (relic.name.find("Flawless") != std::string::npos) grade = 3;
+    else if (relic.name.find("Radiant") != std::string::npos) grade = 4;
 
 
     
@@ -839,94 +869,41 @@ void fixRarity(RelicInfo& relic) {
         
         for (auto& item : relic.items) {
 
-            if (std::get<1>(item) == 25.33) {
-                std::get<2>(item).rarity = Rarity::Common;
-            }
-            if (std::get<1>(item) == 11.0) {
-                std::get<2>(item).rarity = Rarity::Uncommon;
-            }
-            if (std::get<1>(item) == 2.0) {
-                std::get<2>(item).rarity = Rarity::Rare;
-            }
-
-
-
-
+            compareRaritiesToPercentages(item, { 25.33f,11.0f,2.0f });
 
         }
-        
-        
-        
-        
+
         break; };
     case 2: { 
         
         for (auto& item : relic.items) {
 
-            if (std::get<1>(item) == 23.33) {
-                std::get<2>(item).rarity = Rarity::Common;
-            }
-            if (std::get<1>(item) == 13.0) {
-                std::get<2>(item).rarity = Rarity::Uncommon;
-            }
-            if (std::get<1>(item) == 4.0) {
-                std::get<2>(item).rarity = Rarity::Rare;
-            }
-
-
-
-
+            compareRaritiesToPercentages(item, { 25.33f,13.0f,4.0f });
 
         }
-        
-        
+
         break; };
     case 3: { 
         
         for (auto& item : relic.items) {
 
-            if (std::get<1>(item) == 20.0) {
-                std::get<2>(item).rarity = Rarity::Common;
-            }
-            if (std::get<1>(item) == 17.0) {
-                std::get<2>(item).rarity = Rarity::Uncommon;
-            }
-            if (std::get<1>(item) == 6.0) {
-                std::get<2>(item).rarity = Rarity::Rare;
-            }
-
-
-
-
+            compareRaritiesToPercentages(item, { 20.0f,17.0f,6.0f });
 
         }
-        
-        
-        
+    
         break; };
     case 4: { 
         
         for (auto& item : relic.items) {
-
-            if (std::get<1>(item) == 16.67) {
-                std::get<2>(item).rarity = Rarity::Common;
-            }
-            if (std::get<1>(item) == 20.0) {
-                std::get<2>(item).rarity = Rarity::Uncommon;
-            }
-            if (std::get<1>(item) == 10.0) {
-                std::get<2>(item).rarity = Rarity::Rare;
-            }
-
-
-
-
+         
+            compareRaritiesToPercentages(item, { 16.67f,20.0f,10.0f });
 
         }
         
-        
         break; };
-    case 0: { break; }
+
+    case 0: { 
+    break; }
 
 
     }
