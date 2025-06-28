@@ -12,7 +12,7 @@ int main()
     ToolConfig toolConfig = initConfig();
     loadRelicDatabase(toolConfig);
     registerHotkeys(toolConfig);
-
+    loadWFMD();
 
     WindowParameters sfmlSize = getWindowSize("sfml", toolConfig);
     WindowParameters imguiSize = getWindowSize("imgui", toolConfig);

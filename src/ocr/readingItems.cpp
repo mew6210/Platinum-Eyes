@@ -219,20 +219,13 @@ void replaceAnds(string& s) {
 
 
 
-void determineRarity(ItemDetails& details, const json& text) {
+void determineRarity(ItemDetails& details,const int& ducats) {
 
-    string id = text["id"];
-    int ducatsPrice = 0;
+
+
     Rarity::level r = Rarity::level::Undefined;
-    for (auto& item : text["items_in_set"]) {
-        if (item["id"] == id) {
-            ducatsPrice = item["ducats"];
-        }
-    }
 
-    
-
-    switch (ducatsPrice) {
+    switch (ducats) {
     case 15: r = Rarity::level::Common; break;
     case 25: r = Rarity::level::Common; break;
     case 45: r = Rarity::level::Uncommon; break;
@@ -360,8 +353,12 @@ ItemDetails fetchItemPrice(const string& item) {
     ItemDetails price = getAveragePrice(products);
 
     
-    if(price.lowestPrices!=vector<int>{0,0,0,0,0})
-    //determineRarity(price, data["include"]["item"]);
+    if (price.lowestPrices != vector<int>{0, 0, 0, 0, 0}) {
+
+        int ducats = getDucatsFromSlug(item);
+        determineRarity(price, ducats);
+    }
+   
     //TODO: should be replaced with determining rarity by percentages in warframe pc drops table
 
     return price;

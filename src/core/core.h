@@ -334,6 +334,15 @@ public:
 
 
 
+struct WFMItem {
+
+	std::string slug = "";
+	std::vector<std::string> tags = {};
+	int ducats = 0;
+
+};
+
+
 
 
 struct AppState {
@@ -408,6 +417,7 @@ const std::vector<Item> exampleItems = {
 #include "../gui/gui.h"
 #include "../config/config.h"
 #include "../relics/relics.h"
+#include "../wfmd/wfmd.hpp"
 
 
 void mainLoop(AppState& state);

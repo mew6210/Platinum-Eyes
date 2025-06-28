@@ -64,7 +64,7 @@ add_executable (
         "src/utilities/utilities.h" 
         "src/gui/gui.h" 
         "src/keybindings/keybindings.h" 
-        "src/relics/relics.h" "src/core/core.cpp")
+        "src/relics/relics.h" "src/core/core.cpp" "src/wfmd/wfmd.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
