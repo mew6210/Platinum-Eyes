@@ -21,40 +21,65 @@ int getDucatsFromSlug(const string& slug) {
 
 }
 
+json fetchJsonBlobWFMAllItems() {
 
-vector<WFMItem>fetchWFMItems() {
+	cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v2/items" },
+		cpr::Header{ {"User-Agent","PlatinumEyes/1.0"} ,
+		 {"Accept-Encoding","gzip"} });
 
+	if (r.status_code == 0) {
+		errorLog("Check your internet conenction, could not download warframe market database", true);
+		return {};
+	}
+
+	if (r.status_code != 200) {
+		errorLog("Could not fetch items from warframe market", false);
+		return {};
+	}
+	json data;
+	try {
+		data = json::parse(r.text);
+	}
+	catch (const nlohmann::json::parse_error& err) {
+		errorLog("Could not parse json blob from warframe market" + string(err.what()), false);
+		return {};
+	}
+
+	return data;
+
+
+}
+
+
+vector<WFMItem> parseJsonBlobToWFMItems(const json& data) {
 	vector<WFMItem> items = {};
-
-    cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v2/items"},
-        cpr::Header{ {"User-Agent","PlatinumEyes/1.0"} ,
-		 {"Accept-Encoding","gzip"}
-		
-		
-		}
-
-    );
-
-
-    json data = json::parse(r.text);
-
-
-    json products = data["data"];
-
+	json products;
+	if (data.contains("data")) products = data["data"];
+	else {
+		errorLog("Incorrect json format, couldn't find 'data' field", false);
+		return {};
+	}
+	items.reserve(products.size());
 	for (auto& product : products) {
 		WFMItem item = {};
 
 		if (product.contains("slug")) item.slug = product["slug"];
 		if (product.contains("tags")) item.tags = product["tags"];
 		if (product.contains("ducats")) item.ducats = product["ducats"];
-		
+
 		items.push_back(item);
 
 
 	}
-
-
 	return items;
+
+}
+
+
+vector<WFMItem>fetchWFMItems() {
+
+	auto data = fetchJsonBlobWFMAllItems();
+	return parseJsonBlobToWFMItems(data);
 
 }
 
@@ -81,7 +106,7 @@ vector<WFMItem> filteredItems(const vector<WFMItem>& items) {
 }
 
 
-void saveWFMItemsToFile(vector<WFMItem>& items) {
+void saveWFMItemsToFile(const vector<WFMItem>& items) {
 
 	std::ofstream file("wfmItems.txt");
 
@@ -98,12 +123,10 @@ void saveWFMItemsToFile(vector<WFMItem>& items) {
 
 void loadWFMD() {
 
-	
 	auto items = fetchWFMItems();
-	
 	items=filteredItems(items);
-
 	saveWFMItemsToFile(items);
-	
 
+	if (items.size() != 0) successLog("Loaded Warframe Market Database");
+	else errorLog("Something went wrong during loading Warframe Market Database, displaying rarities might fail.", false);
 }

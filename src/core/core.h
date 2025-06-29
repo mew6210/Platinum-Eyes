@@ -422,3 +422,4 @@ const std::vector<Item> exampleItems = {
 
 void mainLoop(AppState& state);
 std::pair<int, int> getFps(ToolConfig& toolConfig);
+void loadDatabases(ToolConfig& toolConfig);

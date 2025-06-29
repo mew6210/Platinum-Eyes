@@ -30,6 +30,18 @@ pair<int, int> getFps(ToolConfig& toolConfig) {
 }
 
 
+void loadDatabases(ToolConfig& toolConfig) {
+
+    auto updateOrders = shouldUpdateDatabase(toolConfig);
+
+
+    loadRelicDatabase(toolConfig,updateOrders);
+
+    if(updateOrders.first) loadWFMD();
+    
+}
+
+
 void mainLoop(AppState& state) {
 
     sf::Clock deltaClock;

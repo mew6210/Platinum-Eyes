@@ -392,7 +392,13 @@ void handleSuccesfullDatabaseDownload(cpr::Response& r,ToolConfig& config,bool& 
 void handleUnSuccesfullDatabaseDownload(cpr::Response& r) {
 
     if(r.status_code!=200){
-        errorLog("Couldn't download raw html droptable. Status code: " + r.status_code, true);
+        if (r.status_code == 0) {
+            errorLog("Check your internet connection, could not download raw html droptable.", true);
+        }
+        else {
+           errorLog("Couldn't download raw html droptable. Status code: " + std::to_string(r.status_code), true);
+        }
+       
     }
 
 }
@@ -423,15 +429,11 @@ void updateCurrentDate(ToolConfig& config) {
 }
 
 
-void loadRelicDatabase(ToolConfig& config) {
-
-    std::pair<bool, bool> updateOrders = shouldUpdateDatabase(config);
+void loadRelicDatabase(ToolConfig& config,pair<bool,bool>& updateOrders) {
 
     if (updateOrders.first) {
         updateDatabase(config,updateOrders.second);
     }
-
-
 
     updateCurrentDate(config);
 }

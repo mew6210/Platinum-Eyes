@@ -10,9 +10,9 @@ int main()
     RelicInfo currentRelic;
 
     ToolConfig toolConfig = initConfig();
-    loadRelicDatabase(toolConfig);
+    loadDatabases(toolConfig);
     registerHotkeys(toolConfig);
-    loadWFMD();
+    
 
     WindowParameters sfmlSize = getWindowSize("sfml", toolConfig);
     WindowParameters imguiSize = getWindowSize("imgui", toolConfig);
