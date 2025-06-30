@@ -258,7 +258,12 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "fpsHidden") {
             configFile << "10";
         }
-    
+        else if (configProperty == "clipboardCopy") {
+            configFile << "yes";
+        }
+        else if (configProperty == "clipboardWatermark") {
+            configFile<<"yes";
+        }
     
     
 

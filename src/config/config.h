@@ -56,6 +56,13 @@ const std::vector<std::string> fpsNames = {
 
 };
 
+const std::vector<std::string> clipboardNames = {
+
+	"clipboardCopy",
+	"clipboardWatermark"
+
+};
+
 
 bool contains(std::vector<std::string> targets, std::vector<std::string> differences);
 bool keyBindsChanged(std::vector<std::string> differences);

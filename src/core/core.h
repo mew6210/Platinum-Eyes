@@ -97,7 +97,11 @@ const std::string CONFIGPROPERTIES[] = {
 	"updatingType",
 
 	"fpsVisible",
-	"fpsHidden"
+	"fpsHidden",
+
+	"clipboardCopy",
+	"clipboardWatermark"
+
 
 };
 
@@ -314,7 +318,9 @@ class Item {
 public:
 
 	std::string preparedName = "";
+
 	std::string rawName = "";
+
 	ItemDetails itemDetails;
 
 

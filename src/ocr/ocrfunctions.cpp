@@ -186,7 +186,7 @@ void saveScreenshotToClipboard(HBITMAP bitmap) {
 
 
 
-std::string getClipboardItemText(std::vector<Item>& items) {
+std::string getClipboardItemText(AppState& state,std::vector<Item>& items) {
 
     std::string returnString = "";
     
@@ -206,7 +206,7 @@ std::string getClipboardItemText(std::vector<Item>& items) {
 
     }
 
-    returnString += " Lowest prices from warframe market provided by Platinum-Eyes on github";
+    if(state.config["clipboardWatermark"]=="yes") returnString += " Lowest prices from warframe market provided by Platinum-Eyes on github";
 
     return returnString;
 }
@@ -232,13 +232,13 @@ HGLOBAL loadStringToMemory(std::string& text) {
 
 
 
-void saveItemsToClipboard(std::vector<Item>& items) {
+void saveItemsToClipboard(AppState& state, std::vector<Item>& items) {
     OpenClipboard(NULL);
     EmptyClipboard();
 
     std::string text = "";
     
-    text = getClipboardItemText(items);
+    text = getClipboardItemText(state,items);
 
     HGLOBAL textInMemory = loadStringToMemory(text);
 

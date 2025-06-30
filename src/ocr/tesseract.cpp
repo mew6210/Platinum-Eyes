@@ -553,7 +553,8 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
     itemPrices = prepareItemsForRead(itemPrices);
     printItemPrices(itemPrices);
 
-    saveItemsToClipboard(itemPrices);
+    if(state.config["clipboardCopy"]=="yes") saveItemsToClipboard(state,itemPrices);
+    
 
     return itemPrices;
 }

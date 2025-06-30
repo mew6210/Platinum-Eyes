@@ -124,6 +124,18 @@ void fpsSettings(string& s1, string& s2) {
 
 }
 
+void clipboardSettings(string& s1, string& s2) {
+
+	renderConfigParams({
+
+		{s1,"clipboardCopy"},
+		{s2,"clipboardWatermark"}
+
+		}, 21);
+
+
+}
+
 
 struct SettingsSection {
 	string title;
@@ -223,7 +235,7 @@ void showSettingsMenu(bool* p_open,AppState& state)
 	static ToolConfig newConfig = state.config;
 
 	#define INITREVERTVAR(k) static const string k##ForRevert = newConfig[#k]
-
+	
 	INITREVERTVAR(screenShotFilePath);
 	INITREVERTVAR(coordinatesOfScreenShotCenter);
 	INITREVERTVAR(screenShotWidth);
@@ -247,6 +259,11 @@ void showSettingsMenu(bool* p_open,AppState& state)
 
 	INITREVERTVAR(fpsVisible);
 	INITREVERTVAR(fpsHidden);
+	
+	INITREVERTVAR(clipboardCopy);
+	INITREVERTVAR(clipboardWatermark);
+
+
 
 
 
@@ -276,6 +293,9 @@ void showSettingsMenu(bool* p_open,AppState& state)
 
 	INITCONFIGVAR(fpsVisible);
 	INITCONFIGVAR(fpsHidden);
+
+	INITCONFIGVAR(clipboardCopy);
+	INITCONFIGVAR(clipboardWatermark);
 	
 
 	sections = {
@@ -298,7 +318,14 @@ void showSettingsMenu(bool* p_open,AppState& state)
 		{"Item Database",
 		"Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet."
 		,[]() {itemDatabaseSettings(updatingType); } },
-		{"Fps","Sets a desired fps limit, both for when window is visible, and when its hidden. 1-whatever, but when its hidden it usually doesnt need to go above 10",[]() {fpsSettings(fpsVisible,fpsHidden); }}
+		{"Fps","Sets a desired fps limit, both for when window is visible, and when its hidden. 1-whatever, but when its hidden it usually doesnt need to go above 10",[]() {fpsSettings(fpsVisible,fpsHidden); }},
+		
+		
+		{"Clipboard",
+		"Here you specify with 'yes' or 'no' whether you want your results to be copied to clipboard, and whether you want this app's watermark in this clipboard result. I hope you leave the watermark on though, it helps this app to be recognizable. Of course if you really dont want it, you can turn it off.",
+		[]() { clipboardSettings(clipboardCopy,clipboardWatermark); }}
+		
+
 
 
 	};
@@ -319,27 +346,28 @@ void showSettingsMenu(bool* p_open,AppState& state)
 			
 			if (ImGui::Button("Revert")) {
 
-				#define REVERT(k) k = k##ForRevert;
+				#define REVERT(k) k = k##ForRevert
 
-				REVERT(screenShotFilePath)
-				REVERT(coordinatesOfScreenShotCenter)
-				REVERT(screenShotWidth)
-				REVERT(screenShotHeight)
-				REVERT(sfmlSize)
-				REVERT(imguiSize)
-				REVERT(keyBind_ReadItemsFromScreen)
-				REVERT(keyBind_EscapeProgram)
-				REVERT(keyBind_ReadPreviousItems)
-				REVERT(keyBind_WindowVisibility)
-				REVERT(keyBind_BackupConfig)
-				REVERT(keyBind_ExampleItems)
-				REVERT(keyBind_ReadRelicTitle)
-				REVERT(fontFile)
-				REVERT(fontSize)
-				REVERT(updatingType)
-
-				REVERT(fpsVisible)
-				REVERT(fpsHidden)
+				REVERT(screenShotFilePath);
+				REVERT(coordinatesOfScreenShotCenter);
+				REVERT(screenShotWidth);
+				REVERT(screenShotHeight);
+				REVERT(sfmlSize);
+				REVERT(imguiSize);
+				REVERT(keyBind_ReadItemsFromScreen);
+				REVERT(keyBind_EscapeProgram);
+				REVERT(keyBind_ReadPreviousItems);
+				REVERT(keyBind_WindowVisibility);
+				REVERT(keyBind_BackupConfig);
+				REVERT(keyBind_ExampleItems);
+				REVERT(keyBind_ReadRelicTitle);
+				REVERT(fontFile);
+				REVERT(fontSize);
+				REVERT(updatingType);
+				REVERT(fpsVisible);
+				REVERT(fpsHidden);
+				REVERT(clipboardCopy);
+				REVERT(clipboardWatermark);
 				
 			}
 			ImGui::SameLine();
@@ -365,6 +393,9 @@ void showSettingsMenu(bool* p_open,AppState& state)
 				SAVE(updatingType);
 				SAVE(fpsVisible);
 				SAVE(fpsHidden);
+				SAVE(clipboardCopy);
+				SAVE(clipboardWatermark);
+
 
 
 				handleConfigChanges(newConfig, state);
