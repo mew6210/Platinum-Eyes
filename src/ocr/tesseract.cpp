@@ -105,7 +105,8 @@ vector<string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,con
     Timer timer = Timer();
     cv::Mat img = cv::imread(fileName);
     if (img.empty()) {
-        errorLog("Failed to load image.",true);
+        errorLog("Could not find requested image image.",false);
+        return {};
         
     }
 
@@ -498,9 +499,6 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
 }
 
 
-
-
-
 bool arePricesEmpty(std::map<string, ItemDetails>& itemPrices) {
 
     for (auto& item : itemPrices) {
@@ -523,16 +521,6 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
     vector<string> readResults = readFissureItems(state.tesseractApi, itemCount, fileName);
     vector<string> preparedItems = prepareItems(readResults);
     
-  /*
-    while (checkIfItemsAreValid(preparedItems, state.allAvalibleItems) == 0) {
-        
-        if (itemCount == 0) break;
-        
-        itemCount--;
-        readResults = readFissureItems(state.tesseractApi, itemCount, fileName);
-        preparedItems = prepareItems(readResults);
-    }
-    */
 
 
     if (!fixItems(preparedItems, state.allAvalibleItems)) {
