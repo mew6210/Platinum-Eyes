@@ -623,7 +623,7 @@ namespace {
 
     }
 
-    void allItemsToFile() {
+    void allItemsToOneFile() {
 
         std::unordered_map<string, ifstream> inputFiles;
         inputFiles.emplace("lith", ifstream("relictable_lith.txt"));
@@ -634,10 +634,6 @@ namespace {
         checkInputFiles(inputFiles);
 
         parseAllItemsToFile(inputFiles);
-
-        for (auto& [name, inputFile] : inputFiles) {
-            inputFile.close();
-        }
 
     }
 
@@ -674,12 +670,8 @@ int parseRelicData() {
         
     }
 
-    inputFile.close();
-    for (auto& [name, outputFile] : outputFiles) {
-        outputFile.close();
-    }
 
-    allItemsToFile();
+    allItemsToOneFile();
 
     return 0;
 }
