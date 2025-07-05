@@ -2,7 +2,7 @@
 #include <regex>
 #include <ctime>
 
-using std::vector, std::string, std::pair;
+using std::vector, std::string, std::pair,std::ofstream,std::ifstream;
 
 vector<string> explode(const string& s, const char& c)
 {
@@ -201,13 +201,13 @@ void replaceAmp(string& s) {
 
     size_t pos = s.find(amp);
 
-    if (pos != std::string::npos)
+    if (pos != string::npos)
         s.replace(pos, amp.length(), "&");
 }
 
 bool doesDatabaseExist() {
 
-    std::ifstream txtDatabase;
+    ifstream txtDatabase;
     
     txtDatabase.open("relictable_lith.txt");
 
@@ -264,7 +264,7 @@ bool checkUpdatingType(ToolConfig& config) {
 
 //first is if it should update, and second is how it should be updated
 //if its false, then it should check the recency of the update, if true, then the update should be forced no matter what
-std::pair<bool,bool> shouldUpdateDatabase(ToolConfig& config) {
+pair<bool,bool> shouldUpdateDatabase(ToolConfig& config) {
     
     
 
@@ -273,7 +273,7 @@ std::pair<bool,bool> shouldUpdateDatabase(ToolConfig& config) {
     if (checkUpdatingType(config)) return pair<bool,bool>(true,false);
 
 
-    return std::pair<bool,bool>(false,false);
+    return pair<bool,bool>(false,false);
 }
 
 void fetchRelicTable() {
@@ -329,7 +329,7 @@ Date getNewestUpdateDate() {
 
     Date updateDate;
 
-    std::ifstream inputFile("droptable-raw.html");
+    ifstream inputFile("droptable-raw.html");
 
     string line = "";
     bool close_flag = false;
@@ -460,28 +460,28 @@ void loadRelicDatabase(ToolConfig& config,pair<bool,bool>& updateOrders) {
 
 
 
-int determineRelicType(std::string& relicname) {
+int determineRelicType(const string& relicname) {
 
-    if (relicname.find("Lith") != std::string::npos) {
+    if (relicname.find("Lith") != string::npos) {
         return RELICTYPE_Lith;
 
     }
-    if (relicname.find("Meso") != std::string::npos) {
+    if (relicname.find("Meso") != string::npos) {
         return RELICTYPE_Meso;
     }
-    if (relicname.find("Neo") != std::string::npos) {
+    if (relicname.find("Neo") != string::npos) {
         return RELICTYPE_Neo;
     }
-    if (relicname.find("Axi") != std::string::npos) {
+    if (relicname.find("Axi") != string::npos) {
         return RELICTYPE_Axi;
     }
     return -1;
 }
 
 
-void writeToRelicFile(std::ofstream& outputFile,std::string& relicname,std::string& line,int& cursor) {
+void writeToRelicFile(std::ofstream& outputFile,const string& relicname,const string& line,int& cursor) {
     outputFile << relicname << "\n";
-    std::pair<std::string, std::string> item = parseItemFromHtmlLine(line, cursor);
+    pair<string, string> item = parseItemFromHtmlLine(line, cursor);
     outputFile << "\t" << item.first << "---" << item.second << "\n";
 
     for (int i = 0; i < 5; i++) {
@@ -492,13 +492,13 @@ void writeToRelicFile(std::ofstream& outputFile,std::string& relicname,std::stri
 }
 
 
-std::vector<std::string> loadAllAvalibleItemsToVector() {
+vector<string> loadAllAvalibleItemsToVector() {
 
-    std::vector<std::string> allItems = {};
+    vector<string> allItems = {};
 
-    std::ifstream inputFile("allItemsFile.txt");
+    ifstream inputFile("allItemsFile.txt");
     
-    std::string line = "";
+    string line = "";
 
     while (getline(inputFile, line)) {
 
@@ -551,162 +551,135 @@ void processAllItemsFromTypeFile(std::ifstream& typeFile,std::vector<std::string
 }
 
 
-void parseAllItemsToFile(std::ifstream& lithFile, std::ifstream& mesoFile, std::ifstream& NeoFile, std::ifstream& AxiFile) {
+void parseAllItemsToFile(std::unordered_map<string,std::ifstream>& inputFiles) {
     
-    std::vector<std::string> alreadyReadItems;
+    vector<string> alreadyReadItems;
+    ofstream allItemsFile("allItemsFile.txt");
 
-    std::ofstream allItemsFile("allItemsFile.txt");
-
-
-    processAllItemsFromTypeFile(lithFile,alreadyReadItems,allItemsFile);
-    processAllItemsFromTypeFile(mesoFile,alreadyReadItems,allItemsFile);
-    processAllItemsFromTypeFile(NeoFile,alreadyReadItems,allItemsFile);
-    processAllItemsFromTypeFile(AxiFile,alreadyReadItems,allItemsFile);
-
+    for (auto& [name, inputFile] : inputFiles) {
+        processAllItemsFromTypeFile(inputFile, alreadyReadItems, allItemsFile);
+    }
 
     allItemsFile.close();
-
-
 }
 
 
 
 
+namespace {
+    //returns non-zero return value if cant open any of those files.
+    bool checkOutputFiles(const std::unordered_map<string,std::ofstream>& fileNames) {
+        for (const auto& [name,outputFile] : fileNames) {
+
+            if (!outputFile.is_open()) {
+                errorLog("Error opening output file: " + name, false);
+                return 1;
+            }
+            
+        }
+        return 0;
+
+    }
+    //same thing as checkOutputFiles but with input files.
+    bool checkInputFiles(const std::unordered_map<string, std::ifstream>& fileNames) {
+        for (const auto& [name, inputFile] : fileNames) {
+
+            if (!inputFile.is_open()) {
+                errorLog("Error opening input file: " + name, false);
+                return 1;
+            }
+
+        }
+        return 0;
+
+    }
+
+    string getRelicName(const string& line,int& cursor) {
+
+        int start = line.find("<th colspan=");
+        cursor = start + 16;
+        int relicnamepos = line.find("<", cursor);
+
+        string relicname = line.substr(cursor, relicnamepos - cursor);
+        cursor += relicname.size();
+
+        return relicname;
+
+    }
+
+    void handleRelic(const string& line,int& cursor,std::unordered_map<string,std::ofstream>& outputFiles ) {
+
+        const string relicname = getRelicName(line, cursor);
+        int relictype = determineRelicType(relicname);
+
+        switch (relictype) {
+        case RELICTYPE_Lith: writeToRelicFile(outputFiles["lith"], relicname, line, cursor); break;
+        case RELICTYPE_Meso: writeToRelicFile(outputFiles["meso"], relicname, line, cursor); break;
+        case RELICTYPE_Neo: writeToRelicFile(outputFiles["neo"], relicname, line, cursor); break;
+        case RELICTYPE_Axi: writeToRelicFile(outputFiles["axi"], relicname, line, cursor); break;
+        case -1: writeToRelicFile(outputFiles["others"], relicname, line, cursor); break;
+
+        }
+
+    }
+
+    void allItemsToFile() {
+
+        std::unordered_map<string, ifstream> inputFiles;
+        inputFiles.emplace("lith", ifstream("relictable_lith.txt"));
+        inputFiles.emplace("meso", ifstream("relictable_meso.txt"));
+        inputFiles.emplace("neo", ifstream("relictable_neo.txt"));
+        inputFiles.emplace("axi", ifstream("relictable_axi.txt"));
+
+        checkInputFiles(inputFiles);
+
+        parseAllItemsToFile(inputFiles);
+
+        for (auto& [name, inputFile] : inputFiles) {
+            inputFile.close();
+        }
+
+    }
+
+
+}
+
 int parseRelicData() {
     // Input HTML-like file
-    std::ifstream inputFile("relictable.html");
+    ifstream inputFile("relictable.html");
     if (!inputFile.is_open()) {
     errorLog("Error opening input file!",false);
         return 1;
     }
+    std::unordered_map<string, ofstream> outputFiles;
+    outputFiles.emplace("others", ofstream("relictable_others.txt"));
+    outputFiles.emplace("lith", ofstream("relictable_lith.txt"));
+    outputFiles.emplace("meso", ofstream("relictable_meso.txt"));
+    outputFiles.emplace("neo", ofstream("relictable_neo.txt"));
+    outputFiles.emplace("axi", ofstream("relictable_axi.txt"));
+    
 
-    // Output file to save parsed data
-    std::ofstream outputFile_others("relictable_others.txt");
-    if (!outputFile_others.is_open()) {
-    errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ofstream outputFileLith("relictable_lith.txt");
-    if (!outputFileLith.is_open()) {
-    errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ofstream outputFileMeso("relictable_meso.txt");
-    if (!outputFileMeso.is_open()) {
-    errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ofstream outputFileNeo("relictable_neo.txt");
-    if (!outputFileNeo.is_open()) {
-    errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ofstream outputFileAxi("relictable_axi.txt");
-    if (!outputFileAxi.is_open()) {
-    errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ofstream outputFile;
+    if (checkOutputFiles(outputFiles) != 0) return 1;
 
-
-
-    std::vector<int> howMany;
-    std::string line = "";
-    std::vector < std::pair < std::string, std::string>> items;
-    while (getline(inputFile,line)) {
-        int relictype = 0;
         
+    string line = "";
+    while (getline(inputFile,line)) {
+
         replaceAmp(line);
         int cursor = 1;
         if (line.starts_with("    <tr class=")) continue;
-        if (line.find("<th colspan=")!=-1) {
-
-            int start = line.find("<th colspan=");
-            cursor = start+16;
-            int relicnamepos = line.find("<", cursor);
-
-            std::string relicname = line.substr(cursor, relicnamepos - cursor);
-            cursor += relicname.size();
-            
-
-            relictype = determineRelicType(relicname);
-
-            /*
-            int item1start = line.find("td", cursor);
-            item1start += 3;
-            cursor =item1start;
-            int item1end = line.find("<", cursor + 5);
-            std::string item1 = line.substr(cursor, item1end - item1start);
-            std::cout << item1<<"\n";
-            */
-
-            switch (relictype) {
-            case RELICTYPE_Lith: writeToRelicFile(outputFileLith, relicname, line, cursor); break;
-            case RELICTYPE_Meso: writeToRelicFile(outputFileMeso, relicname, line, cursor); break;
-            case RELICTYPE_Neo: writeToRelicFile(outputFileNeo, relicname, line, cursor); break;
-            case RELICTYPE_Axi: writeToRelicFile(outputFileAxi,relicname,line,cursor); break;
-            case -1: writeToRelicFile(outputFile_others,relicname,line,cursor); break;
-
-            }
-            
-
-            
-
-
+        if (line.find("<th colspan=")!=string::npos) {
+            handleRelic(line, cursor, outputFiles);
         }
-
         
     }
 
-    
-    
-
-
     inputFile.close();
-    outputFile_others.close();
-    outputFileLith.close();
-    outputFileMeso.close();
-    outputFileNeo.close();
-    outputFileAxi.close();
-
-
-    std::ifstream inputFileLith("relictable_lith.txt");
-    if (!inputFileLith.is_open()) {
-        errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ifstream inputFileMeso("relictable_meso.txt");
-    if (!inputFileMeso.is_open()) {
-        errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ifstream inputFileNeo("relictable_neo.txt");
-    if (!inputFileNeo.is_open()) {
-        errorLog("Error opening input file!",false);
-        return 1;
-    }
-    std::ifstream inputFileAxi("relictable_axi.txt");
-    if (!inputFileAxi.is_open()) {
-        errorLog("Error opening input file!",false);
-        return 1;
+    for (auto& [name, outputFile] : outputFiles) {
+        outputFile.close();
     }
 
-
-
-
-    parseAllItemsToFile(inputFileLith,
-        inputFileMeso,
-        inputFileNeo,
-        inputFileAxi
-    );
-
-    inputFileLith.close();
-    inputFileMeso.close();
-    inputFileNeo.close();
-    inputFileAxi.close();
-
-
-
+    allItemsToFile();
 
     return 0;
 }
