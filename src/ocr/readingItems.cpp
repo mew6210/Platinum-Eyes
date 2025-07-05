@@ -359,11 +359,8 @@ ItemDetails fetchItemPrice(const string& item) {
         determineRarity(price, ducats);
     }
    
-    //TODO: should be replaced with determining rarity by percentages in warframe pc drops table
 
     return price;
-
-
 }
 
 

@@ -20,35 +20,49 @@ vector<string> explode(const string& s, const char& c)
 }
 
 
+
+namespace {
+    string getHtmlLineItemName(const string& line,int& cursor) {
+
+        if (line.find("td", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        size_t item1start = line.find("td", cursor);
+        item1start += 3;
+        cursor = item1start;
+        if (line.find("<", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        size_t item1end = line.find("<", cursor);
+        std::string item1 = line.substr(cursor, item1end - item1start);
+        cursor += item1.size();
+        return item1;
+    }
+    string getHtmlLineItemPercantage(const string& line, int& cursor) {
+
+
+        if (line.find("<td>", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        size_t item2start = line.find("<td>", cursor);
+        item2start += 4;
+        cursor = item2start;
+        if (line.find("<", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        size_t item2end = line.find("<", cursor);
+        std::string item2 = line.substr(cursor, item2end - item2start);
+        return item2;
+
+    }
+}
+
 /*
     -parses html line into a pair of strings, one for the name and one for the rarity. Example: 
     <tr><td>Akstiletto Prime Barrel</td><td>Uncommon (11.00%)</td></tr> -> <Aksiletto Prime Barrel,Uncommon (11.00%)>
     -then modifies cursor, to be set at the end of this expression, so that when used in a loop will find all occurences of such items in a line.
-    -TODO: throwing exceptions when str.find fails
 */
 pair<string,string> parseItemFromHtmlLine(const string& line,int& cursor) {
 
-    pair<string,string> item;
-    size_t item1start = line.find("td", cursor);
-    item1start += 3;
-    cursor = item1start;
-    size_t item1end = line.find("<", cursor);
-    std::string item1 = line.substr(cursor, item1end - item1start);
-    cursor += item1.size();
-    item.first = item1;
+    string itemName = getHtmlLineItemName(line, cursor);
+    string itemPercentage = getHtmlLineItemPercantage(line, cursor);
 
-    size_t item2start = line.find("<td>",cursor);
-    item2start += 4;
-    cursor = item2start;
-    size_t item2end = line.find("<",cursor);
-    std::string item2 = line.substr(cursor, item2end - item2start);
-    item.second = item2;
-    cursor += item2.size();
+    cursor += itemPercentage.size();
     cursor += 5;
 
-
-
-    return item;
+    return {itemName,itemPercentage};
 }
 
 
