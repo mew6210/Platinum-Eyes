@@ -208,18 +208,19 @@ void generateImGuiTable(AppState state) {
 void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 
 	w.setSize(sf::Vector2u( sfmlParameters.width, sfmlParameters.height ));
-	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - (sfmlParameters.width + 25), 25));
+	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
 	
 }
 
 
 void customizeWindow(AppState& state) {
-	HWND hwnd = state.window.getSystemHandle();
-
-	state.window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width - (state.sfmlSize.width+25), 25));
-	
+	HWND hwnd = state.window.getNativeHandle();
+	state.window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.sfmlSize.width+25), 25));
 	state.window.setFramerateLimit(state.fpsVisible);
-	ImGui::SFML::Init(state.window);
+	
+	if (!ImGui::SFML::Init(state.window)) {
+		errorLog("ImGui::SFML::Init() failed", true);
+	}
 
 	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_EXSTYLE);

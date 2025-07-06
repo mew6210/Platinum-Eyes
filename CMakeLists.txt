@@ -18,9 +18,29 @@ set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
 find_package(Tesseract CONFIG REQUIRED)
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-find_package(imgui CONFIG REQUIRED)
-find_package(ImGui-SFML CONFIG REQUIRED)
+find_package(SFML COMPONENTS Window Graphics CONFIG REQUIRED)
+
+
+
+set(IMGUI_VERSION 1.91.1)
+include(FetchContent)
+FetchContent_Declare(
+  imgui
+  URL "https://github.com/ocornut/imgui/archive/v${IMGUI_VERSION}.zip"
+)
+FetchContent_MakeAvailable(imgui)
+
+
+FetchContent_Declare(
+  imgui-sfml
+  GIT_REPOSITORY https://github.com/SFML/imgui-sfml.git
+  GIT_TAG        v3.0
+ 
+)
+set(IMGUI_DIR ${imgui_SOURCE_DIR})
+FetchContent_MakeAvailable(imgui-sfml)
+
+
 
 find_package(OpenCV REQUIRED)
 find_package(liblzma CONFIG REQUIRED)
@@ -29,11 +49,9 @@ find_path(TERMCOLOR_INCLUE_DIRS "termcolor/termcolor.hpp")
 
 set(LIBRARIES 
 cpr::cpr
-sfml-system 
-sfml-network 
-sfml-graphics 
-sfml-window
-imgui::imgui
+SFML::Graphics 
+SFML::Window
+
 ImGui-SFML::ImGui-SFML
 Dwmapi.lib
 Tesseract::libtesseract
@@ -64,7 +82,12 @@ add_executable (
         "src/utilities/utilities.h" 
         "src/gui/gui.h" 
         "src/keybindings/keybindings.h" 
-        "src/relics/relics.h" "src/core/core.cpp" "src/wfmd/wfmd.cpp")
+        "src/relics/relics.h" 
+        "src/core/core.cpp" 
+        "src/wfmd/wfmd.cpp"
+        
+
+)
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

@@ -59,24 +59,18 @@ void mainLoop(AppState& state) {
 
 
         // handle events
-        sf::Event event;
+        
 
-        while (state.window.pollEvent(event))
+        while (const std::optional event = state.window.pollEvent())
         {
-            ImGui::SFML::ProcessEvent(event);
+            ImGui::SFML::ProcessEvent(state.window,*event);
 
-            if (event.type == sf::Event::Closed)
+            if (event->is<sf::Event::Closed>())
             {
                 // end the program
                 state.running = false;
             }
-            else if (event.type == sf::Event::Resized)
-            {
-                // adjust the viewport when the window is resized
-                glViewport(0, 0, event.size.width, event.size.height);
-            }
-
-
+            
 
 
         }

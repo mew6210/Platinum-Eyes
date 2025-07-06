@@ -25,7 +25,11 @@ int main()
 
 
 
-    sf::RenderWindow window(sf::VideoMode(sfmlSize.width, sfmlSize.height), "Warframe tool", sf::Style::None);
+    sf::RenderWindow window(sf::VideoMode({ 
+        static_cast<unsigned int>(sfmlSize.width), 
+        static_cast<unsigned int>(sfmlSize.height)}),
+        "Warframe tool", 
+        sf::Style::None);
     
         
     bool running = true;
@@ -66,6 +70,7 @@ int main()
 
     mainLoop(state);
 
+    ImGui::SFML::Shutdown();
     tesseractapi.End();
     unregisterHotkeys();
     //std::cout << "Press to leave: ";
