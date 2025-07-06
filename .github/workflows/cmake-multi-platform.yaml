@@ -4,9 +4,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "github_actions_test" ]
+    branches: [ "github_actions_retry" ]
   pull_request:
-    branches: [ "github_actions_test" ]
+    branches: [ "github_actions_retry" ]
 
 jobs:
   build:
