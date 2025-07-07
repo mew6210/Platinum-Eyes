@@ -453,10 +453,10 @@ void loadRelicDatabase(ToolConfig& config,pair<bool,bool>& updateOrders) {
 }
 
 
-#define RELICTYPE_Lith 1
-#define RELICTYPE_Meso 2
-#define RELICTYPE_Neo 3
-#define RELICTYPE_Axi 4
+constexpr auto RELICTYPE_Lith = 1;
+constexpr auto RELICTYPE_Meso = 2;
+constexpr auto RELICTYPE_Neo = 3;
+constexpr auto RELICTYPE_Axi = 4;
 
 
 
