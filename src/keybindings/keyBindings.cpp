@@ -1,26 +1,6 @@
 #include "keybindings.h"
 
 
-class KeyBind {
-
-    int key;
-    std::string description;
-
-public: 
-    KeyBind(int k, std::string s) {
-        key = k;
-        description = s;
-    }
-
-    int getKey() {
-        return key;
-    }
-    std::string getDescription() {
-        return description;
-    }
-
-
-};
 
 
 int StringToVirtualKeyCode(std::string s) {
@@ -127,44 +107,17 @@ void registerHotkeys(ToolConfig& config) {
     //every registered hotkey is assumed to be: alt+(hotkey)
     validateConfigKeybinds(config);
     initializeKeyBindingsMap(keyBindings,config);
-
-    //loop through every declared hotkey
-    for (auto& p : keyBindings) {
-    
-        if (RegisterHotKey(
-            NULL,
-            p.first,
-            MOD_ALT | MOD_NOREPEAT,
-            p.second.getKey()))  
-        {
-            successLog("Successfully registered hotkey: Alt + " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
-        }
-        else {
-            warningLog("Failed to register hotkey: Alt + " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
-
-        }
-
-    }
-
+    registerNativeHotkeys(keyBindings);
 }
 
 void unregisterHotkeys() {
-
-    for (auto& p : keyBindings) {
-        if (UnregisterHotKey(NULL, p.first)) {
-            successLog("Succesfully unregistered Alt + " +VirtualKeyCodeToString(p.second.getKey()));
-        }
-        else {
-            errorLog("Failed to unregister Alt + " + VirtualKeyCodeToString(p.second.getKey()),false);
-        }
-    }
-
+    unregisterNativeHotkeys(keyBindings);
 }
 
 
 
 
-
+//TO NATIVEFY
 void handleEvents(AppState state) {
     
 

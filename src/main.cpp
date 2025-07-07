@@ -44,12 +44,12 @@ int main()
 
 
     AppState state(
+        msg,
         currentFissureItems,
         toolConfig,
         window,
         running,
         visible,
-        msg,
         sfmlSize,
         imguiSize,
         settingsOpen,

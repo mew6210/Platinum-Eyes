@@ -214,7 +214,7 @@ void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 
 
 void customizeWindow(AppState& state) {
-	HWND hwnd = state.window.getNativeHandle();
+	sf::WindowHandle wHandle = state.window.getNativeHandle();
 	state.window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.sfmlSize.width+25), 25));
 	state.window.setFramerateLimit(state.fpsVisible);
 	
@@ -222,13 +222,7 @@ void customizeWindow(AppState& state) {
 		errorLog("ImGui::SFML::Init() failed", true);
 	}
 
-	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
-	style |= WS_EX_TOOLWINDOW;
-	SetWindowLongPtr(hwnd, GWL_EXSTYLE, style);
-	setTransparency(hwnd);
-
-
+	nativeWindowCustomization(state,wHandle);
 
 }
 

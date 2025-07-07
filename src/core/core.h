@@ -4,7 +4,6 @@
 
 #define NOMINMAX
 #include <iostream>
-#include <Windows.h>
 #include <string>
 #include <vector>
 #include <thread>
@@ -18,11 +17,11 @@
 #include<SFML/Graphics/RenderWindow.hpp>
 #include "imgui.h"
 #include "imgui-SFML.h"
-#include <dwmapi.h>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
+
 
 
 
@@ -351,14 +350,24 @@ struct WFMItem {
 
 
 
+
 struct AppState {
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+	MSG& msg;
+#endif
+
+#if __linux__
+		XEvent* msg;
+#endif
+
 
 	std::vector<Item>& items;
 	ToolConfig& config;
 	sf::RenderWindow& window;
 	bool& running;
 	bool& isVisible;
-	MSG& msg;
+	
 	WindowParameters& sfmlSize;
 	WindowParameters& imguiSize;
 	bool& settingsVisible;
@@ -373,12 +382,23 @@ struct AppState {
 
 
 	AppState(
+
+
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+
+		MSG& m,
+#endif
+#if __linux__
+		XEvent* m;
+
+#endif
+
 		std::vector<Item>& i,
 		ToolConfig& c,
 		sf::RenderWindow& w,
 		bool& r,
 		bool& v,
-		MSG& m,
 		WindowParameters& sfmlS,
 		WindowParameters& imguiS,
 		bool& sv,
@@ -391,9 +411,30 @@ struct AppState {
 		int& fv,
 		int& fh
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai),fpsVisible(fv),fpsHidden(fh) {};
+	) :
+		msg(m),
+		items(i), 
+		config(c), 
+		window(w),
+		running(r), 
+		isVisible(v), 
+		
+		sfmlSize(sfmlS),
+		imguiSize(imguiS),
+		settingsVisible(sv),
+		tesseractApi(t),
+		shouldReSizeImGui(sri),
+		itemDisplayFlag(idf),
+		currentRelic(cr),
+		shouldUpdateFonts(suf),
+		allAvalibleItems(aai),
+		fpsVisible(fv),
+		fpsHidden(fh) {};
 
 };
+
+
+
 
 
 
@@ -417,6 +458,30 @@ const std::vector<Item> exampleItems = {
 };
 
 
+
+class KeyBind {
+
+	int key;
+	std::string description;
+
+public:
+	KeyBind(int k, std::string s) {
+		key = k;
+		description = s;
+	}
+
+	int getKey() {
+		return key;
+	}
+	std::string getDescription() {
+		return description;
+	}
+
+
+};
+
+
+
 #include "../ocr/ocr.h"
 #include "../utilities/utilities.h"
 #include "../keybindings/keybindings.h"
@@ -424,6 +489,8 @@ const std::vector<Item> exampleItems = {
 #include "../config/config.h"
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
+#include "../native/native.hpp"
+
 
 
 void mainLoop(AppState& state);
