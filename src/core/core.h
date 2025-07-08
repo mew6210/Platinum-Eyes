@@ -390,7 +390,7 @@ struct AppState {
 		MSG& m,
 #endif
 #if __linux__
-		XEvent* m;
+		XEvent* m,
 
 #endif
 
