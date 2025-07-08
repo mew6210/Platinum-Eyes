@@ -13,8 +13,8 @@
 #include <ranges>
 #include "../utilities/trim.cpp"
 #include <SFML/Window.hpp>
-#include <SFML/OpenGl.hpp>
-#include<SFML/Graphics/RenderWindow.hpp>
+#include <SFML/OpenGL.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include <tesseract/baseapi.h>
