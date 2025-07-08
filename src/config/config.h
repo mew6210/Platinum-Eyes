@@ -79,3 +79,9 @@ WindowParameters getWindowSize(std::string s, ToolConfig& toolconfig);
 void rewriteConfigFile(ToolConfig& config);
 
 ToolConfig initConfig();
+int getScreenResolution(int screenWidth, int screenHeight);
+
+
+#define SCR_Size_NotSpecified 0
+#define SCR_Size_1920x1080 1
+#define SCR_Size_3440x1440 2

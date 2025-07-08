@@ -2,20 +2,6 @@
 
 
 
-HRESULT setTransparency(HWND hWnd)
-{
-	HRESULT hr = S_OK;
-
-	DWM_BLURBEHIND bb = { 0 };
-
-	bb.dwFlags = DWM_BB_ENABLE;
-	bb.fEnable = true;
-	bb.hRgnBlur = NULL;
-
-	hr = DwmEnableBlurBehindWindow(hWnd, &bb);
-	return hr;
-}
-
 
 
 std::map<int, std::string> createIntStringMap(std::map<std::string, ItemDetails> items) {
