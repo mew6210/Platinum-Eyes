@@ -105,7 +105,7 @@ vector<string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,con
     Timer timer = Timer();
     cv::Mat img = cv::imread(fileName);
     if (img.empty()) {
-        errorLog("Could not find requested image image.",false);
+        errorLog(false,"Could not find requested image image.");
         return {};
         
     }
@@ -217,7 +217,7 @@ string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bo
 
     if (result != "")
         std::cout << "Reading result: " << result << "\n";
-    else  errorLog("No text found in its designated area",false);
+    else  errorLog(false,"No text found in its designated area");
 
 
     return result;
@@ -524,7 +524,7 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 
 
     if (!fixItems(preparedItems, state.allAvalibleItems)) {
-        errorLog("Could not find fissure rewards items on screen", false);
+        errorLog(false,"Could not find fissure rewards items on screen");
         return {};
     }
     
@@ -585,7 +585,7 @@ void tesseractInit(tesseract::TessBaseAPI& api) {
 
     
         if (api.Init(nullptr, "eng_fast")) {
-            errorLog("Could not initialize tesseract",false);
+            errorLog(false,"Could not initialize tesseract");
             exit(0);
         }
         else {

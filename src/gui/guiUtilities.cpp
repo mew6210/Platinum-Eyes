@@ -205,7 +205,7 @@ void customizeWindow(AppState& state) {
 	state.window.setFramerateLimit(state.fpsVisible);
 	
 	if (!ImGui::SFML::Init(state.window)) {
-		errorLog("ImGui::SFML::Init() failed", true);
+		errorLog(true,"ImGui::SFML::Init() failed");
 	}
 
 	nativeWindowCustomization(state,wHandle);

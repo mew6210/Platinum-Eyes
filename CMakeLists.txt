@@ -41,10 +41,17 @@ set(IMGUI_DIR ${imgui_SOURCE_DIR})
 FetchContent_MakeAvailable(imgui-sfml)
 
 
+FetchContent_Declare(
+    wood
+    GIT_REPOSITORY https://github.com/mew6210/wood.git
+    GIT_TAG v1.1.0
+)
+FetchContent_MakeAvailable(wood)
+
 
 find_package(OpenCV REQUIRED)
 find_package(liblzma CONFIG REQUIRED)
-find_path(TERMCOLOR_INCLUE_DIRS "termcolor/termcolor.hpp")
+
 
 
 set(LIBRARIES 
@@ -58,6 +65,7 @@ Tesseract::libtesseract
 
 ${OpenCV_LIBS}
 liblzma::liblzma
+wood
 )
 
 
@@ -91,7 +99,7 @@ add_executable (
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${TERMOCOLOR_INCLUDE_DIRS})
+
 
 
 

@@ -24,11 +24,11 @@ vector<string> explode(const string& s, const char& c)
 namespace {
     string getHtmlLineItemName(const string& line,int& cursor) {
 
-        if (line.find("td", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        if (line.find("td", cursor) == string::npos) errorLog(true,"Failed parsing html line");
         size_t item1start = line.find("td", cursor);
         item1start += 3;
         cursor = item1start;
-        if (line.find("<", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        if (line.find("<", cursor) == string::npos) errorLog(true,"Failed parsing html line");
         size_t item1end = line.find("<", cursor);
         std::string item1 = line.substr(cursor, item1end - item1start);
         cursor += item1.size();
@@ -37,11 +37,11 @@ namespace {
     string getHtmlLineItemPercantage(const string& line, int& cursor) {
 
 
-        if (line.find("<td>", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        if (line.find("<td>", cursor) == string::npos) errorLog(true,"Failed parsing html line");
         size_t item2start = line.find("<td>", cursor);
         item2start += 4;
         cursor = item2start;
-        if (line.find("<", cursor) == string::npos) errorLog("Failed parsing html line", true);
+        if (line.find("<", cursor) == string::npos) errorLog(true,"Failed parsing html line");
         size_t item2end = line.find("<", cursor);
         std::string item2 = line.substr(cursor, item2end - item2start);
         return item2;
@@ -280,12 +280,12 @@ void fetchRelicTable() {
 
     std::ifstream inputFile("droptable-raw.html");
     if (!inputFile.is_open()) {
-        errorLog("Error opening input file!",false);
+        errorLog(false,"Error opening input file!");
         exit(1);
     }
     std::ofstream outputFile("relictable.html");
     if (!outputFile.is_open()) {
-        errorLog("Error opening input file!",false);
+        errorLog(false,"Error opening input file!");
         exit(0);
     }
 
@@ -407,10 +407,10 @@ void handleUnSuccesfullDatabaseDownload(cpr::Response& r) {
 
     if(r.status_code!=200){
         if (r.status_code == 0) {
-            errorLog("Check your internet connection, could not download raw html droptable.", true);
+            errorLog(true,"Check your internet connection, could not download raw html droptable.");
         }
         else {
-           errorLog("Couldn't download raw html droptable. Status code: " + std::to_string(r.status_code), true);
+            errorLog(true,"Couldn't download raw html droptable. Status code: ",std::to_string(r.status_code));
         }
        
     }
@@ -572,7 +572,7 @@ namespace {
         for (const auto& [name,outputFile] : fileNames) {
 
             if (!outputFile.is_open()) {
-                errorLog("Error opening output file: " + name, false);
+                errorLog(false,"Error opening output file: " + name);
                 return 1;
             }
             
@@ -585,7 +585,7 @@ namespace {
         for (const auto& [name, inputFile] : fileNames) {
 
             if (!inputFile.is_open()) {
-                errorLog("Error opening input file: " + name, false);
+                errorLog(false,"Error opening input file: " + name);
                 return 1;
             }
 
@@ -644,7 +644,7 @@ int parseRelicData() {
     // Input HTML-like file
     ifstream inputFile("relictable.html");
     if (!inputFile.is_open()) {
-    errorLog("Error opening input file!",false);
+    errorLog(false,"Error opening input file!");
         return 1;
     }
     std::unordered_map<string, ofstream> outputFiles;
@@ -696,7 +696,7 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
     }
 
     if (!inputFile.is_open()) {
-        errorLog("Error opening input file!",false);
+        errorLog(false,"Error opening input file!");
         exit(1);
     }
 
@@ -812,7 +812,7 @@ bool compareWithRoundingErrors(float number,float compareTo) {
 void compareRaritiesToPercentages(std::tuple<string,float,ItemDetails>& item,const vector<float>& percantages) {
 
 
-    if (percantages.size() != 3) errorLog("wrong amount of percantages in compareRaritiesToPercantages", true);
+    if (percantages.size() != 3) errorLog(true,"wrong amount of percantages in compareRaritiesToPercantages");
 
 
     if (compareWithRoundingErrors(std::get<1>(item), percantages[0])) {

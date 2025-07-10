@@ -28,12 +28,12 @@ json fetchJsonBlobWFMAllItems() {
 		 {"Accept-Encoding","gzip"} });
 
 	if (r.status_code == 0) {
-		errorLog("Check your internet conenction, could not download warframe market database", true);
+		errorLog(true,"Check your internet conenction, could not download warframe market database");
 		return {};
 	}
 
 	if (r.status_code != 200) {
-		errorLog("Could not fetch items from warframe market", false);
+		errorLog(false,"Could not fetch items from warframe market");
 		return {};
 	}
 	json data;
@@ -41,7 +41,7 @@ json fetchJsonBlobWFMAllItems() {
 		data = json::parse(r.text);
 	}
 	catch (const nlohmann::json::parse_error& err) {
-		errorLog("Could not parse json blob from warframe market" + string(err.what()), false);
+		errorLog(false,"Could not parse json blob from warframe market",string(err.what()));
 		return {};
 	}
 
@@ -56,7 +56,7 @@ vector<WFMItem> parseJsonBlobToWFMItems(const json& data) {
 	json products;
 	if (data.contains("data")) products = data["data"];
 	else {
-		errorLog("Incorrect json format, couldn't find 'data' field", false);
+		errorLog(false,"Incorrect json format, couldn't find 'data' field");
 		return {};
 	}
 	items.reserve(products.size());
@@ -128,5 +128,5 @@ void loadWFMD() {
 	saveWFMItemsToFile(items);
 
 	if (items.size() != 0) successLog("Loaded Warframe Market Database");
-	else errorLog("Something went wrong during loading Warframe Market Database, displaying rarities might fail.", false);
+	else errorLog(false,"Something went wrong during loading Warframe Market Database, displaying rarities might fail.");
 }

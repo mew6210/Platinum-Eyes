@@ -21,6 +21,7 @@
 #include <leptonica/allheaders.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
+#include "wood.h"
 
 
 
@@ -34,9 +35,6 @@ using json = nlohmann::json;
 #define ITEMTYPE_fissureItems true
 #define ITEMTYPE_relicItems false
 
-void errorLog(const std::string& s,bool shouldCrash);
-void warningLog(const std::string& s);
-void successLog(const std::string& s);
 
 
 void myAssert(bool stmt,std::string s);
@@ -208,7 +206,7 @@ class ToolConfig {
 			return propertyValue;
 		}
 		else {
-			errorLog("Not found property in config: "+ key,false);
+			errorLog(false,"Not found property in config: ",key);
 			return "not found";
 		}
 
@@ -229,7 +227,7 @@ public:
 
 		}
 		else {
-			errorLog("Couldnt find " + key + " key in ToolConfig",false);
+			errorLog(false,"Couldnt find ",key," key in ToolConfig");
 			return;
 		}
 

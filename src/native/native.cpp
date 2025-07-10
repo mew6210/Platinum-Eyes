@@ -107,10 +107,10 @@ void registerNativeHotkeys(std::map<int,KeyBind>& keyBindings) {
 			MOD_ALT | MOD_NOREPEAT,
 			p.second.getKey()))
 		{
-			successLog("Successfully registered hotkey: Alt + " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
+			successLog("Successfully registered hotkey: Alt + ",VirtualKeyCodeToString(p.second.getKey())," for: ",p.second.getDescription());
 		}
 		else {
-			warningLog("Failed to register hotkey: Alt + " + VirtualKeyCodeToString(p.second.getKey()) + " for: " + p.second.getDescription());
+			warningLog("Failed to register hotkey: Alt + ",VirtualKeyCodeToString(p.second.getKey()) + " for: ",p.second.getDescription());
 
 		}
 
@@ -125,10 +125,10 @@ void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
 
 	for (auto& p : keyBindings) {
 		if (UnregisterHotKey(NULL, p.first)) {
-			successLog("Succesfully unregistered Alt + " + VirtualKeyCodeToString(p.second.getKey()));
+			successLog("Succesfully unregistered Alt + " ,VirtualKeyCodeToString(p.second.getKey()));
 		}
 		else {
-			errorLog("Failed to unregister Alt + " + VirtualKeyCodeToString(p.second.getKey()), false);
+			errorLog(false,"Failed to unregister Alt + " ,VirtualKeyCodeToString(p.second.getKey()));
 		}
 	}
 
@@ -160,19 +160,19 @@ int getNativeScreenResolution() {
 
 
 void listenAndHandleEvents(){
-	errorLog("currently not implemented",true);
+	errorLog(true,"currently not implemented");
 
 }
-void nativeWindowCustomization(){
-	errorLog("currently not implemented",true);
+void nativeWindowCustomization() {
+	errorLog(true,"currently not implemented");
 
 }
-void registerNativeHotkeys(){
-	errorLog("currently not implemented",true);
+void registerNativeHotkeys() {
+	errorLog(true,"currently not implemented");
 
 }
 void unregisterNativeHotkeys() {
-	errorLog("currently not implemented", true);
+	errorLog(true,"currently not implemented");
 
 }
 
