@@ -31,6 +31,7 @@ void nativeWindowCustomization(AppState& state,sf::WindowHandle wHandle);
 void registerNativeHotkeys(std::map<int, KeyBind>& keyBindings);
 void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings);
 
+int getNativeScreenResolution();
 
 
 void takeScreenshot();

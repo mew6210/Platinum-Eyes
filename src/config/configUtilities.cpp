@@ -1,5 +1,12 @@
 #include "config.h"
-#include <direct.h>   
+ 
+#ifdef _WIN32
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+#endif
 
 
 using std::string, std::vector;
@@ -43,7 +50,7 @@ namespace screenShotParams{
         char buffer[size];
 
         // Call _getcwd to get the current working directory and store it in buffer
-        if (getcwd(buffer, size) != NULL) {
+        if (GetCurrentDir(buffer, size) != NULL) {
             // print the current working directory
             std::cout << "Current working directory: " << buffer << std::endl;
         }

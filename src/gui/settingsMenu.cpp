@@ -22,7 +22,7 @@ void configParameter(string& s,int counter,const char* label) {
 }
 
 
-void comboParameter(string& s1,const char* label,static const char* options[],int itemsCount) {
+void comboParameter(string& s1,const char* label,const char* options[],int itemsCount) {
 	
 	static int selecteditem = 0;
 	s1 = options[selecteditem];

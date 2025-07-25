@@ -535,6 +535,11 @@ void saveItemsToClipboard(){
 void handleNativeEvents(AppState& state){
     errorLog(true, "currently not implemented");
 }
+int getNativeScreenResolution(){
+
+    return 1000;
+    errorLog(false,"currently not implemented");
+}
 
 
 
