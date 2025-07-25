@@ -33,6 +33,9 @@
 
 #if __linux__
 #include <X11/Xlib.h>
+#ifdef None
+#undef None
+#endif
 #endif
 
 

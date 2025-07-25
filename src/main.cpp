@@ -34,7 +34,12 @@ int main()
         
     bool running = true;
     bool visible = true;
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     MSG msg = { 0 };
+#endif
+#if __linux__
+    XEvent* msg;
+#endif
     bool settingsOpen = false;
     bool shouldReSizeImGui = false;
     bool itemDisplayFlag = ITEMTYPE_fissureItems;
