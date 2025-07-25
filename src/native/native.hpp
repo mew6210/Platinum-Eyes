@@ -17,6 +17,7 @@ BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
 void saveScreenshotToClipboard(HBITMAP bitmap);
 HGLOBAL loadStringToMemory(std::string& text);
 void saveItemsToClipboard(AppState& state, std::vector<Item>& items);
+void handleNativeEvents(AppState& state);
 
 
 
@@ -25,10 +26,10 @@ void saveItemsToClipboard(AppState& state, std::vector<Item>& items);
 #if __linux__
 
 
-void listenAndHandleEvents();
-void nativeWindowCustomization();
-void registerNativeHotkeys();
-void unregisterNativeHotkeys();
+void listenAndHandleEvents(AppState& state);
+void nativeWindowCustomization(AppState& state,sf::WindowHandle wHandle);
+void registerNativeHotkeys(std::map<int, KeyBind>& keyBindings);
+void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings);
 
 
 
@@ -38,6 +39,8 @@ void SaveHBITMAPToFile();
 void saveScreenshotToClipboard();
 void loadStringToMemory();
 void saveItemsToClipboard();
+void handleNativeEvents(AppState& state);
+
 
 
 #endif
