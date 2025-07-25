@@ -594,5 +594,3 @@ void tesseractInit(tesseract::TessBaseAPI& api) {
         
     }
    
-    
-

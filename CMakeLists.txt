@@ -82,7 +82,7 @@ add_executable (
         "src/ocr/readingItems.cpp" 
         "src/gui/settingsMenu.cpp"
         "src/ocr/tesseract.cpp" 
-        "src/ocr/ocrfunctions.cpp" 
+         
         "src/gui/settingsChanges.cpp" 
         "src/relics/relicDatabase.cpp" 
         "src/ocr/ocr.h" 
