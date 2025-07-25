@@ -2,8 +2,7 @@
 
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-#include <Windows.h>
-#include <dwmapi.h>
+
 
 void listenAndHandleEvents(AppState& state);
 void nativeWindowCustomization(AppState& state, sf::WindowHandle wHandle);
@@ -24,7 +23,6 @@ void saveItemsToClipboard(AppState& state, std::vector<Item>& items);
 #endif
 
 #if __linux__
-#include <X11/Xlib.h>
 
 
 void listenAndHandleEvents();
