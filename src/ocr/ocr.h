@@ -1,5 +1,6 @@
 #pragma once
 #include "../core/core.h"
+#include "native/nativeocr.hpp"
 #include <optional>
 
 namespace fuzzy_threshold {
@@ -9,13 +10,6 @@ namespace fuzzy_threshold {
 };
 
 
-
-BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
-
-HBITMAP takeScreenshot(int imageWidth = 1200, int imageHeight = 800, int offsetX = 200, int offsetY = 200);
-HBITMAP takeScreenshot(int imageWidth = 1200, int imageHeight = 800, Point center = Point(0, 0));
-void saveScreenshotToClipboard(HBITMAP bitmap);
-void saveItemsToClipboard(AppState& state,std::vector<Item>& items);
 
 std::vector<std::string> prepareItems(std::vector<std::string>&);
 std::string replaceChar(std::string s, char a, std::string b);

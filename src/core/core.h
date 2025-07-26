@@ -4,7 +4,6 @@
 
 #define NOMINMAX
 #include <iostream>
-#include <Windows.h>
 #include <string>
 #include <vector>
 #include <thread>
@@ -14,15 +13,31 @@
 #include <ranges>
 #include "../utilities/trim.cpp"
 #include <SFML/Window.hpp>
-#include <SFML/OpenGl.hpp>
-#include<SFML/Graphics/RenderWindow.hpp>
+#include <SFML/OpenGL.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include "imgui.h"
 #include "imgui-SFML.h"
-#include <dwmapi.h>
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
+#include "wood.h"
+
+
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+#include <Windows.h>
+#include <dwmapi.h>
+#endif
+
+
+#if __linux__
+#include <X11/Xlib.h>
+#ifdef None
+#undef None
+#endif
+#endif
+
 
 
 
@@ -35,9 +50,6 @@ using json = nlohmann::json;
 #define ITEMTYPE_fissureItems true
 #define ITEMTYPE_relicItems false
 
-void errorLog(const std::string& s,bool shouldCrash);
-void warningLog(const std::string& s);
-void successLog(const std::string& s);
 
 
 void myAssert(bool stmt,std::string s);
@@ -209,7 +221,7 @@ class ToolConfig {
 			return propertyValue;
 		}
 		else {
-			errorLog("Not found property in config: "+ key,false);
+			errorLog(false,"Not found property in config: ",key);
 			return "not found";
 		}
 
@@ -230,7 +242,7 @@ public:
 
 		}
 		else {
-			errorLog("Couldnt find " + key + " key in ToolConfig",false);
+			errorLog(false,"Couldnt find ",key," key in ToolConfig");
 			return;
 		}
 
@@ -351,14 +363,24 @@ struct WFMItem {
 
 
 
+
 struct AppState {
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+	MSG& msg;
+#endif
+
+#if __linux__
+		XEvent* msg;
+#endif
+
 
 	std::vector<Item>& items;
 	ToolConfig& config;
 	sf::RenderWindow& window;
 	bool& running;
 	bool& isVisible;
-	MSG& msg;
+	
 	WindowParameters& sfmlSize;
 	WindowParameters& imguiSize;
 	bool& settingsVisible;
@@ -373,12 +395,23 @@ struct AppState {
 
 
 	AppState(
+
+
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+
+		MSG& m,
+#endif
+#if __linux__
+		XEvent* m,
+
+#endif
+
 		std::vector<Item>& i,
 		ToolConfig& c,
 		sf::RenderWindow& w,
 		bool& r,
 		bool& v,
-		MSG& m,
 		WindowParameters& sfmlS,
 		WindowParameters& imguiS,
 		bool& sv,
@@ -391,9 +424,30 @@ struct AppState {
 		int& fv,
 		int& fh
 
-	) :items(i), config(c), window(w), running(r), isVisible(v), msg(m),sfmlSize(sfmlS),imguiSize(imguiS),settingsVisible(sv),tesseractApi(t),shouldReSizeImGui(sri),itemDisplayFlag(idf),currentRelic(cr),shouldUpdateFonts(suf),allAvalibleItems(aai),fpsVisible(fv),fpsHidden(fh) {};
+	) :
+		msg(m),
+		items(i), 
+		config(c), 
+		window(w),
+		running(r), 
+		isVisible(v), 
+		
+		sfmlSize(sfmlS),
+		imguiSize(imguiS),
+		settingsVisible(sv),
+		tesseractApi(t),
+		shouldReSizeImGui(sri),
+		itemDisplayFlag(idf),
+		currentRelic(cr),
+		shouldUpdateFonts(suf),
+		allAvalibleItems(aai),
+		fpsVisible(fv),
+		fpsHidden(fh) {};
 
 };
+
+
+
 
 
 
@@ -417,6 +471,30 @@ const std::vector<Item> exampleItems = {
 };
 
 
+
+class KeyBind {
+
+	int key;
+	std::string description;
+
+public:
+	KeyBind(int k, std::string s) {
+		key = k;
+		description = s;
+	}
+
+	int getKey() {
+		return key;
+	}
+	std::string getDescription() {
+		return description;
+	}
+
+
+};
+
+
+
 #include "../ocr/ocr.h"
 #include "../utilities/utilities.h"
 #include "../keybindings/keybindings.h"
@@ -424,6 +502,8 @@ const std::vector<Item> exampleItems = {
 #include "../config/config.h"
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
+#include "../native/native.hpp"
+
 
 
 void mainLoop(AppState& state);

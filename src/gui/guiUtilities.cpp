@@ -2,20 +2,6 @@
 
 
 
-HRESULT setTransparency(HWND hWnd)
-{
-	HRESULT hr = S_OK;
-
-	DWM_BLURBEHIND bb = { 0 };
-
-	bb.dwFlags = DWM_BB_ENABLE;
-	bb.fEnable = true;
-	bb.hRgnBlur = NULL;
-
-	hr = DwmEnableBlurBehindWindow(hWnd, &bb);
-	return hr;
-}
-
 
 
 std::map<int, std::string> createIntStringMap(std::map<std::string, ItemDetails> items) {
@@ -214,21 +200,15 @@ void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 
 
 void customizeWindow(AppState& state) {
-	HWND hwnd = state.window.getNativeHandle();
+	sf::WindowHandle wHandle = state.window.getNativeHandle();
 	state.window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.sfmlSize.width+25), 25));
 	state.window.setFramerateLimit(state.fpsVisible);
 	
 	if (!ImGui::SFML::Init(state.window)) {
-		errorLog("ImGui::SFML::Init() failed", true);
+		errorLog(true,"ImGui::SFML::Init() failed");
 	}
 
-	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_EXSTYLE);
-	style |= WS_EX_TOOLWINDOW;
-	SetWindowLongPtr(hwnd, GWL_EXSTYLE, style);
-	setTransparency(hwnd);
-
-
+	nativeWindowCustomization(state,wHandle);
 
 }
 

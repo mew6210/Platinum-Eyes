@@ -3,7 +3,6 @@
 
 void updateFps(AppState& state);
 void generateImGuiTable(AppState state);
-HRESULT setTransparency(HWND hWnd);
 void customizeWindow(AppState& state);
 void createImGuiWindow(bool& isRunning,AppState state);
 void showSettingsMenu(bool* p_open, AppState& state);

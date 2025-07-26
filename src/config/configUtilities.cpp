@@ -1,17 +1,38 @@
 #include "config.h"
-#include <direct.h>   
+ 
+#ifdef _WIN32
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+#endif
 
+
+using std::string, std::vector;
+
+
+int getScreenResolution(int screenWidth, int screenHeight) {
+    int screenResolution = SCR_Size_NotSpecified;
+
+    if (screenWidth == 1920 && screenHeight == 1080) screenResolution = SCR_Size_1920x1080;
+    if (screenWidth == 3440 && screenHeight == 1440) screenResolution = SCR_Size_3440x1440;
+
+
+    return screenResolution;
+
+}
 
 
 
 namespace screenShotParams{
 
     struct screenConfig {
-        std::string screenShotWidth;
-        std::string screenShotHeight;
-        std::string centerCoordinates;
-        std::string sfmlSize;
-        std::string imguiSize;
+        string screenShotWidth;
+        string screenShotHeight;
+        string centerCoordinates;
+        string sfmlSize;
+        string imguiSize;
     };
 
     screenConfig screen_1920x1080 = { "965","80","960,420","800,250","700,200" };
@@ -22,18 +43,14 @@ namespace screenShotParams{
 
 
 
-    #define SCR_Size_NotSpecified 0
-    #define SCR_Size_1920x1080 1
-    #define SCR_Size_3440x1440 2
-
-    std::string getCurrentPath() {
+    string getCurrentPath() {
 
         const size_t size = 1024;
         // Allocate a character array to store the directory path
         char buffer[size];
 
         // Call _getcwd to get the current working directory and store it in buffer
-        if (getcwd(buffer, size) != NULL) {
+        if (GetCurrentDir(buffer, size) != NULL) {
             // print the current working directory
             std::cout << "Current working directory: " << buffer << std::endl;
         }
@@ -42,7 +59,7 @@ namespace screenShotParams{
             std::cerr << "Error getting current working directory" << std::endl;
         }
 
-        std::string returnString(buffer);
+        string returnString(buffer);
         returnString.append("/screenshot.bmp");
 
         return returnString;
@@ -50,18 +67,7 @@ namespace screenShotParams{
 
     }
 
-    int getScreenResolution(int screenWidth, int screenHeight) {
-        int screenResolution=SCR_Size_NotSpecified;
-
-        if (screenWidth == 1920 && screenHeight == 1080) screenResolution = SCR_Size_1920x1080;
-        if (screenWidth == 3440 && screenHeight == 1440) screenResolution = SCR_Size_3440x1440;
-
-
-        return screenResolution;
-
-    }
-
-    std::string getCenterCoordinates(int screenResolution){
+    string getCenterCoordinates(int screenResolution){
         switch (screenResolution) {
         case SCR_Size_1920x1080: return screen_1920x1080.centerCoordinates; break;
         case SCR_Size_3440x1440: return screen_3440x1440.centerCoordinates; break;
@@ -77,7 +83,7 @@ namespace screenShotParams{
 
     }
 
-    std::string getWidth(int screenResolution){
+    string getWidth(int screenResolution){
     
         switch (screenResolution) {
         case SCR_Size_1920x1080: return screen_1920x1080.screenShotWidth; break;
@@ -95,7 +101,7 @@ namespace screenShotParams{
     
     }
 
-    std::string getHeight(int screenResolution){
+    string getHeight(int screenResolution){
     
         switch (screenResolution) {
         case SCR_Size_1920x1080: return screen_1920x1080.screenShotHeight; break;
@@ -111,7 +117,7 @@ namespace screenShotParams{
         }
     }
 
-    std::string getSfmlSize(int screenResolution){
+    string getSfmlSize(int screenResolution){
         switch (screenResolution) {
         case SCR_Size_1920x1080: return screen_1920x1080.sfmlSize; break;
         case SCR_Size_3440x1440: return screen_3440x1440.sfmlSize; break;
@@ -129,7 +135,7 @@ namespace screenShotParams{
     
     }
 
-    std::string getImGuiSize(int screenResolution){
+    string getImGuiSize(int screenResolution){
     
         switch (screenResolution) {
         case SCR_Size_1920x1080: return screen_1920x1080.imguiSize; break;
@@ -161,7 +167,7 @@ bool checkIfConfigFileExists() {
 
 }
 
-WindowParameters getWindowSize(std::string s,ToolConfig& toolConfig) {
+WindowParameters getWindowSize(string s,ToolConfig& toolConfig) {
 
     WindowParameters parameters;
 
@@ -188,10 +194,7 @@ WindowParameters getWindowSize(std::string s,ToolConfig& toolConfig) {
 
 void fillOutConfigFile(std::ofstream& configFile) {
 
-    HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
-    int width = GetDeviceCaps(hScreen, HORZRES);
-    int height = GetDeviceCaps(hScreen, VERTRES);
-    int screenResolution = screenShotParams::getScreenResolution(width, height);
+    int screenResolution = getNativeScreenResolution();
 
     for (std::string configProperty : CONFIGPROPERTIES) {
 
@@ -274,7 +277,7 @@ void fillOutConfigFile(std::ofstream& configFile) {
 
 
     }
-    DeleteDC(hScreen);
+    
 
 }
 
@@ -290,7 +293,7 @@ void createConfigFile() {
 }
 
 
-void resolveConfigLine(ToolConfig& toolConfig, const std::string& line, int it) {
+void resolveConfigLine(ToolConfig& toolConfig, const string& line, int it) {
 
     int startingPoint = 0;
 
@@ -299,10 +302,10 @@ void resolveConfigLine(ToolConfig& toolConfig, const std::string& line, int it) 
 
     int whereEnds = line.find_last_of("\n");
 
-    std::string configProperty = line.substr(startingPoint, whereEnds - 1);
+    string configProperty = line.substr(startingPoint, whereEnds - 1);
 
 
-    std::string key = CONFIGPROPERTIES[it];
+    string key = CONFIGPROPERTIES[it];
     toolConfig.setPropertyValue(key, configProperty);
 
 }
@@ -349,7 +352,7 @@ void rewriteConfigFile(ToolConfig& config) {
 
     std::ofstream configFile(CONFIG_FILENAME);
 
-    std::string line;
+    string line;
 
 
     for (auto& property : CONFIGPROPERTIES) {

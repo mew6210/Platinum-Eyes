@@ -16,6 +16,15 @@ set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
 
 
 find_package(Tesseract CONFIG REQUIRED)
+
+if (UNIX AND TARGET Tesseract::libtesseract)
+    target_link_libraries(Tesseract::libtesseract INTERFACE
+        zstd
+        lz4::lz4
+        liblzma::liblzma
+    )
+endif()
+
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(SFML COMPONENTS Window Graphics CONFIG REQUIRED)
@@ -41,25 +50,33 @@ set(IMGUI_DIR ${imgui_SOURCE_DIR})
 FetchContent_MakeAvailable(imgui-sfml)
 
 
+FetchContent_Declare(
+    wood
+    GIT_REPOSITORY https://github.com/mew6210/wood.git
+    GIT_TAG v1.1.0
+)
+FetchContent_MakeAvailable(wood)
+
 
 find_package(OpenCV REQUIRED)
 find_package(liblzma CONFIG REQUIRED)
-find_path(TERMCOLOR_INCLUE_DIRS "termcolor/termcolor.hpp")
-
+find_package(lz4 REQUIRED)
+find_package(zstd REQUIRED)
 
 set(LIBRARIES 
 cpr::cpr
 SFML::Graphics 
 SFML::Window
-
 ImGui-SFML::ImGui-SFML
-Dwmapi.lib
 Tesseract::libtesseract
-
 ${OpenCV_LIBS}
+wood
 liblzma::liblzma
 )
 
+if(WIN32)
+    list(APPEND LIBRARIES Dwmapi.lib)
+endif()
 
 
 add_executable (
@@ -74,7 +91,7 @@ add_executable (
         "src/ocr/readingItems.cpp" 
         "src/gui/settingsMenu.cpp"
         "src/ocr/tesseract.cpp" 
-        "src/ocr/ocrfunctions.cpp" 
+         
         "src/gui/settingsChanges.cpp" 
         "src/relics/relicDatabase.cpp" 
         "src/ocr/ocr.h" 
@@ -87,11 +104,11 @@ add_executable (
         "src/wfmd/wfmd.cpp"
         
 
-)
+ "src/native/native.hpp" "src/native/native.cpp" "src/ocr/native/nativeocr.cpp" "src/keybindings/native/keybindingsnative.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${TERMOCOLOR_INCLUDE_DIRS})
+
 
 
 

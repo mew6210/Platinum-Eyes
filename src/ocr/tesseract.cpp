@@ -105,7 +105,7 @@ vector<string> readFissureItems(tesseract::TessBaseAPI& api,size_t itemCount,con
     Timer timer = Timer();
     cv::Mat img = cv::imread(fileName);
     if (img.empty()) {
-        errorLog("Could not find requested image image.",false);
+        errorLog(false,"Could not find requested image image.");
         return {};
         
     }
@@ -217,7 +217,7 @@ string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bo
 
     if (result != "")
         std::cout << "Reading result: " << result << "\n";
-    else  errorLog("No text found in its designated area",false);
+    else  errorLog(false,"No text found in its designated area");
 
 
     return result;
@@ -373,45 +373,6 @@ std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
     return { x_new, y_new, screenshot_width };
 }
 
-/*
- - takes a screenshot and saves it to the fileName
-*/
-void takeScreenshotAndSaveToFile(const int width, const int height,const Point p,string& fileName) {
-    Timer timer = Timer();
-
-    timer.start();
-    HBITMAP bitmap = takeScreenshot(width, height, p);
-    timer.stop();
-    timer.print("take screenshot");
-
-
-    SaveHBITMAPToFile(bitmap, fileName.c_str());
-    DeleteObject(bitmap);
-
-
-
-}
-
-/*
- - takes a screenshot and saves it to the fileName
-*/
-void takeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, string& fileName) {
-    Timer timer = Timer();
-
-    timer.start();
-    HBITMAP bitmap = takeScreenshot(width, height, px,py);
-    timer.stop();
-    timer.print("take screenshot");
-
-
-
-
-    SaveHBITMAPToFile(bitmap, fileName.c_str());
-    DeleteObject(bitmap);
-
-}
-
-
 
 
 //your mom
@@ -421,18 +382,18 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
 
 
     int px, py;
-    HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
-    int width = GetDeviceCaps(hScreen, HORZRES);
-    int height = GetDeviceCaps(hScreen, VERTRES);
 
-    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(width, height);
+    int screenWidth = sf::VideoMode::getDesktopMode().size.x;
+    int screenHeight = sf::VideoMode::getDesktopMode().size.y;
+
+    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(screenWidth, screenHeight);
 
     
     px = coordinatex;
     py = coordinatey;
 
     string fileName = "relicTitleScreenshot.bmp";
-    takeScreenshotAndSaveToFile(titleWidth,40,px-5,py-5,fileName);
+    takeNativeScreenshotAndSaveToFile(titleWidth,40,px-5,py-5,fileName);
 
 
 
@@ -468,12 +429,12 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     size_t itemCount = 4;
 
     int px, py;
-    HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
-    int width = GetDeviceCaps(hScreen, HORZRES);
-    int height = GetDeviceCaps(hScreen, VERTRES);
+    int screenWidth = sf::VideoMode::getDesktopMode().size.x;
+    int screenHeight = sf::VideoMode::getDesktopMode().size.y;
 
-    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(width, height);
-    int x_shift = calculateShiftWidth(width,height);
+
+    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(screenWidth, screenHeight);
+    int x_shift = calculateShiftWidth(screenWidth, screenHeight);
 
 
 
@@ -485,7 +446,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     //std::cout << "new position: " << (px + x_shift) - 5;
     
     string fileName = "relicTitleScreenshot.bmp";
-    takeScreenshotAndSaveToFile(titleWidth - titleWidth / 5,40,(px-x_shift)-5,py-5,fileName);
+    takeNativeScreenshotAndSaveToFile(titleWidth - titleWidth / 5,40,(px-x_shift)-5,py-5,fileName);
    
 
     string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
@@ -524,7 +485,7 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 
 
     if (!fixItems(preparedItems, state.allAvalibleItems)) {
-        errorLog("Could not find fissure rewards items on screen", false);
+        errorLog(false,"Could not find fissure rewards items on screen");
         return {};
     }
     
@@ -558,7 +519,7 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
 
    
     string fileName = state.config["screenShotFilePath"];
-    takeScreenshotAndSaveToFile(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]),p,fileName);
+    takeNativeScreenshotAndSaveToFile(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]),p,fileName);
 
 
     auto itemPrices = screenshotToItems(state, fileName);
@@ -585,7 +546,7 @@ void tesseractInit(tesseract::TessBaseAPI& api) {
 
     
         if (api.Init(nullptr, "eng_fast")) {
-            errorLog("Could not initialize tesseract",false);
+            errorLog(false,"Could not initialize tesseract");
             exit(0);
         }
         else {
@@ -594,5 +555,3 @@ void tesseractInit(tesseract::TessBaseAPI& api) {
         
     }
    
-    
-

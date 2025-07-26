@@ -50,12 +50,7 @@ void mainLoop(AppState& state) {
     {
         //handle keybinds
 
-        if (PeekMessage(&state.msg, NULL, 0, 0, PM_REMOVE)) {
-
-            handleEvents(state);
-            TranslateMessage(&state.msg);
-            DispatchMessage(&state.msg);
-        }
+        listenAndHandleEvents(state);
 
 
         // handle events
