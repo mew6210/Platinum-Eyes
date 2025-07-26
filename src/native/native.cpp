@@ -537,7 +537,7 @@ void loadStringToMemory(){
     errorLog(true,"currently not implemented");
 
 }
-void saveItemsToClipboard(){
+void saveItemsToClipboard(AppState& state, std::vector<Item>& items){
     errorLog(true, "currently not implemented");
 
 }

@@ -39,7 +39,7 @@ void takeScreenshot();
 void SaveHBITMAPToFile();
 void saveScreenshotToClipboard();
 void loadStringToMemory();
-void saveItemsToClipboard();
+void saveItemsToClipboard(AppState& state, std::vector<Item>& items);
 void handleNativeEvents(AppState& state, std::map<int, KeyBind> keybindings);
 
 
