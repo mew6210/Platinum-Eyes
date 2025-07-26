@@ -1,5 +1,6 @@
 #pragma once
 #include "../core/core.h"
+#include "native/nativeocr.hpp"
 #include <optional>
 
 namespace fuzzy_threshold {

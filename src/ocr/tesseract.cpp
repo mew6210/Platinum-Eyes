@@ -373,45 +373,6 @@ std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
     return { x_new, y_new, screenshot_width };
 }
 
-/*
- - takes a screenshot and saves it to the fileName
-*/
-void takeNativeScreenshotAndSaveToFile(const int width, const int height,const Point p,string& fileName) {
-    Timer timer = Timer();
-
-    timer.start();
-    HBITMAP bitmap = takeScreenshot(width, height, p);
-    timer.stop();
-    timer.print("take screenshot");
-
-
-    SaveHBITMAPToFile(bitmap, fileName.c_str());
-    DeleteObject(bitmap);
-
-
-
-}
-
-/*
- - takes a screenshot and saves it to the fileName
-*/
-void takeNativeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, string& fileName) {
-    Timer timer = Timer();
-
-    timer.start();
-    HBITMAP bitmap = takeScreenshot(width, height, px,py);
-    timer.stop();
-    timer.print("take screenshot");
-
-
-
-
-    SaveHBITMAPToFile(bitmap, fileName.c_str());
-    DeleteObject(bitmap);
-
-}
-
-
 
 
 //your mom
@@ -421,11 +382,11 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
 
 
     int px, py;
-    HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
-    int width = GetDeviceCaps(hScreen, HORZRES);
-    int height = GetDeviceCaps(hScreen, VERTRES);
 
-    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(width, height);
+    int screenWidth = sf::VideoMode::getDesktopMode().size.x;
+    int screenHeight = sf::VideoMode::getDesktopMode().size.y;
+
+    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(screenWidth, screenHeight);
 
     
     px = coordinatex;
@@ -468,12 +429,12 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     size_t itemCount = 4;
 
     int px, py;
-    HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
-    int width = GetDeviceCaps(hScreen, HORZRES);
-    int height = GetDeviceCaps(hScreen, VERTRES);
+    int screenWidth = sf::VideoMode::getDesktopMode().size.x;
+    int screenHeight = sf::VideoMode::getDesktopMode().size.y;
 
-    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(width, height);
-    int x_shift = calculateShiftWidth(width,height);
+
+    auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(screenWidth, screenHeight);
+    int x_shift = calculateShiftWidth(screenWidth, screenHeight);
 
 
 
