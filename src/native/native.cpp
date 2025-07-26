@@ -517,11 +517,11 @@ void unregisterNativeHotkeys() {
 	errorLog(true,"currently not implemented");
 
 }
-void takeScreenshot(){
+void takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY){
     errorLog(true,"currently not implemented");
 
 }
-void takeScreenshot(){
+void takeScreenshot(int imageWidth, int imageHeight, Point p){
     errorLog(true,"currently not implemented");
 
 }

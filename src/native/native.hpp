@@ -34,8 +34,8 @@ void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings);
 int getNativeScreenResolution();
 
 
-void takeScreenshot();
-void takeScreenshot();
+void takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY);
+void takeScreenshot(int imageWidth, int imageHeight, Point p);
 void SaveHBITMAPToFile();
 void saveScreenshotToClipboard();
 void loadStringToMemory();
