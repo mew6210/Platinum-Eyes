@@ -501,7 +501,7 @@ if (state.msg.message == WM_HOTKEY) {
 
 
 
-void listenAndHandleEvents(){
+void listenAndHandleEvents(AppState& state){
 	errorLog(true,"currently not implemented");
 
 }
@@ -509,11 +509,11 @@ void nativeWindowCustomization(AppState& state,sf::WindowHandle wHandle) {
 	errorLog(true,"currently not implemented");
 
 }
-void registerNativeHotkeys() {
+void registerNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
 	errorLog(true,"currently not implemented");
 
 }
-void unregisterNativeHotkeys() {
+void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
 	errorLog(true,"currently not implemented");
 
 }

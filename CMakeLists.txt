@@ -95,7 +95,7 @@ add_executable (
         "src/wfmd/wfmd.cpp"
         
 
- "src/native/native.hpp" "src/native/native.cpp" "src/ocr/native/nativeocr.cpp")
+ "src/native/native.hpp" "src/native/native.cpp" "src/ocr/native/nativeocr.cpp" "src/keybindings/native/keybindingsnative.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

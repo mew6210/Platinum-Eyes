@@ -1,6 +1,6 @@
 #pragma once
 #include "../core/core.h"
-
+#include "native/keybindingsnative.hpp"
 
 
 void registerHotkeys(ToolConfig& config);
