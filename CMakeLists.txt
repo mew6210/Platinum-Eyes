@@ -16,13 +16,15 @@ set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv4")
 
 
 find_package(Tesseract CONFIG REQUIRED)
-if (TARGET Tesseract::libtesseract)
+
+if (UNIX AND TARGET Tesseract::libtesseract)
     target_link_libraries(Tesseract::libtesseract INTERFACE
         zstd
         lz4::lz4
         liblzma::liblzma
     )
 endif()
+
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(SFML COMPONENTS Window Graphics CONFIG REQUIRED)
