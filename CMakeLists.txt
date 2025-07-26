@@ -51,8 +51,8 @@ FetchContent_MakeAvailable(wood)
 
 find_package(OpenCV REQUIRED)
 find_package(liblzma CONFIG REQUIRED)
-
-
+find_package(lz4 REQUIRED)
+find_package(zstd REQUIRED)
 
 set(LIBRARIES 
 cpr::cpr
@@ -63,6 +63,8 @@ Tesseract::libtesseract
 ${OpenCV_LIBS}
 liblzma::liblzma
 wood
+lz4::lz4
+zstd::libzstd_shared
 )
 
 if(WIN32)
