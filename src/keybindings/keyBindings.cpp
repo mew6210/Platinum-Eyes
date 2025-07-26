@@ -66,9 +66,8 @@ void unregisterHotkeys() {
 
 
 
-//TO NATIVEFY
 void handleEvents(AppState state) {
     
-    handleNativeEvents(state);
+    handleNativeEvents(state,keyBindings);
     
 }

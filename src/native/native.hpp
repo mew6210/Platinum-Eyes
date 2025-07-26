@@ -17,7 +17,7 @@ BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
 void saveScreenshotToClipboard(HBITMAP bitmap);
 HGLOBAL loadStringToMemory(std::string& text);
 void saveItemsToClipboard(AppState& state, std::vector<Item>& items);
-void handleNativeEvents(AppState& state);
+void handleNativeEvents(AppState& state, std::map<int, KeyBind> keybindings);
 
 
 
@@ -40,7 +40,7 @@ void SaveHBITMAPToFile();
 void saveScreenshotToClipboard();
 void loadStringToMemory();
 void saveItemsToClipboard();
-void handleNativeEvents(AppState& state);
+void handleNativeEvents(AppState& state, std::map<int, KeyBind> keybindings);
 
 
 

@@ -400,7 +400,16 @@ void saveItemsToClipboard(AppState& state, std::vector<Item>& items) {
 
 }
 
-void handleNativeEvents(AppState& state){
+
+#define KB_ReadItemsFromScreen 1
+#define KB_EscapeProgram 2
+#define KB_ReadPreviousItems 3
+#define KB_WindowVisibility 4
+#define KB_BackupConfig 5
+#define KB_ExampleItems 6
+#define KB_ReadRelicTitle 7
+
+void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings){
 if (state.msg.message == WM_HOTKEY) {
         
         try {
@@ -532,7 +541,7 @@ void saveItemsToClipboard(){
     errorLog(true, "currently not implemented");
 
 }
-void handleNativeEvents(AppState& state){
+void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings){
     errorLog(true, "currently not implemented");
 }
 int getNativeScreenResolution(){

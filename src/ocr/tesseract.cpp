@@ -376,7 +376,7 @@ std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
 /*
  - takes a screenshot and saves it to the fileName
 */
-void takeScreenshotAndSaveToFile(const int width, const int height,const Point p,string& fileName) {
+void takeNativeScreenshotAndSaveToFile(const int width, const int height,const Point p,string& fileName) {
     Timer timer = Timer();
 
     timer.start();
@@ -395,7 +395,7 @@ void takeScreenshotAndSaveToFile(const int width, const int height,const Point p
 /*
  - takes a screenshot and saves it to the fileName
 */
-void takeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, string& fileName) {
+void takeNativeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, string& fileName) {
     Timer timer = Timer();
 
     timer.start();
@@ -432,7 +432,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
     py = coordinatey;
 
     string fileName = "relicTitleScreenshot.bmp";
-    takeScreenshotAndSaveToFile(titleWidth,40,px-5,py-5,fileName);
+    takeNativeScreenshotAndSaveToFile(titleWidth,40,px-5,py-5,fileName);
 
 
 
@@ -485,7 +485,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
     //std::cout << "new position: " << (px + x_shift) - 5;
     
     string fileName = "relicTitleScreenshot.bmp";
-    takeScreenshotAndSaveToFile(titleWidth - titleWidth / 5,40,(px-x_shift)-5,py-5,fileName);
+    takeNativeScreenshotAndSaveToFile(titleWidth - titleWidth / 5,40,(px-x_shift)-5,py-5,fileName);
    
 
     string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
@@ -558,7 +558,7 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
 
    
     string fileName = state.config["screenShotFilePath"];
-    takeScreenshotAndSaveToFile(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]),p,fileName);
+    takeNativeScreenshotAndSaveToFile(stoi(state.config["screenShotWidth"]), stoi(state.config["screenShotHeight"]),p,fileName);
 
 
     auto itemPrices = screenshotToItems(state, fileName);
