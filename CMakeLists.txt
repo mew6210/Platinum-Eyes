@@ -58,16 +58,16 @@ set(LIBRARIES
 cpr::cpr
 SFML::Graphics 
 SFML::Window
-
 ImGui-SFML::ImGui-SFML
-Dwmapi.lib
 Tesseract::libtesseract
-
 ${OpenCV_LIBS}
 liblzma::liblzma
 wood
 )
 
+if(WIN32)
+    list(APPEND LIBRARIES Dwmapi.lib)
+endif()
 
 
 add_executable (
