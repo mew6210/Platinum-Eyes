@@ -337,7 +337,7 @@ Date getNewestUpdateDate() {
     string date_string = "";
     while (getline(inputFile, line)) {
 
-        if (line == "<p><b>Last Update:</b> ") 
+        if (line.find("<p><b>Last Update:</b>") != std::string::npos)
         {
             read_flag = true;
             continue;
