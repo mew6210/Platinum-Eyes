@@ -294,12 +294,12 @@ void fetchRelicTable() {
     bool close_flag = false;
     while (std::getline(inputFile, line)) {
 
-        if (line == "<h3 id=\"relicRewards\">Relics:</h3>") {
+        if (line.find("<h3 id=\"relicRewards\">Relics:</h3>")!=std::string::npos) {
             read_flag = true;
             continue;
         
         } 
-        if (line == "<h3 id=\"keyRewards\">Keys:</h3>") {
+        if (line.find("<h3 id=\"keyRewards\">Keys:</h3>")!=std::string::npos) {
             read_flag = false;
             close_flag = true;
         } 
