@@ -22,7 +22,14 @@ int getScreenResolution(int screenWidth, int screenHeight) {
     return screenResolution;
 
 }
+int getNativeScreenResolution() {
 
+    int width = sf::VideoMode::getDesktopMode().size.x;
+    int height = sf::VideoMode::getDesktopMode().size.y;
+    int screenResolution = getScreenResolution(width, height);
+    return screenResolution;
+
+}
 
 
 namespace screenShotParams{

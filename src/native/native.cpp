@@ -37,6 +37,8 @@ namespace {
         return returnString;
     }
 
+
+
 }
 
 
@@ -167,17 +169,7 @@ void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
 }
 
 
-int getNativeScreenResolution() {
 
-
-	HDC hScreen = GetDCEx(NULL, NULL, DCX_NORESETATTRS);
-	int width = GetDeviceCaps(hScreen, HORZRES);
-	int height = GetDeviceCaps(hScreen, VERTRES);
-	DeleteDC(hScreen);
-	int screenResolution = getScreenResolution(width, height);
-	return screenResolution;
-
-}
 
 HBITMAP takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY) {
 
@@ -544,18 +536,6 @@ void saveItemsToClipboard(AppState& state, std::vector<Item>& items){
 void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings){
     errorLog(true, "currently not implemented");
 }
-int getNativeScreenResolution(){
-
-    return 1000;
-    errorLog(false,"currently not implemented");
-}
-
-
-
-
-
-
-
 
 
 
