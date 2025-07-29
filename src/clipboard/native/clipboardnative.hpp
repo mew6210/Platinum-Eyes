@@ -10,6 +10,6 @@ void saveItemsToClipboard(AppState& state, std::vector<Item>& items);
 
 #if __linux__
 
-void saveScreenshotToClipboard(HBITMAP bitmap);
+void saveScreenshotToClipboard();
 void saveItemsToClipboard(AppState& state, std::vector<Item>& items);
 #endif
