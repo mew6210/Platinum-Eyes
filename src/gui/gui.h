@@ -1,5 +1,6 @@
 #pragma once
 #include "../core/core.h"
+#include "native/guinative.hpp"
 
 void updateFps(AppState& state);
 void generateImGuiTable(AppState state);

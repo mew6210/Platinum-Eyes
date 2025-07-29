@@ -91,7 +91,6 @@ add_executable (
         "src/ocr/readingItems.cpp" 
         "src/gui/settingsMenu.cpp"
         "src/ocr/tesseract.cpp" 
-         
         "src/gui/settingsChanges.cpp" 
         "src/relics/relicDatabase.cpp" 
         "src/ocr/ocr.h" 
@@ -102,9 +101,13 @@ add_executable (
         "src/relics/relics.h" 
         "src/core/core.cpp" 
         "src/wfmd/wfmd.cpp"
-        
-
- "src/native/native.hpp" "src/native/native.cpp" "src/ocr/native/nativeocr.cpp" "src/keybindings/native/keybindingsnative.cpp")
+        "src/ocr/native/nativeocr.cpp" 
+        "src/keybindings/native/keybindingsnative.cpp" 
+        "src/gui/native/guinative.cpp" 
+        "src/clipboard/clipboard.cpp" 
+        "src/clipboard/native/clipboardnative.cpp" 
+        "src/core/native/nativecore.cpp"
+)
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

@@ -494,7 +494,7 @@ public:
 };
 
 
-
+#include "native/nativecore.hpp"
 #include "../ocr/ocr.h"
 #include "../utilities/utilities.h"
 #include "../keybindings/keybindings.h"
@@ -502,7 +502,7 @@ public:
 #include "../config/config.h"
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
-#include "../native/native.hpp"
+#include "../clipboard/clipboard.hpp"
 
 
 

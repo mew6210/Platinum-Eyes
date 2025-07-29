@@ -4,9 +4,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "native-split" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "native-split" ]
+    branches: [ "master" ]
 
 jobs:
   build:
