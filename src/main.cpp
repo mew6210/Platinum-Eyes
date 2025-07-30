@@ -1,12 +1,12 @@
 ﻿#include "core/core.h"
-
+#include <filesystem>
 using std::vector, std::string;
 
 int main()
 {
     vector<Item> currentFissureItems;
     currentFissureItems.push_back(Item("placeholder","placeholder",ItemDetails()));
-
+    std::filesystem::create_directory("data");
     RelicInfo currentRelic;
 
     ToolConfig toolConfig = initConfig();

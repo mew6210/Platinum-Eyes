@@ -209,7 +209,7 @@ bool doesDatabaseExist() {
 
     ifstream txtDatabase;
     
-    txtDatabase.open("relictable_lith.txt");
+    txtDatabase.open("data/relictable_lith.txt");
 
     return txtDatabase.is_open();
 
@@ -278,12 +278,12 @@ pair<bool,bool> shouldUpdateDatabase(ToolConfig& config) {
 
 void fetchRelicTable() {
 
-    std::ifstream inputFile("droptable-raw.html");
+    std::ifstream inputFile("data/droptable-raw.html");
     if (!inputFile.is_open()) {
         errorLog(false,"Error opening input file!");
         exit(1);
     }
-    std::ofstream outputFile("relictable.html");
+    std::ofstream outputFile("data/relictable.html");
     if (!outputFile.is_open()) {
         errorLog(false,"Error opening input file!");
         exit(0);
@@ -329,7 +329,7 @@ Date getNewestUpdateDate() {
 
     Date updateDate;
 
-    ifstream inputFile("droptable-raw.html");
+    ifstream inputFile("data/droptable-raw.html");
 
     string line = "";
     bool close_flag = false;
@@ -388,14 +388,14 @@ void handleSuccesfullDatabaseDownload(cpr::Response& r,ToolConfig& config,bool& 
             successLog("New update, downloading...");
             fetchRelicTable();
             parseRelicData();
-            std::remove("relictable.html");
+            std::remove("data/relictable.html");
 
         }
         else if (forced == true) {
             successLog("New update forced, downloading...");
             fetchRelicTable();
             parseRelicData();
-            std::remove("relictable.html");
+            std::remove("data/relictable.html");
         }
         else {
             successLog("Relic database is up to date!");
@@ -420,7 +420,7 @@ void handleUnSuccesfullDatabaseDownload(cpr::Response& r) {
 
 void updateDatabase(ToolConfig& config,bool forced) {
 
-    cpr::Response r = downloadFile("https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html", "droptable-raw.html");
+    cpr::Response r = downloadFile("https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html", "data/droptable-raw.html");
 
     handleSuccesfullDatabaseDownload(r,config,forced);
     
@@ -428,7 +428,7 @@ void updateDatabase(ToolConfig& config,bool forced) {
 
     
     rewriteConfigFile(config);
-    std::remove("droptable-raw.html");
+    std::remove("data/droptable-raw.html");
 
 
 }
@@ -496,7 +496,7 @@ vector<string> loadAllAvalibleItemsToVector() {
 
     vector<string> allItems = {};
 
-    ifstream inputFile("allItemsFile.txt");
+    ifstream inputFile("data/allItemsFile.txt");
     
     string line = "";
 
@@ -554,7 +554,7 @@ void processAllItemsFromTypeFile(std::ifstream& typeFile,std::vector<std::string
 void parseAllItemsToFile(std::unordered_map<string,std::ifstream>& inputFiles) {
     
     vector<string> alreadyReadItems;
-    ofstream allItemsFile("allItemsFile.txt");
+    ofstream allItemsFile("data/allItemsFile.txt");
 
     for (auto& [name, inputFile] : inputFiles) {
         processAllItemsFromTypeFile(inputFile, alreadyReadItems, allItemsFile);
@@ -626,10 +626,10 @@ namespace {
     void allItemsToOneFile() {
 
         std::unordered_map<string, ifstream> inputFiles;
-        inputFiles.emplace("lith", ifstream("relictable_lith.txt"));
-        inputFiles.emplace("meso", ifstream("relictable_meso.txt"));
-        inputFiles.emplace("neo", ifstream("relictable_neo.txt"));
-        inputFiles.emplace("axi", ifstream("relictable_axi.txt"));
+        inputFiles.emplace("lith", ifstream("data/relictable_lith.txt"));
+        inputFiles.emplace("meso", ifstream("data/relictable_meso.txt"));
+        inputFiles.emplace("neo", ifstream("data/relictable_neo.txt"));
+        inputFiles.emplace("axi", ifstream("data/relictable_axi.txt"));
 
         checkInputFiles(inputFiles);
 
@@ -642,17 +642,17 @@ namespace {
 
 int parseRelicData() {
     // Input HTML-like file
-    ifstream inputFile("relictable.html");
+    ifstream inputFile("data/relictable.html");
     if (!inputFile.is_open()) {
     errorLog(false,"Error opening input file!");
         return 1;
     }
     std::unordered_map<string, ofstream> outputFiles;
-    outputFiles.emplace("others", ofstream("relictable_others.txt"));
-    outputFiles.emplace("lith", ofstream("relictable_lith.txt"));
-    outputFiles.emplace("meso", ofstream("relictable_meso.txt"));
-    outputFiles.emplace("neo", ofstream("relictable_neo.txt"));
-    outputFiles.emplace("axi", ofstream("relictable_axi.txt"));
+    outputFiles.emplace("others", ofstream("data/relictable_others.txt"));
+    outputFiles.emplace("lith", ofstream("data/relictable_lith.txt"));
+    outputFiles.emplace("meso", ofstream("data/relictable_meso.txt"));
+    outputFiles.emplace("neo", ofstream("data/relictable_neo.txt"));
+    outputFiles.emplace("axi", ofstream("data/relictable_axi.txt"));
     
 
     if (checkOutputFiles(outputFiles) != 0) return 1;
@@ -688,11 +688,11 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
     
 
     switch (relictype) {
-    case RELICTYPE_Lith:inputFile.open("relictable_lith.txt"); break;
-    case RELICTYPE_Meso:inputFile.open("relictable_meso.txt"); break;
-    case RELICTYPE_Neo:inputFile.open("relictable_neo.txt"); break;
-    case RELICTYPE_Axi:inputFile.open("relictable_axi.txt"); break;
-    case -1:inputFile.open("relictable_others.txt"); break;
+    case RELICTYPE_Lith:inputFile.open("data/relictable_lith.txt"); break;
+    case RELICTYPE_Meso:inputFile.open("data/relictable_meso.txt"); break;
+    case RELICTYPE_Neo:inputFile.open("data/relictable_neo.txt"); break;
+    case RELICTYPE_Axi:inputFile.open("data/relictable_axi.txt"); break;
+    case -1:inputFile.open("data/relictable_others.txt"); break;
     }
 
     if (!inputFile.is_open()) {

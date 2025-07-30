@@ -4,7 +4,7 @@ using std::vector, std::string;
 
 int getDucatsFromSlug(const string& slug) {
 
-	std::ifstream file("wfmItems.txt");
+	std::ifstream file("data/wfmItems.txt");
 
 	string line = "";
 	while (getline(file, line)) {
@@ -108,7 +108,7 @@ vector<WFMItem> filteredItems(const vector<WFMItem>& items) {
 
 void saveWFMItemsToFile(const vector<WFMItem>& items) {
 
-	std::ofstream file("wfmItems.txt");
+	std::ofstream file("data/wfmItems.txt");
 
 	for (auto& item : items) {
 		file << item.slug;
