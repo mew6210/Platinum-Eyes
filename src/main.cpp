@@ -1,5 +1,5 @@
 ﻿#include "core/core.h"
-#include <filesystem>
+
 using std::vector, std::string;
 
 int main()
