@@ -7,6 +7,7 @@ std::string getClipboardItemText(AppState& state, std::vector<Item>& items) {
     std::string returnString = "";
 
     for (auto& item : items) {
+        if (item.itemDetails.rarity == Rarity::Undefined) continue; //skip not found items for printing in clipboard
         returnString += "[";
         std::string name = item.preparedName;
 
