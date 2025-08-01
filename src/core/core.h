@@ -376,23 +376,23 @@ struct AppState {
 #endif
 
 
-	std::vector<Item>& items;
-	ToolConfig& config;
+	std::vector<Item> items;
+	ToolConfig config;
 	sf::RenderWindow& window;
-	bool& running;
-	bool& isVisible;
+	bool running;
+	bool isVisible;
 	
-	WindowParameters& sfmlSize;
-	WindowParameters& imguiSize;
-	bool& settingsVisible;
+	WindowParameters sfmlSize;
+	WindowParameters imguiSize;
+	bool settingsVisible;
 	tesseract::TessBaseAPI& tesseractApi;
-	bool& shouldReSizeImGui;
-	bool& itemDisplayFlag;
-	RelicInfo& currentRelic;
-	bool& shouldUpdateFonts;
-	std::vector<std::string>& allAvalibleItems;
-	int& fpsVisible;
-	int& fpsHidden;
+	bool shouldReSizeImGui;
+	bool itemDisplayFlag;
+	RelicInfo currentRelic;
+	bool shouldUpdateFonts;
+	std::vector<std::string> allAvalibleItems;
+	int fpsVisible;
+	int fpsHidden;
 
 
 	AppState(
@@ -441,7 +441,7 @@ struct AppState {
 		itemDisplayFlag(idf),
 		currentRelic(cr),
 		shouldUpdateFonts(suf),
-		allAvalibleItems(aai),
+		allAvalibleItems(std::move(aai)),
 		fpsVisible(fv),
 		fpsHidden(fh) {};
 

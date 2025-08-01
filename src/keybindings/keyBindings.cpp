@@ -52,7 +52,7 @@ void unregisterHotkeys() {
 
 
 
-void handleEvents(AppState state) {
+void handleEvents(AppState& state) {
     
     handleNativeEvents(state,keyBindings);
     

@@ -509,7 +509,7 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 }
 
 
-std::vector<Item> readFissureRewardsScreen(AppState state) {
+std::vector<Item> readFissureRewardsScreen(AppState& state) {
 
 
     std::pair<int, int > coordinates = stringToIntPair(state.config["coordinatesOfScreenShotCenter"]);
@@ -532,7 +532,7 @@ std::vector<Item> readFissureRewardsScreen(AppState state) {
 
 
 
-std::vector<Item> readPreviousFissureRewardsScreen(AppState state) {
+std::vector<Item> readPreviousFissureRewardsScreen(AppState& state) {
 
     string fileName = state.config["screenShotFilePath"];
     auto itemPrices = screenshotToItems(state,fileName);

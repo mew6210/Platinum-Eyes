@@ -125,7 +125,7 @@ void createRelicItemBox(std::tuple<std::string,float,ItemDetails> item,ImVec2 sc
 }
 
 
-void generateImGuiTable(AppState state) {
+void generateImGuiTable(AppState& state) {
 
 	if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
 		
@@ -247,7 +247,7 @@ void setImGuiStyle(ToolConfig& config) {
 
 
 
-void createImGuiWindow(bool& isRunning,AppState state) {
+void createImGuiWindow(bool& isRunning,AppState& state) {
 
 	
 	int heightDiff = state.sfmlSize.height - state.imguiSize.height;
@@ -280,7 +280,7 @@ void createImGuiWindow(bool& isRunning,AppState state) {
 	}
 }
 
-void handleBetweenFrameImGuiUpdates(AppState state) {
+void handleBetweenFrameImGuiUpdates(AppState& state) {
 
 	if (state.shouldUpdateFonts) {
 		setNewFont(state.config);

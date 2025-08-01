@@ -24,10 +24,10 @@ std::vector<Item> prepareItemsForRead(std::vector<Item>& items);
 
 std::pair<std::string, bool> readItemTesseract(cv::Mat& image, tesseract::TessBaseAPI& api, bool showImage);
 std::vector<std::string> readFissureItems(tesseract::TessBaseAPI& api, size_t itemCount,std::string& fileName);
-std::vector<Item> readFissureRewardsScreen(AppState state);
+std::vector<Item> readFissureRewardsScreen(AppState& state);
 
 
-std::vector<Item> readPreviousFissureRewardsScreen(AppState state);
+std::vector<Item> readPreviousFissureRewardsScreen(AppState& state);
 
 void tesseractInit(tesseract::TessBaseAPI& api);
 
