@@ -1,7 +1,7 @@
 #include "core.h"
 
 
-using std::pair;
+using std::pair, std::string, std::vector;
 
 pair<int, int> getFps(ToolConfig& toolConfig) {
 
@@ -46,19 +46,13 @@ void mainLoop(AppState& state) {
 
     sf::Clock deltaClock;
 
-    while (state.running)
-    {
+    while (state.running){
+        
         //handle keybinds
-
         listenAndHandleEvents(state);
 
-
-        // handle events
-        
-
-        while (const std::optional event = state.window.pollEvent())
-        {
-            ImGui::SFML::ProcessEvent(state.window,*event);
+        while (const std::optional event = state.window->pollEvent()){
+            ImGui::SFML::ProcessEvent(*state.window,*event);
 
             if (event->is<sf::Event::Closed>())
             {
@@ -66,10 +60,8 @@ void mainLoop(AppState& state) {
                 state.running = false;
             }
             
-
-
         }
-        ImGui::SFML::Update(state.window, deltaClock.restart());
+        ImGui::SFML::Update(*state.window, deltaClock.restart());
 
 
         createImGuiWindow(state.running, state);
@@ -78,15 +70,77 @@ void mainLoop(AppState& state) {
 
         ImGui::End();
 
+        state.window->clear(sf::Color(0, 0, 0, 30));
 
-        state.window.clear(sf::Color(0, 0, 0, 30));
-
-        ImGui::SFML::Render(state.window);
-        state.window.display();
+        ImGui::SFML::Render(*state.window);
+        state.window->display();
 
         handleBetweenFrameImGuiUpdates(state);
 
     }
+}
 
 
+AppState initApp() {
+
+    vector<Item> currentFissureItems;
+    currentFissureItems.push_back(Item("placeholder", "placeholder", ItemDetails()));
+
+    RelicInfo currentRelic;
+
+    ToolConfig toolConfig = initConfig();
+
+    std::filesystem::create_directory("data");
+    loadDatabases(toolConfig);
+    registerHotkeys(toolConfig);
+
+    WindowParameters sfmlSize = getWindowSize("sfml", toolConfig);
+    WindowParameters imguiSize = getWindowSize("imgui", toolConfig);
+
+    vector<string> allAvalibleItems = loadAllAvalibleItemsToVector();
+
+    auto  tesseractapi = std::make_unique<tesseract::TessBaseAPI>();
+    tesseractInit(*tesseractapi);
+
+    auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode({
+        static_cast<unsigned int>(sfmlSize.width),
+        static_cast<unsigned int>(sfmlSize.height) }),
+        "Warframe tool",
+        sf::Style::None);
+
+    bool running = true;
+    bool visible = true;
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    MSG msg = { 0 };
+#endif
+#if __linux__
+    XEvent* msg;
+#endif
+
+    bool settingsOpen = false;
+    bool shouldReSizeImGui = false;
+    bool itemDisplayFlag = ITEMTYPE_fissureItems;
+    bool shouldUpdateFonts = false;
+    auto fps = getFps(toolConfig);
+
+    return AppState(
+        msg,
+        std::move(currentFissureItems),
+        std::move(toolConfig),
+        std::move(window),
+        running,
+        visible,
+        sfmlSize,
+        imguiSize,
+        settingsOpen,
+        std::move(tesseractapi),
+        shouldReSizeImGui,
+        itemDisplayFlag,
+        currentRelic,
+        shouldUpdateFonts,
+        std::move(allAvalibleItems),
+        fps.first,
+        fps.second
+    );
 }

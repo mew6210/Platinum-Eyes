@@ -57,13 +57,13 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
         case KB_WindowVisibility:
         {
             state.isVisible = !state.isVisible;
-            state.window.setVisible(state.isVisible);
+            state.window->setVisible(state.isVisible);
 
             if (state.isVisible) {
-                state.window.setFramerateLimit(state.fpsVisible);
+                state.window->setFramerateLimit(state.fpsVisible);
             }
             else {
-                state.window.setFramerateLimit(state.fpsHidden);
+                state.window->setFramerateLimit(state.fpsHidden);
             }
 
         }
@@ -83,13 +83,13 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
                             break;
         case KB_ReadRelicTitle: {
 
-            state.currentRelic = readItemsFromRelicTitleTesseract(state.tesseractApi);
+            state.currentRelic = readItemsFromRelicTitleTesseract(*state.tesseractApi);
 
 
 
             if (state.currentRelic.relicPrice == 0.0) {
                 warningLog("No relic name found in its designated area, shifting to right.(Maybe user is in a mission)");
-                state.currentRelic = readItemsFromRelicTitleTesseractShifted(state.tesseractApi);
+                state.currentRelic = readItemsFromRelicTitleTesseractShifted(*state.tesseractApi);
 
             }
             printRelic(state.currentRelic);

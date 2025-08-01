@@ -163,7 +163,7 @@ void handleConfigChanges(ToolConfig& newConfig, AppState& state) {
 		}
 		if (windowSizesChanged(differences)) {
 			WindowParameters parameterssfml = getWindowSize("sfml", state.config);
-			reSizeSfmlWindow(state.window, parameterssfml);
+			reSizeSfmlWindow(*state.window, parameterssfml);
 			WindowParameters parametersimgui = getWindowSize("imgui", state.config);
 
 			state.sfmlSize = parameterssfml;

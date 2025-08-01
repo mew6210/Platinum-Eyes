@@ -479,7 +479,7 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 
     size_t itemCount = 4;
 
-    vector<string> readResults = readFissureItems(state.tesseractApi, itemCount, fileName);
+    vector<string> readResults = readFissureItems(*state.tesseractApi, itemCount, fileName);
     vector<string> preparedItems = prepareItems(readResults);
     
 

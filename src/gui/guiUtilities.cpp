@@ -200,11 +200,11 @@ void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 
 
 void customizeWindow(AppState& state) {
-	sf::WindowHandle wHandle = state.window.getNativeHandle();
-	state.window.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.sfmlSize.width+25), 25));
-	state.window.setFramerateLimit(state.fpsVisible);
+	sf::WindowHandle wHandle = state.window->getNativeHandle();
+	state.window->setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.sfmlSize.width+25), 25));
+	state.window->setFramerateLimit(state.fpsVisible);
 	
-	if (!ImGui::SFML::Init(state.window)) {
+	if (!ImGui::SFML::Init(*state.window)) {
 		errorLog(true,"ImGui::SFML::Init() failed");
 	}
 
@@ -313,10 +313,10 @@ void updateFps(AppState& state) {
 
 
 	if (state.isVisible) {
-		state.window.setFramerateLimit(newVisibleFps);
+		state.window->setFramerateLimit(newVisibleFps);
 	}
 	else {
-		state.window.setFramerateLimit(newHiddenFps);
+		state.window->setFramerateLimit(newHiddenFps);
 	}
 	state.fpsVisible = newVisibleFps;
 	state.fpsHidden = newHiddenFps;

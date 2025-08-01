@@ -368,24 +368,24 @@ struct WFMItem {
 struct AppState {
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-	MSG& msg;
+	MSG msg;
 #endif
 
 #if __linux__
-		XEvent* msg;
+		XEvent msg;
 #endif
 
 
 	std::vector<Item> items;
 	ToolConfig config;
-	sf::RenderWindow& window;
+	std::unique_ptr<sf::RenderWindow> window;
 	bool running;
 	bool isVisible;
 	
 	WindowParameters sfmlSize;
 	WindowParameters imguiSize;
 	bool settingsVisible;
-	tesseract::TessBaseAPI& tesseractApi;
+	std::unique_ptr<tesseract::TessBaseAPI> tesseractApi;
 	bool shouldReSizeImGui;
 	bool itemDisplayFlag;
 	RelicInfo currentRelic;
@@ -396,47 +396,42 @@ struct AppState {
 
 
 	AppState(
-
-
-
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-
-		MSG& m,
+		MSG m,
 #endif
 #if __linux__
-		XEvent* m,
-
+		XEvent m,
 #endif
 
-		std::vector<Item>& i,
-		ToolConfig& c,
-		sf::RenderWindow& w,
-		bool& r,
-		bool& v,
-		WindowParameters& sfmlS,
-		WindowParameters& imguiS,
-		bool& sv,
-		tesseract::TessBaseAPI& t,
-		bool& sri,
-		bool& idf,
-		RelicInfo& cr,
-		bool& suf,
-		std::vector<std::string>& aai,
-		int& fv,
-		int& fh
+		std::vector<Item> i,
+		ToolConfig c,
+		std::unique_ptr<sf::RenderWindow> w,
+		bool r,
+		bool v,
+		WindowParameters sfmlS,
+		WindowParameters imguiS,
+		bool sv,
+		std::unique_ptr<tesseract::TessBaseAPI> t,
+		bool sri,
+		bool idf,
+		RelicInfo cr,
+		bool suf,
+		std::vector<std::string> aai,
+		int fv,
+		int fh
 
 	) :
 		msg(m),
-		items(i), 
-		config(c), 
-		window(w),
+		items(std::move(i)), 
+		config(std::move(c)), 
+		window(std::move(w)),
 		running(r), 
 		isVisible(v), 
 		
 		sfmlSize(sfmlS),
 		imguiSize(imguiS),
 		settingsVisible(sv),
-		tesseractApi(t),
+		tesseractApi(std::move(t)),
 		shouldReSizeImGui(sri),
 		itemDisplayFlag(idf),
 		currentRelic(cr),
@@ -510,3 +505,4 @@ public:
 void mainLoop(AppState& state);
 std::pair<int, int> getFps(ToolConfig& toolConfig);
 void loadDatabases(ToolConfig& toolConfig);
+AppState initApp();
