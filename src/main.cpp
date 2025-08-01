@@ -2,10 +2,6 @@
 
 using std::vector, std::string;
 
-
-
-
-
 int main()
 {
     AppState state = initApp();
