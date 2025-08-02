@@ -438,7 +438,9 @@ struct AppState {
 		shouldUpdateFonts(suf),
 		allAvalibleItems(std::move(aai)),
 		fpsVisible(fv),
-		fpsHidden(fh) {};
+		fpsHidden(fh)
+		
+		{};
 
 };
 
@@ -499,6 +501,7 @@ public:
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
 #include "../clipboard/clipboard.hpp"
+#include "../eeLog/eelog.hpp"
 
 
 

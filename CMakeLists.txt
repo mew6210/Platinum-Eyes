@@ -28,7 +28,7 @@ endif()
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(SFML COMPONENTS Window Graphics CONFIG REQUIRED)
-
+find_package(efsw CONFIG REQUIRED)
 
 
 set(IMGUI_VERSION 1.91.1)
@@ -72,6 +72,7 @@ Tesseract::libtesseract
 ${OpenCV_LIBS}
 wood
 liblzma::liblzma
+efsw::efsw
 )
 
 if(WIN32)
@@ -107,7 +108,7 @@ add_executable (
         "src/clipboard/clipboard.cpp" 
         "src/clipboard/native/clipboardnative.cpp" 
         "src/core/native/nativecore.cpp"
-)
+ "src/eeLog/eeLog.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

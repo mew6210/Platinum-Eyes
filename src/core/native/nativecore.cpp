@@ -105,7 +105,7 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
 
 
     }
-
+    
 }
 
 
