@@ -12,3 +12,4 @@ void loadRelicDatabase(ToolConfig& config, std::pair<bool, bool>& updateOrders);
 void printRelic(RelicInfo& relic);
 std::vector<std::string> loadAllAvalibleItemsToVector();
 std::pair<bool, bool> shouldUpdateDatabase(ToolConfig& config);
+void replaceAmp(std::string& s);

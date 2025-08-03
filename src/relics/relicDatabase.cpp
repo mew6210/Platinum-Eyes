@@ -158,6 +158,11 @@ TODO: Add throwing exceptions if std::stoi fails.
 */
 Date stringToDate(const string& s) {
 
+    if (s == "") {
+        errorLog(false, "empty string date");
+        return Date{ 0,0,0 };
+    }
+
     std::stringstream ss(s);
 
     string word;
@@ -184,20 +189,13 @@ Date stringToDate(const string& s) {
 
     int year = std::stoi(words[2]);
 
-
-
-
-
-
     return Date{ day,month,year };
 
 }
 
-
-
 void replaceAmp(string& s) {
 
-    string amp = "&amp;";
+    const string amp = "&amp;";
 
     size_t pos = s.find(amp);
 
@@ -212,31 +210,25 @@ bool doesDatabaseExist() {
     txtDatabase.open("data/relictable_lith.txt");
 
     return txtDatabase.is_open();
-
-  
 }
-
 
 bool is_first_launch(ToolConfig& config) {
 
     if (config["data_LastTimeLaunched"] == "0 0 0" && config["data_LatestUpdate"] == "0 0 0") {
         successLog("First launch, hello!");
         return true;
-    
     } 
     else return false;
-
-
 }
 
-bool checkUpdatingType(ToolConfig& config) {
+bool shouldUpdate(ToolConfig& config) {
 
     std::string updatingType = config["updatingType"];
-
 
     if (updatingType == "Never") {
         return false;
     }
+
     if (updatingType == "Once per day") {
 
         if (stringToDate(config["data_LastTimeLaunched"]) < getCurrentDate()) {
@@ -247,10 +239,8 @@ bool checkUpdatingType(ToolConfig& config) {
             successLog("Same day, no need to check for downloads");
             return false;
         }
-
-
-
     }
+
     if (updatingType == "Each Launch") {
         return true;
     }
@@ -259,19 +249,13 @@ bool checkUpdatingType(ToolConfig& config) {
 
 }
 
-
-
-
 //first is if it should update, and second is how it should be updated
 //if its false, then it should check the recency of the update, if true, then the update should be forced no matter what
 pair<bool,bool> shouldUpdateDatabase(ToolConfig& config) {
-    
-    
 
     if (is_first_launch(config)) return pair<bool,bool>(true,true);
     if (!doesDatabaseExist()) return pair<bool,bool>(true,true);
-    if (checkUpdatingType(config)) return pair<bool,bool>(true,false);
-
+    if (shouldUpdate(config)) return pair<bool,bool>(true,false);
 
     return pair<bool,bool>(false,false);
 }
@@ -281,12 +265,12 @@ void fetchRelicTable() {
     std::ifstream inputFile("data/droptable-raw.html");
     if (!inputFile.is_open()) {
         errorLog(false,"Error opening input file!");
-        exit(1);
+        return;
     }
     std::ofstream outputFile("data/relictable.html");
     if (!outputFile.is_open()) {
         errorLog(false,"Error opening input file!");
-        exit(0);
+        return;
     }
 
     string line = "";
@@ -317,28 +301,23 @@ void fetchRelicTable() {
     }
     inputFile.close();
     outputFile.close();
-
-
-
 }
-
-
-
 
 Date getNewestUpdateDate() {
 
     Date updateDate;
-
-    ifstream inputFile("data/droptable-raw.html");
-
     string line = "";
-    bool close_flag = false;
     bool read_flag = false;
     string date_string = "";
+
+    ifstream inputFile("data/droptable-raw.html");
+    if (!inputFile.is_open()) {
+        errorLog(false, "failed to open droptable-raw.html");
+        return Date{ 0,0,0 };
+    }
     while (getline(inputFile, line)) {
 
-        if (line.find("<p><b>Last Update:</b>") != std::string::npos)
-        {
+        if (line.find("<p><b>Last Update:</b>") != std::string::npos){
             read_flag = true;
             continue;
         }
@@ -348,28 +327,26 @@ Date getNewestUpdateDate() {
         }
         
     }
-
     inputFile.close();
 
+    if (date_string == "") {
+        errorLog(false, "could not find date in droptable-raw");
+        return Date{ 0,0,0 };
+    }
+
     updateDate = stringToDate(date_string);
-
-
     return updateDate;
-
 }
 
 
 std::string dateToString(Date& date) {
-    std::string currentTimeString = std::to_string(date.day) + " " + std::to_string(date.month) + " " + std::to_string(date.year);
-
-    return currentTimeString;
+    return std::to_string(date.day) + " " + std::to_string(date.month) + " " + std::to_string(date.year);;
 }
 
 cpr::Response downloadFile(const std::string& downloadLink,const std::string& downloadDestination) {
 
     std::ofstream of(downloadDestination, std::ios::binary);
     cpr::Response r = cpr::Download(of, cpr::Url{ downloadLink });
-
     of.close();
 
     return r;
@@ -377,7 +354,7 @@ cpr::Response downloadFile(const std::string& downloadLink,const std::string& do
 
 void handleSuccesfullDatabaseDownload(cpr::Response& r,ToolConfig& config,bool& forced) {
     
-    if (r.status_code == 200) {
+    
         Date latestUpdateRecorded = stringToDate(config["data_LatestUpdate"]);
         Date droptable_raw_date = getNewestUpdateDate();
 
@@ -400,21 +377,17 @@ void handleSuccesfullDatabaseDownload(cpr::Response& r,ToolConfig& config,bool& 
         else {
             successLog("Relic database is up to date!");
         }
-    }
+    
 }
 
 void handleUnSuccesfullDatabaseDownload(cpr::Response& r) {
 
-    if(r.status_code!=200){
-        if (r.status_code == 0) {
-            errorLog(true,"Check your internet connection, could not download raw html droptable.");
-        }
-        else {
-            errorLog(true,"Couldn't download raw html droptable. Status code: ",std::to_string(r.status_code));
-        }
-       
+    if (r.status_code == 0) {
+        errorLog(true,"Check your internet connection, could not download raw html droptable.");
     }
-
+    else {
+        errorLog(true,"Couldn't download raw html droptable. Status code: ",std::to_string(r.status_code));
+    }
 }
 
 
@@ -422,19 +395,18 @@ void updateDatabase(ToolConfig& config,bool forced) {
 
     cpr::Response r = downloadFile("https://warframe-web-assets.nyc3.cdn.digitaloceanspaces.com/uploads/cms/hnfvc0o3jnfvc873njb03enrf56.html", "data/droptable-raw.html");
 
-    handleSuccesfullDatabaseDownload(r,config,forced);
-    
-    handleUnSuccesfullDatabaseDownload(r);
-
+    if (r.status_code == 200) {
+        handleSuccesfullDatabaseDownload(r, config, forced);
+    }
+    else {
+        handleUnSuccesfullDatabaseDownload(r);
+    }
     
     rewriteConfigFile(config);
     std::remove("data/droptable-raw.html");
-
-
 }
 
 void updateCurrentDate(ToolConfig& config) {
-
 
     Date currentDate = getCurrentDate();
 
@@ -452,13 +424,10 @@ void loadRelicDatabase(ToolConfig& config,pair<bool,bool>& updateOrders) {
     updateCurrentDate(config);
 }
 
-
 constexpr auto RELICTYPE_Lith = 1;
 constexpr auto RELICTYPE_Meso = 2;
 constexpr auto RELICTYPE_Neo = 3;
 constexpr auto RELICTYPE_Axi = 4;
-
-
 
 int determineRelicType(const string& relicname) {
 
@@ -479,7 +448,7 @@ int determineRelicType(const string& relicname) {
 }
 
 
-void writeToRelicFile(std::ofstream& outputFile,const string& relicname,const string& line,int& cursor) {
+void writeRelicLinesToFile(std::ofstream& outputFile,const string& relicname,const string& line,int& cursor) {
     outputFile << relicname << "\n";
     pair<string, string> item = parseItemFromHtmlLine(line, cursor);
     outputFile << "\t" << item.first << "---" << item.second << "\n";
@@ -495,59 +464,57 @@ void writeToRelicFile(std::ofstream& outputFile,const string& relicname,const st
 vector<string> loadAllAvalibleItemsToVector() {
 
     vector<string> allItems = {};
-
-    ifstream inputFile("data/allItemsFile.txt");
-    
     string line = "";
-
+    
+    ifstream inputFile("data/allItemsFile.txt");
+    if (!inputFile.is_open()) {
+        errorLog(false, "failed to open all items file");
+        return {};
+    }
     while (getline(inputFile, line)) {
 
         trim(line);
         allItems.push_back(line);
     }
 
-
     return allItems;
-
 }
 
 
+/*
+@brief Writes all items from inputFile to outputFile and allItems vector in a specific format.
 
-void processAllItemsFromTypeFile(std::ifstream& typeFile,std::vector<std::string>& allItems,std::ofstream& outputFile) {
+For example, this line:
+    
+    Saryn Prime Neuroptics Blueprint---Uncommon (11.00%)
 
-    std::string line = "";
+    with "\t" at the start, writes 'saryn_prime_neuroptics_blueprint' to outputFile and adds to allItems vector.
+*/
+void appendAllItemsFromFile(std::ifstream& inputFile,vector<string>& allItems,std::ofstream& outputFile) {
 
-    while (getline(typeFile, line)) {
+    string line = "";
+
+    while (getline(inputFile, line)) {
 
         if (line.starts_with("\t")) {
 
-            std::vector<std::string> words = explode(line, '---' );
+            vector<string> words = explode(line, '---' );
 
             trim(words[0]);
 
-            std::string newstring = replaceChar(words[0], ' ', "_");
+            string itemName= replaceChar(words[0], ' ', "_");
             //replaceAnds(newstring);
-            for (auto& x : newstring) {
+            for (auto& x : itemName) {
                 x = tolower(x);
             }
-
-
-            if (std::find(allItems.begin(), allItems.end(), newstring) == allItems.end()) {
+            if (std::find(allItems.begin(), allItems.end(), itemName) == allItems.end()) {
                 
-
-                allItems.push_back(newstring);
-                outputFile << newstring << "\n";
+                allItems.push_back(itemName);
+                outputFile << itemName<< "\n";
             }
-            else continue;
-              
-
-
         }
 
     }
-
-
-
 }
 
 
@@ -557,7 +524,7 @@ void parseAllItemsToFile(std::unordered_map<string,std::ifstream>& inputFiles) {
     ofstream allItemsFile("data/allItemsFile.txt");
 
     for (auto& [name, inputFile] : inputFiles) {
-        processAllItemsFromTypeFile(inputFile, alreadyReadItems, allItemsFile);
+        appendAllItemsFromFile(inputFile, alreadyReadItems, allItemsFile);
     }
 
     allItemsFile.close();
@@ -570,28 +537,22 @@ namespace {
     //returns non-zero return value if cant open any of those files.
     bool checkOutputFiles(const std::unordered_map<string,std::ofstream>& fileNames) {
         for (const auto& [name,outputFile] : fileNames) {
-
             if (!outputFile.is_open()) {
                 errorLog(false,"Error opening output file: " + name);
                 return 1;
             }
-            
         }
         return 0;
-
     }
     //same thing as checkOutputFiles but with input files.
     bool checkInputFiles(const std::unordered_map<string, std::ifstream>& fileNames) {
         for (const auto& [name, inputFile] : fileNames) {
-
             if (!inputFile.is_open()) {
                 errorLog(false,"Error opening input file: " + name);
                 return 1;
             }
-
         }
         return 0;
-
     }
 
     string getRelicName(const string& line,int& cursor) {
@@ -604,7 +565,6 @@ namespace {
         cursor += relicname.size();
 
         return relicname;
-
     }
 
     void handleRelic(const string& line,int& cursor,std::unordered_map<string,std::ofstream>& outputFiles ) {
@@ -613,14 +573,12 @@ namespace {
         int relictype = determineRelicType(relicname);
 
         switch (relictype) {
-        case RELICTYPE_Lith: writeToRelicFile(outputFiles["lith"], relicname, line, cursor); break;
-        case RELICTYPE_Meso: writeToRelicFile(outputFiles["meso"], relicname, line, cursor); break;
-        case RELICTYPE_Neo: writeToRelicFile(outputFiles["neo"], relicname, line, cursor); break;
-        case RELICTYPE_Axi: writeToRelicFile(outputFiles["axi"], relicname, line, cursor); break;
-        case -1: writeToRelicFile(outputFiles["others"], relicname, line, cursor); break;
-
+        case RELICTYPE_Lith: writeRelicLinesToFile(outputFiles["lith"], relicname, line, cursor); break;
+        case RELICTYPE_Meso: writeRelicLinesToFile(outputFiles["meso"], relicname, line, cursor); break;
+        case RELICTYPE_Neo: writeRelicLinesToFile(outputFiles["neo"], relicname, line, cursor); break;
+        case RELICTYPE_Axi: writeRelicLinesToFile(outputFiles["axi"], relicname, line, cursor); break;
+        case -1: writeRelicLinesToFile(outputFiles["others"], relicname, line, cursor); break;
         }
-
     }
 
     void allItemsToOneFile() {
@@ -634,14 +592,22 @@ namespace {
         checkInputFiles(inputFiles);
 
         parseAllItemsToFile(inputFiles);
-
     }
 
-
+    void processRelicData(ifstream& inputFile, std::unordered_map<string, ofstream>& outputFiles) {
+        string line = "";
+        while (getline(inputFile, line)) {
+            replaceAmp(line);
+            int cursor = 1;
+            if (line.starts_with("    <tr class=")) continue;
+            if (line.find("<th colspan=") != string::npos) {
+                handleRelic(line, cursor, outputFiles);
+            }
+        }
+    }
 }
 
 int parseRelicData() {
-    // Input HTML-like file
     ifstream inputFile("data/relictable.html");
     if (!inputFile.is_open()) {
     errorLog(false,"Error opening input file!");
@@ -654,25 +620,10 @@ int parseRelicData() {
     outputFiles.emplace("neo", ofstream("data/relictable_neo.txt"));
     outputFiles.emplace("axi", ofstream("data/relictable_axi.txt"));
     
-
     if (checkOutputFiles(outputFiles) != 0) return 1;
 
-        
-    string line = "";
-    while (getline(inputFile,line)) {
-
-        replaceAmp(line);
-        int cursor = 1;
-        if (line.starts_with("    <tr class=")) continue;
-        if (line.find("<th colspan=")!=string::npos) {
-            handleRelic(line, cursor, outputFiles);
-        }
-        
-    }
-
-
+    processRelicData(inputFile,outputFiles);
     allItemsToOneFile();
-
     return 0;
 }
 
@@ -683,10 +634,8 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
 
     std::ifstream inputFile;
 
-
     int relictype = determineRelicType(relic);
     
-
     switch (relictype) {
     case RELICTYPE_Lith:inputFile.open("data/relictable_lith.txt"); break;
     case RELICTYPE_Meso:inputFile.open("data/relictable_meso.txt"); break;
