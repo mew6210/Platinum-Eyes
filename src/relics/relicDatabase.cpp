@@ -685,11 +685,10 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
 }
 
 
-std::array<std::pair<std::string, std::string>, 6> getRelicItemDetails(std::string relic) {
+std::array<pair<string, string>, 6> getRelicItemDetails(std::string relic) {
 
-    std::array<std::string, 6> items = getRelicRawItems(relic);
-
-    std::array<std::pair<std::string, std::string>, 6> itemsSeparated;
+    std::array<string, 6> items = getRelicRawItems(relic);
+    std::array<pair<string, string>, 6> itemsSeparated;
 
     int i = 0;
 
@@ -703,30 +702,25 @@ std::array<std::pair<std::string, std::string>, 6> getRelicItemDetails(std::stri
             pair.second = separation[1];
 
             itemsSeparated[i] = pair;
-
-
         }
         i++;
     }
 
     return itemsSeparated;
-
-
 }
 
 
 float getPercantageFromString(std::string s) {
 
-    int start = s.find("(");
-    int end = s.find(")");
+    size_t start = s.find("(");
+    size_t end = s.find(")");
+
     start += 1;
     end -= 1;
 
     std::string perc = s.substr(start, end-start);
 
-
     float result = std::stof(perc);
-
     return result;
 
 }
@@ -735,27 +729,17 @@ float getPercantageFromString(std::string s) {
 
 
 std::string rarityToString(Rarity::level r) {
-
     switch (r) {
     case Rarity::Common:return "Common";
     case Rarity::Uncommon:return "Uncommon";
     case Rarity::Rare:return "Rare";
     case Rarity::Undefined:return "Undefined";
-
     }
-
-
-
 }
 
 bool compareWithRoundingErrors(float number,float compareTo) {
-
     constexpr float EPSILON = 0.0001;
-
     return std::abs(number - compareTo) < EPSILON;
-    
-
-
 }
 
 void compareRaritiesToPercentages(std::tuple<string,float,ItemDetails>& item,const vector<float>& percantages) {
@@ -773,10 +757,6 @@ void compareRaritiesToPercentages(std::tuple<string,float,ItemDetails>& item,con
     if (compareWithRoundingErrors(std::get<1>(item), percantages[2])) {
         std::get<2>(item).rarity = Rarity::Rare;
     }
-
-
-
-
 }
 
 
@@ -790,58 +770,29 @@ void fixRarity(RelicInfo& relic) {
     else if (relic.name.find("Flawless") != std::string::npos) grade = 3;
     else if (relic.name.find("Radiant") != std::string::npos) grade = 4;
 
-
-    
-
     switch (grade) {
-
     case 1: { 
-        
         for (auto& item : relic.items) {
-
             compareRaritiesToPercentages(item, { 25.33f,11.0f,2.0f });
-
         }
-
         break; };
     case 2: { 
-        
         for (auto& item : relic.items) {
-
             compareRaritiesToPercentages(item, { 25.33f,13.0f,4.0f });
-
         }
-
         break; };
     case 3: { 
-        
         for (auto& item : relic.items) {
-
             compareRaritiesToPercentages(item, { 20.0f,17.0f,6.0f });
-
         }
-    
         break; };
     case 4: { 
-        
         for (auto& item : relic.items) {
-         
             compareRaritiesToPercentages(item, { 16.67f,20.0f,10.0f });
-
         }
-        
         break; };
-
-    case 0: { 
-    break; }
-
-
+    case 0: { break; }
     }
-
-
-
-
-
 }
 
 
@@ -858,18 +809,12 @@ float calculateRelicPrice(RelicInfo& relic) {
             averageItemPrice += order;
         }
         averageItemPrice /= details.lowestPrices.size();
-
         averageItemPrice *= (std::get<1>(item)/100);
 
         price += averageItemPrice;
 
     }
-
-
-
-
     return price;
-
 }
 
 
@@ -884,8 +829,6 @@ bool isRelicTypeString(const std::string& s) {
         return true;
     }
     else return false;
-
-
 }
 
 //returns -1 if the first letter is not a digit, or returns the digit if it is
@@ -896,9 +839,6 @@ int firstLetterIsDigit(const std::string& s) {
     }
     
     return -1;
-
-
-
 }
 
 
@@ -942,14 +882,11 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
                 }
 
             }
-
         }
     }
     else {
         return "weird relic things";
     }
-
-
 
 
     //make a vector of words into a whole word
@@ -989,12 +926,6 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
         resultString = clearedString;
     }
     trim(resultString);
-
-
-    
-
-
-
 
     return resultString;
 }
@@ -1098,10 +1029,7 @@ RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO 
 
 void printRelic(RelicInfo& relic) {
 
-    
     if (relic.name != "couldnt find relic") {
-
-
 
         std::cout << "Relic name: " << relic.name;
         for (auto& price : relic.items) {
@@ -1112,7 +1040,5 @@ void printRelic(RelicInfo& relic) {
             std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
         }
         std::cout << "Average relic price: " << relic.relicPrice;
-
-
     }
 }
