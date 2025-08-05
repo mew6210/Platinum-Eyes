@@ -323,6 +323,40 @@ public:
 	std::string name;
 	std::vector<std::tuple<std::string, float, ItemDetails>> items;
 	float relicPrice;
+	RelicInfo(std::string m_name, 
+		std::vector<std::tuple<std::string, float, ItemDetails>> m_items, 
+		float price):
+
+		name(m_name),
+		items(m_items),
+		relicPrice(price)
+	{}
+
+	/*
+	- calculates relic's relicPrice, if items are provided
+	
+	*/
+	void calculateRelicPrice() {
+
+		float price = 0.0;
+		if (items.empty()) return;
+
+		for (auto& item : items) {
+			float averageItemPrice = 0;
+			ItemDetails details = std::get<2>(item);
+
+			for (int& order : details.lowestPrices) {
+				averageItemPrice += order;
+			}
+			averageItemPrice /= details.lowestPrices.size();
+			averageItemPrice *= (std::get<1>(item) / 100);
+
+			price += averageItemPrice;
+
+		}
+		relicPrice = price;
+
+	}
 
 };
 

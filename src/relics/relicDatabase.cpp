@@ -628,9 +628,9 @@ int parseRelicData() {
 }
 
 
-std::array<std::string,6> getRelicRawItems(std::string relic) {
+std::array<string,6> getRelicRawItems(string relic) {
 
-    std::array<std::string, 6> arr;
+    std::array<string, 6> arr;
 
     std::ifstream inputFile;
 
@@ -649,13 +649,11 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
         exit(1);
     }
 
-    std::string line = "";
+    string line = "";
     int i = 0;
     int counter = 1;
     bool save = false;
     int line_counter = 1;
-    Timer timer = Timer();
-    timer.start();
     while (std::getline(inputFile, line)) {
 
         if (line == relic) {
@@ -677,8 +675,7 @@ std::array<std::string,6> getRelicRawItems(std::string relic) {
         
         line_counter++;
     }
-    timer.stop();
-    timer.print("The loop");
+
 
     return arr;
 
@@ -930,106 +927,92 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
     return resultString;
 }
 
+std::map<string,ItemDetails> fetchVectorPrices(vector<string> names) {
 
-RelicInfo FetchRelicItemPrices(std::string relic) {         //TODO: THIS HAS TO BE REFACTORED LATER LIKE OMFG WHAT IS HAPPENING HERE
-
-    if (relic == "nullRelic") {
-        RelicInfo relic;
-        relic.name = "couldnt find relic";
-        relic.relicPrice = 0;
-
-
-        return relic;
-    }
-
-    std::array<std::pair<std::string, std::string>, 6> items = getRelicItemDetails(relic);
-    std::vector<std::string> itemVector;
-    std::vector<std::string> itemVector2;
-    
-    for (auto& item : items) {
-        itemVector.push_back(item.first);
-    }
-
-
-
-
-    std::vector<std::string> preparedItems=prepareItems(itemVector);
-
-
-
-    std::vector<std::string> preparedVector2 = prepareItems(itemVector);
-    std::vector<std::pair<std::string, std::string>> preparedVector2OfPairs;
-    int i = 0;
-    for (auto& item : preparedVector2) {
-        preparedVector2OfPairs.push_back({item,items[i].second});
-        i++;
-    }
-
-    std::vector<std::future<std::pair<std::string, ItemDetails>>> futures;
+    vector<std::future<pair<string, ItemDetails>>> futures;
 
     Timer timer = Timer();
     timer.start();
-    for (auto& item : preparedItems) {
+    for (auto& item : names) {
         if (item == "") continue;
         if (item == "forma_blueprint") continue;
         if (item == "2x_forma_blueprint") continue;
 
 
-        futures.push_back(std::async(std::launch::async, [item]() -> std::pair<std::string, ItemDetails> {
+        futures.push_back(std::async(std::launch::async, [item]() -> pair<string, ItemDetails> {
             return { item, fetchItemPrice(item) };
             }
         )
         );
     }
 
-    std::map<std::string, ItemDetails> results;
-
-
+    std::map<string, ItemDetails> results;
 
     for (auto& future : futures) {
         auto result = future.get();
         results.insert(result);
     }
     timer.stop();
-    timer.print("fetching items from warframe market");
+    timer.print("Fetching relic item's prices from warframe market");
+    return results;
+}
 
-    std::vector<std::tuple<std::string, float, ItemDetails>> appendedInfo;
+
+RelicInfo FetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS TO BE REFACTORED LATER LIKE OMFG WHAT IS HAPPENING HERE
+
+    if (relicName == "nullRelic")  return RelicInfo("nullRelic",{},0);
+    
+    std::array<pair<string, string>, 6> items = getRelicItemDetails(relicName);
+    vector<string> itemNames;
+    
+    for (auto& item : items) {
+        string snakedName = itemToSnakeCase(item.first);
+        itemNames.push_back(snakedName);
+    }
+
+    vector<pair<string, string>> itemsWithDetails;
+    int i = 0;
+    for (auto& item : itemNames) {
+        itemsWithDetails.push_back({item,items[i].second});
+        i++;
+    }
+
+    vector<std::future<pair<string, ItemDetails>>> futures;
+
+
+    auto results = fetchVectorPrices(itemNames);
+    
+
+    vector<std::tuple<string, float, ItemDetails>> appendedInfo;
 
 
     for (auto& item : results) {    
 
         std::string percentageString="";
-        for (auto& item2 : preparedVector2OfPairs) {
+        for (auto& item2 : itemsWithDetails) {
             if (item.first == item2.first) {            
                 percentageString = item2.second;
             }
         }
-
-
         appendedInfo.push_back(std::make_tuple(item.first,getPercantageFromString(percentageString),item.second));
     }
 
-    RelicInfo relic1;
-    relic1.items = appendedInfo;
-    relic1.name = relic;
-    relic1.relicPrice = calculateRelicPrice(relic1);
-    fixRarity(relic1);
+    RelicInfo relic=RelicInfo(relicName,appendedInfo,0);
+    relic.calculateRelicPrice();
+    fixRarity(relic);
 
     //sort relic items based on their rarity
     //TODO: later add a possibility to sort it in the opposite way, through a setting in appstate
-    std::sort(relic1.items.begin(), relic1.items.end(), [](auto& a,auto& b) {
+    std::sort(relic.items.begin(), relic.items.end(), [](auto& a,auto& b) {
         return std::get<2>(a).rarity > std::get<2>(b).rarity;
         });
 
-    return relic1;
-
-
-
+    return relic;
 }
 
 void printRelic(RelicInfo& relic) {
 
-    if (relic.name != "couldnt find relic") {
+    if (relic.name != "nullRelic") {
 
         std::cout << "Relic name: " << relic.name;
         for (auto& price : relic.items) {

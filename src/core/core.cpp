@@ -86,7 +86,7 @@ AppState initApp() {
     vector<Item> currentFissureItems;
     currentFissureItems.push_back(Item("placeholder", "placeholder", ItemDetails()));
 
-    RelicInfo currentRelic;
+    RelicInfo currentRelic=RelicInfo("",{},0);
 
     ToolConfig toolConfig = initConfig();
 

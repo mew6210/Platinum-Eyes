@@ -480,7 +480,7 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
     size_t itemCount = 4;
 
     vector<string> readResults = readFissureItems(*state.tesseractApi, itemCount, fileName);
-    vector<string> preparedItems = prepareItems(readResults);
+    vector<string> preparedItems = itemsToSnakeCase(readResults);
     
 
 
@@ -490,7 +490,7 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
     }
     
 
-    preparedItems = prepareItems(preparedItems);
+    preparedItems = itemsToSnakeCase(preparedItems);
 
     timer.start();
     vector<Item> itemPrices = getItemPricesMap(preparedItems);

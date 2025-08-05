@@ -241,24 +241,28 @@ void determineRarity(ItemDetails& details,const int& ducats) {
 
 
 
-vector<string> prepareItems(vector<string>& list) {
-
-    vector<string> newlist;
-    for (string item : list) {
-
-
-        string newstring = replaceChar(item, ' ', "_");
-        replaceAnds(newstring);
-        for (auto& x : newstring) {
-            x = tolower(x);
-        }
-
-
-        newlist.push_back(newstring);
+string itemToSnakeCase(const string& s) {
+    string snakedItem = replaceChar(s, ' ', "_");
+    replaceAnds(snakedItem);
+    for (auto& x : snakedItem) {
+        x = tolower(x);
     }
+    return snakedItem;
+}
 
-    return newlist;
+/*
 
+
+
+*/
+vector<string> itemsToSnakeCase(const vector<string>& list) {
+
+    vector<string> snakedItems;
+    for (const string& item : list) {
+        string snakedItem = itemToSnakeCase(item);
+        snakedItems.push_back(snakedItem);
+    }
+    return snakedItems;
 }
 
 
@@ -338,15 +342,8 @@ ItemDetails fetchItemPrice(const string& item) {
     cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v2/orders/item/" + item},
         cpr::Header{{"User-Agent","PlatinumEyes/1.0"}}
     );
-    /*
-    r.status_code;                  // 200
-    r.header["content-type"];       // application/json; charset=utf-8
-    r.text;                         // JSON text string
-    */
-    
 
     json data = json::parse(r.text);
-
 
     json products = data["data"];
 
@@ -378,8 +375,6 @@ vector<Item> getItemPricesMap(vector<string>& preparedItems) {
         if (item=="") continue;     
         if (item == "forma_blueprint") continue;
 
-
-
         futures.push_back(std::async(std::launch::async, [item]() -> Item {
                 return  Item(item,item, fetchItemPrice(item)) ;     //to change later
             }
@@ -393,12 +388,7 @@ vector<Item> getItemPricesMap(vector<string>& preparedItems) {
         itemPrices.push_back(result);
     }
 
-
-
     return itemPrices;
-
-
-
 }
 
 //change naming later
@@ -428,10 +418,6 @@ void printItemPrices(vector<Item>& itemPrices) {
     std::cout << "Item prices: " << std::endl;
 
     for (Item item : itemPrices) {
-
-
-
-
         vector<int> emptyVector = { 0,0,0,0,0 };
         if (item.itemDetails.averagePrice == 0 && item.itemDetails.lowestPrices== emptyVector) {
             std::cout << item.preparedName<< ": " << "COULDNT FIND ITEM ON THE MARKET" << std::endl;
@@ -439,10 +425,7 @@ void printItemPrices(vector<Item>& itemPrices) {
         else {
             std::cout << item.preparedName<< ": " << item.itemDetails.averagePrice<< getFormatedAveragePrices(item.itemDetails.lowestPrices) << std::endl;
         }
-
-
     }
-
 }
 
 
@@ -483,6 +466,5 @@ vector<Item> prepareItemsForRead(vector<Item>& items) {
     }
 
     return newList;
-
 }
 

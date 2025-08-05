@@ -10,8 +10,8 @@ namespace fuzzy_threshold {
 };
 
 
-
-std::vector<std::string> prepareItems(std::vector<std::string>&);
+std::string itemToSnakeCase(const std::string& s);
+std::vector<std::string> itemsToSnakeCase(const std::vector<std::string>&);
 std::string replaceChar(std::string s, char a, std::string b);
 ItemDetails getAveragePrice(const json& list);
 std::vector<Item> getItemPricesMap(std::vector<std::string>& preparedItems);
