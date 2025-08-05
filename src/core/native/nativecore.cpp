@@ -74,7 +74,7 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
                 state.items = exampleItems;
             }
             else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
-                state.currentRelic = FetchRelicItemPrices("Lith A1 Relic (Intact)");
+                state.currentRelic = fetchRelicItemPrices("Lith A1 Relic (Intact)");
             }
 
 

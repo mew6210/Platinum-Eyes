@@ -739,20 +739,20 @@ bool compareWithRoundingErrors(float number,float compareTo) {
     return std::abs(number - compareTo) < EPSILON;
 }
 
-void compareRaritiesToPercentages(std::tuple<string,float,ItemDetails>& item,const vector<float>& percantages) {
+void compareRaritiesToPercentages(RelicItem& item,const vector<float>& percantages) {
 
 
     if (percantages.size() != 3) errorLog(true,"wrong amount of percantages in compareRaritiesToPercantages");
 
 
-    if (compareWithRoundingErrors(std::get<1>(item), percantages[0])) {
-        std::get<2>(item).rarity = Rarity::Common;
+    if (compareWithRoundingErrors(item.percentage, percantages[0])) {
+        item.itemDetails.rarity = Rarity::Common;
     }
-    if (compareWithRoundingErrors(std::get<1>(item), percantages[1])) {
-        std::get<2>(item).rarity = Rarity::Uncommon;
+    if (compareWithRoundingErrors(item.percentage, percantages[1])) {
+        item.itemDetails.rarity = Rarity::Uncommon;
     }
-    if (compareWithRoundingErrors(std::get<1>(item), percantages[2])) {
-        std::get<2>(item).rarity = Rarity::Rare;
+    if (compareWithRoundingErrors(item.percentage, percantages[2])) {
+        item.itemDetails.rarity = Rarity::Rare;
     }
 }
 
@@ -792,27 +792,6 @@ void fixRarity(RelicInfo& relic) {
     }
 }
 
-
-
-float calculateRelicPrice(RelicInfo& relic) {
-
-    float price = 0.0;
-
-    for (auto& item : relic.items) {
-        float averageItemPrice = 0;
-        ItemDetails details = std::get<2>(item);
-
-        for (int& order : details.lowestPrices) {
-            averageItemPrice += order;
-        }
-        averageItemPrice /= details.lowestPrices.size();
-        averageItemPrice *= (std::get<1>(item)/100);
-
-        price += averageItemPrice;
-
-    }
-    return price;
-}
 
 
 bool isRelicTypeString(const std::string& s) {
@@ -927,7 +906,7 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
     return resultString;
 }
 
-std::map<string,ItemDetails> fetchVectorPrices(vector<string> names) {
+std::map<string,ItemDetails> fetchRelicVectorPrices(vector<string> names) {
 
     vector<std::future<pair<string, ItemDetails>>> futures;
 
@@ -958,7 +937,7 @@ std::map<string,ItemDetails> fetchVectorPrices(vector<string> names) {
 }
 
 
-RelicInfo FetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS TO BE REFACTORED LATER LIKE OMFG WHAT IS HAPPENING HERE
+RelicInfo fetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS TO BE REFACTORED LATER LIKE OMFG WHAT IS HAPPENING HERE
 
     if (relicName == "nullRelic")  return RelicInfo("nullRelic",{},0);
     
@@ -980,11 +959,9 @@ RelicInfo FetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS
     vector<std::future<pair<string, ItemDetails>>> futures;
 
 
-    auto results = fetchVectorPrices(itemNames);
+    auto results = fetchRelicVectorPrices(itemNames);
     
-
-    vector<std::tuple<string, float, ItemDetails>> appendedInfo;
-
+    vector<RelicItem> relicItems;
 
     for (auto& item : results) {    
 
@@ -994,17 +971,17 @@ RelicInfo FetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS
                 percentageString = item2.second;
             }
         }
-        appendedInfo.push_back(std::make_tuple(item.first,getPercantageFromString(percentageString),item.second));
+        relicItems.push_back(RelicItem(item.first, item.first, item.second, getPercantageFromString(percentageString)));    //TODO: rawname the same as preparedname, it shouldn't be like that but it is never used so ig its aight
     }
 
-    RelicInfo relic=RelicInfo(relicName,appendedInfo,0);
+    RelicInfo relic=RelicInfo(relicName,relicItems,0);
     relic.calculateRelicPrice();
     fixRarity(relic);
 
     //sort relic items based on their rarity
     //TODO: later add a possibility to sort it in the opposite way, through a setting in appstate
     std::sort(relic.items.begin(), relic.items.end(), [](auto& a,auto& b) {
-        return std::get<2>(a).rarity > std::get<2>(b).rarity;
+        return a.itemDetails.rarity > b.itemDetails.rarity;
         });
 
     return relic;
@@ -1015,12 +992,12 @@ void printRelic(RelicInfo& relic) {
     if (relic.name != "nullRelic") {
 
         std::cout << "Relic name: " << relic.name;
-        for (auto& price : relic.items) {
+        for (auto& item : relic.items) {
 
-            std::cout << "Name: " << std::get<0>(price);
-            std::cout << " percentages: " << std::get<1>(price);
-            std::cout << " prices: " << getFormatedAveragePrices(std::get<2>(price).lowestPrices);
-            std::cout << "rarity: " << rarityToString(std::get<2>(price).rarity) << "\n";
+            std::cout << "Name: " << item.rawName;
+            std::cout << " Chance for drop: " << item.percentage;
+            std::cout << " prices: " << getFormatedAveragePrices(item.itemDetails.lowestPrices);
+            std::cout << "rarity: " << rarityToString(item.itemDetails.rarity) << "\n";
         }
         std::cout << "Average relic price: " << relic.relicPrice;
     }

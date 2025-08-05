@@ -399,7 +399,7 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
 
     string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
     string relicParsed = relicMenuTitleStringToRelicString(relicRead);
-    RelicInfo relic = FetchRelicItemPrices(relicParsed);
+    RelicInfo relic = fetchRelicItemPrices(relicParsed);
 
     return relic;
 
@@ -451,7 +451,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
 
     string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
     string relicParsed = relicMenuTitleStringToRelicString(relicRead);
-    RelicInfo relic = FetchRelicItemPrices(relicParsed);
+    RelicInfo relic = fetchRelicItemPrices(relicParsed);
 
     return relic;
 

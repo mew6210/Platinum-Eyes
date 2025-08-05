@@ -318,13 +318,39 @@ struct WindowParameters {
 };
 
 
+class Item {
+public:
+
+	std::string preparedName = "";
+	std::string rawName = "";
+	ItemDetails itemDetails;
+
+	Item(std::string prepared = "Undefined", std::string raw = "undefined", ItemDetails details = ItemDetails()) {
+		preparedName = prepared;
+		rawName = raw;
+		itemDetails = details;
+	}
+	Item() : preparedName(""), rawName(""), itemDetails(ItemDetails()) {};
+};
+
+
+
+class RelicItem : public Item {
+public:
+	float percentage;
+
+	RelicItem(std::string prepared = "Undefined", std::string raw = "undefined", ItemDetails details = ItemDetails(), float perc = 0.0f)
+		: Item(prepared, raw, details), percentage(perc) {
+	}
+};
+
 class RelicInfo {
 public:
 	std::string name;
-	std::vector<std::tuple<std::string, float, ItemDetails>> items;
+	std::vector<RelicItem> items;
 	float relicPrice;
 	RelicInfo(std::string m_name, 
-		std::vector<std::tuple<std::string, float, ItemDetails>> m_items, 
+		std::vector<RelicItem> m_items,
 		float price):
 
 		name(m_name),
@@ -334,7 +360,6 @@ public:
 
 	/*
 	- calculates relic's relicPrice, if items are provided
-	
 	*/
 	void calculateRelicPrice() {
 
@@ -343,13 +368,13 @@ public:
 
 		for (auto& item : items) {
 			float averageItemPrice = 0;
-			ItemDetails details = std::get<2>(item);
+			ItemDetails details = item.itemDetails;
 
 			for (int& order : details.lowestPrices) {
 				averageItemPrice += order;
 			}
 			averageItemPrice /= details.lowestPrices.size();
-			averageItemPrice *= (std::get<1>(item) / 100);
+			averageItemPrice *= (item.percentage / 100);
 
 			price += averageItemPrice;
 
@@ -360,33 +385,6 @@ public:
 
 };
 
-
-class Item {
-public:
-
-	std::string preparedName = "";
-
-	std::string rawName = "";
-
-	ItemDetails itemDetails;
-
-
-
-
-	Item(std::string prepared = "Undefined", std::string raw = "undefined", ItemDetails details = ItemDetails()) {
-		preparedName = prepared;
-		rawName = raw;
-		itemDetails = details;
-	}
-	Item() : preparedName(""), rawName(""), itemDetails(ItemDetails()) {};
-
-
-
-
-};
-
-
-
 struct WFMItem {
 
 	std::string slug = "";
@@ -394,9 +392,6 @@ struct WFMItem {
 	int ducats = 0;
 
 };
-
-
-
 
 
 struct AppState {
@@ -476,11 +471,6 @@ struct AppState {
 
 };
 
-
-
-
-
-
 const std::vector<Item> exampleItems = {
 	Item("someItemName1","someItemName1",ItemDetails(5,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
 	Item("someItemName2","someItemName2",ItemDetails(6,std::vector<int>({1,1,1,1,1}),Rarity::level::Uncommon)),
@@ -499,8 +489,6 @@ const std::vector<Item> exampleItems = {
 	Item("someItemName15","someItemName15",ItemDetails(19,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
 	Item("someItemName16","someItemName16",ItemDetails(20,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
 };
-
-
 
 class KeyBind {
 

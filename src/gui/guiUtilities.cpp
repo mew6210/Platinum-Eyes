@@ -67,36 +67,28 @@ void createItemBox(Item item) {
 	
 }
 
-void createRelicItemBox(std::tuple<std::string,float,ItemDetails> item,ImVec2 screenSize){
-
-	
+void createRelicItemBox(RelicItem item,ImVec2 screenSize){
 
 
 	ImVec4 bgColor = { 0,0,0,1 };
-	switch (std::get<2>(item).rarity) {
+	switch (item.itemDetails.rarity) {
 	case Rarity::level::Common:bgColor = { 189,145,119,128 }; break;
 	case Rarity::level::Uncommon: bgColor = { 209,208,209,128 }; break;
 	case Rarity::level::Rare: bgColor = { 236,225,117,128 }; break;
 	default: bgColor = { 0,0,0,255 }; break;
 	}
 
-
-
-
-
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 	window_flags |= ImGuiWindowFlags_MenuBar;
 	window_flags |= ImGuiWindowFlags_HorizontalScrollbar;
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
 	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-	ImGui::BeginChild(std::get<0>(item).c_str(), ImVec2(screenSize.x/4, screenSize.y/3.5), ImGuiChildFlags_Border, window_flags);
+	ImGui::BeginChild(item.rawName.c_str(), ImVec2(screenSize.x/4, screenSize.y/3.5), ImGuiChildFlags_Border, window_flags);
 
 
 
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu(std::get<0>(item).c_str()))
-		{
+	if (ImGui::BeginMenuBar()){
+		if (ImGui::BeginMenu(item.rawName.c_str())){
 
 			ImGui::EndMenu();
 		}
@@ -104,24 +96,20 @@ void createRelicItemBox(std::tuple<std::string,float,ItemDetails> item,ImVec2 sc
 	}
 
 	std::string averagePrice = "Average price: ";
-	std::string formattedPrice = std::format("{:.2f}", std::get<2>(item).averagePrice);
+	std::string formattedPrice = std::format("{:.2f}", item.itemDetails.averagePrice);
 	ImGui::Text((averagePrice+formattedPrice).c_str());
 	ImGui::SameLine();
 
-	std::string chanceString = "Chance: " + std::format("{:.2f}%%", std::get<1>(item));
+	std::string chanceString = "Chance: " + std::format("{:.2f}%%", item.percentage);
 	ImGui::Text(chanceString.c_str());
 
 
-	std::string latestString = "Lowest: " + getFormatedAveragePrices(std::get<2>(item).lowestPrices);
+	std::string latestString = "Lowest: " + getFormatedAveragePrices(item.itemDetails.lowestPrices);
 	ImGui::Text(latestString.c_str());
 
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
-
-
-
-
 }
 
 
