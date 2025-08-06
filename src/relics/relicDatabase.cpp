@@ -4,25 +4,26 @@
 
 using std::vector, std::string, std::pair,std::ofstream,std::ifstream;
 
-vector<string> explode(const string& s, const char& c)
-{
-    string buff{ "" };
-    vector<string> v;
+vector<string> explode(const string& s, const string& delimiter){
+    vector<string> result;
+    size_t start = 0;
+    size_t end;
 
-    for (auto n : s)
-    {
-        if (n != c) buff += n; else
-            if (n == c && buff != "") { v.push_back(buff); buff = ""; }
+    while ((end = s.find(delimiter, start)) != string::npos) {
+        if (end != start) // avoid empty tokens from consecutive delimiters
+            result.push_back(s.substr(start, end - start));
+        start = end + delimiter.length();
     }
-    if (buff != "") v.push_back(buff);
 
-    return v;
+    if (start < s.length())
+        result.push_back(s.substr(start));
+
+    return result;
 }
 
 
-
 namespace {
-    string getHtmlLineItemName(const string& line,int& cursor) {
+    string getHtmlLineItemName(const string& line, size_t& cursor) {
 
         if (line.find("td", cursor) == string::npos) errorLog(true,"Failed parsing html line");
         size_t item1start = line.find("td", cursor);
@@ -34,7 +35,7 @@ namespace {
         cursor += item1.size();
         return item1;
     }
-    string getHtmlLineItemPercantage(const string& line, int& cursor) {
+    string getHtmlLineItemPercantage(const string& line, size_t& cursor) {
 
 
         if (line.find("<td>", cursor) == string::npos) errorLog(true,"Failed parsing html line");
@@ -54,7 +55,7 @@ namespace {
     <tr><td>Akstiletto Prime Barrel</td><td>Uncommon (11.00%)</td></tr> -> <Aksiletto Prime Barrel,Uncommon (11.00%)>
     -then modifies cursor, to be set at the end of this expression, so that when used in a loop will find all occurences of such items in a line.
 */
-pair<string,string> parseItemFromHtmlLine(const string& line,int& cursor) {
+pair<string,string> parseItemFromHtmlLine(const string& line,size_t& cursor) {
 
     string itemName = getHtmlLineItemName(line, cursor);
     string itemPercentage = getHtmlLineItemPercantage(line, cursor);
@@ -448,7 +449,7 @@ int determineRelicType(const string& relicname) {
 }
 
 
-void writeRelicLinesToFile(std::ofstream& outputFile,const string& relicname,const string& line,int& cursor) {
+void writeRelicLinesToFile(std::ofstream& outputFile,const string& relicname,const string& line, size_t& cursor) {
     outputFile << relicname << "\n";
     pair<string, string> item = parseItemFromHtmlLine(line, cursor);
     outputFile << "\t" << item.first << "---" << item.second << "\n";
@@ -493,12 +494,11 @@ For example, this line:
 void appendAllItemsFromFile(std::ifstream& inputFile,vector<string>& allItems,std::ofstream& outputFile) {
 
     string line = "";
-
     while (getline(inputFile, line)) {
 
         if (line.starts_with("\t")) {
-
-            vector<string> words = explode(line, '---' );
+            
+            vector<string> words = explode(line, "---");
 
             trim(words[0]);
 
@@ -555,11 +555,11 @@ namespace {
         return 0;
     }
 
-    string getRelicName(const string& line,int& cursor) {
+    string getRelicName(const string& line, size_t& cursor) {
 
-        int start = line.find("<th colspan=");
+        size_t start = line.find("<th colspan=");
         cursor = start + 16;
-        int relicnamepos = line.find("<", cursor);
+        size_t relicnamepos = line.find("<", cursor);
 
         string relicname = line.substr(cursor, relicnamepos - cursor);
         cursor += relicname.size();
@@ -567,7 +567,7 @@ namespace {
         return relicname;
     }
 
-    void handleRelic(const string& line,int& cursor,std::unordered_map<string,std::ofstream>& outputFiles ) {
+    void handleRelic(const string& line, size_t& cursor,std::unordered_map<string,std::ofstream>& outputFiles ) {
 
         const string relicname = getRelicName(line, cursor);
         int relictype = determineRelicType(relicname);
@@ -598,7 +598,7 @@ namespace {
         string line = "";
         while (getline(inputFile, line)) {
             replaceAmp(line);
-            int cursor = 1;
+            size_t cursor = 1;
             if (line.starts_with("    <tr class=")) continue;
             if (line.find("<th colspan=") != string::npos) {
                 handleRelic(line, cursor, outputFiles);
@@ -692,7 +692,7 @@ std::array<pair<string, string>, 6> getRelicItemDetails(std::string relic) {
     for (auto& item : items) {
         if (item.find("---") != -1) {
 
-            std::vector<std::string> separation = explode(item, '---');
+            std::vector<std::string> separation = explode(item, "---");
 
             std::pair<std::string, std::string> pair;
             pair.first = separation[0];
@@ -731,11 +731,12 @@ std::string rarityToString(Rarity::level r) {
     case Rarity::Uncommon:return "Uncommon";
     case Rarity::Rare:return "Rare";
     case Rarity::Undefined:return "Undefined";
+    default: return "Should never happen";
     }
 }
 
 bool compareWithRoundingErrors(float number,float compareTo) {
-    constexpr float EPSILON = 0.0001;
+    constexpr float EPSILON = 0.0001f;
     return std::abs(number - compareTo) < EPSILON;
 }
 
@@ -813,7 +814,6 @@ int firstLetterIsDigit(const std::string& s) {
     if (std::isdigit(s[0])) {
         return s[0] - '0';
     }
-    
     return -1;
 }
 
@@ -832,7 +832,6 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
 
     while (std::getline(ss, word, ' ')) {
 
-
         //filter out useless junk
         if (word != ""
             && word != " "
@@ -847,8 +846,7 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
     }
 
     //fix incorrect reading of I or O in the second word of a relic
-    if (words.size()>2)
-    {
+    if (words.size()>2){
         if (words[2] == "Relic" && isRelicTypeString(words[0])) {
             int firstLetterNumber = 0;
             if ((firstLetterNumber = firstLetterIsDigit(words[1])) != -1) {
@@ -873,7 +871,7 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
             clearedString.append(" ");
     }
 
-    int pos = 0;
+    size_t pos = 0;
     std::string resultString = "";
 
     //add braces around tier level, since thats how our file database reads it from warframe pc drops
