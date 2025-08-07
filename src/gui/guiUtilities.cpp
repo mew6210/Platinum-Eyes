@@ -23,7 +23,6 @@ void createItemBox(Item item) {
 
 	const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(item.preparedName.c_str()).x;
 
-
 	ImVec4 bgColor = { 0,0,0,1 };
 	switch (item.itemDetails.rarity) {
 	case Rarity::level::Common:bgColor = {189,145,119,128}; break;
@@ -32,8 +31,6 @@ void createItemBox(Item item) {
 	default: bgColor = { 0,0,0,255 }; break;
 	}
 	
-
-
 	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 	window_flags |= ImGuiWindowFlags_MenuBar;
 	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
@@ -64,7 +61,6 @@ void createItemBox(Item item) {
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
-	
 }
 
 void createRelicItemBox(RelicItem item,ImVec2 screenSize){
@@ -158,9 +154,6 @@ void generateImGuiTable(AppState& state) {
 				ImGui::Dummy({ screenSize.x / 20,0 });
 				ImGui::SameLine();
 			}
-			
-
-
 			it++;
 		}
 		
@@ -172,9 +165,7 @@ void generateImGuiTable(AppState& state) {
 		else {
 			ImGui::Text("Couldn't find relic title :(");
 		}
-
 	}
-
 }
 
 
@@ -183,7 +174,6 @@ void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 
 	w.setSize(sf::Vector2u( sfmlParameters.width, sfmlParameters.height ));
 	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
-	
 }
 
 
@@ -197,7 +187,6 @@ void customizeWindow(AppState& state) {
 	}
 
 	nativeWindowCustomization(state,wHandle);
-
 }
 
 void setNewFont(ToolConfig& config) {
@@ -208,7 +197,6 @@ void setNewFont(ToolConfig& config) {
 	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 
 	ImGui::SFML::UpdateFontTexture();
-
 }
 
 
@@ -227,8 +215,6 @@ void setImGuiStyle(ToolConfig& config) {
 	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 	
 	ImGui::SFML::UpdateFontTexture(); 
-
-
 }
 
 
@@ -274,8 +260,6 @@ void handleBetweenFrameImGuiUpdates(AppState& state) {
 		setNewFont(state.config);
 		state.shouldUpdateFonts = false;
 	}
-
-
 }
 
 void updateFps(AppState& state) {
@@ -287,7 +271,7 @@ void updateFps(AppState& state) {
 		newVisibleFps = stoi(state.config["fpsVisible"]);
 	}
 	catch (const std::exception& e) {
-		warningLog("visibleFps inputted is not a number, defaulting to 30");
+		warningLog("visible fps inputted wrong, ",e.what()," defaulting to 30");
 		newVisibleFps = 30;
 	}
 
@@ -295,7 +279,8 @@ void updateFps(AppState& state) {
 		newHiddenFps = stoi(state.config["fpsHidden"]);
 	}
 	catch (const std::exception& e) {
-		warningLog("hiddenFps inputted is not a number, defaulting to 30");
+		warningLog("hidden fps inputted wrong, ", e.what(), " defaulting to 30");
+		newHiddenFps = 30;
 	}
 	
 
@@ -308,5 +293,4 @@ void updateFps(AppState& state) {
 	}
 	state.fpsVisible = newVisibleFps;
 	state.fpsHidden = newHiddenFps;
-
 }
