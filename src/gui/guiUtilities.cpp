@@ -1,9 +1,5 @@
 #include "gui.h"
 
-
-
-
-
 std::map<int, std::string> createIntStringMap(std::map<std::string, ItemDetails> items) {
 
 	std::map<int, std::string> intstringmap;
@@ -17,9 +13,7 @@ std::map<int, std::string> createIntStringMap(std::map<std::string, ItemDetails>
 	return intstringmap;
 }
 
-
-
-void createItemBox(Item item) {
+void createItemBox(Item& item) {
 
 	const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(item.preparedName.c_str()).x;
 
@@ -63,7 +57,7 @@ void createItemBox(Item item) {
 	ImGui::PopStyleVar();
 }
 
-void createRelicItemBox(RelicItem item,ImVec2 screenSize){
+void createRelicItemBox(RelicItem& item,ImVec2& screenSize){
 
 
 	ImVec4 bgColor = { 0,0,0,1 };
@@ -107,7 +101,6 @@ void createRelicItemBox(RelicItem item,ImVec2 screenSize){
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
 }
-
 
 void generateImGuiTable(AppState& state) {
 
@@ -168,14 +161,11 @@ void generateImGuiTable(AppState& state) {
 	}
 }
 
-
-
 void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 
 	w.setSize(sf::Vector2u( sfmlParameters.width, sfmlParameters.height ));
 	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
 }
-
 
 void customizeWindow(AppState& state) {
 	sf::WindowHandle wHandle = state.window->getNativeHandle();
@@ -199,7 +189,6 @@ void setNewFont(ToolConfig& config) {
 	ImGui::SFML::UpdateFontTexture();
 }
 
-
 void setImGuiStyle(ToolConfig& config) {
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowRounding = 20.0f;
@@ -217,13 +206,8 @@ void setImGuiStyle(ToolConfig& config) {
 	ImGui::SFML::UpdateFontTexture(); 
 }
 
-
-
-
-
 void createImGuiWindow(bool& isRunning,AppState& state) {
 
-	
 	int heightDiff = state.sfmlSize.height - state.imguiSize.height;
 	int widthDiff = state.sfmlSize.width - state.imguiSize.width;
 
