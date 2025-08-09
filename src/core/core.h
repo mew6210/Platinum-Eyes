@@ -528,3 +528,4 @@ void mainLoop(AppState& state);
 std::pair<int, int> getFps(ToolConfig& toolConfig);
 void loadDatabases(ToolConfig& toolConfig);
 AppState initApp();
+void closeApp(AppState& state);

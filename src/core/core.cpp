@@ -124,6 +124,7 @@ AppState initApp() {
     bool shouldUpdateFonts = false;
     auto fps = getFps(toolConfig);
 
+
     return AppState(
         msg,
         std::move(currentFissureItems),
@@ -143,4 +144,10 @@ AppState initApp() {
         fps.first,
         fps.second
     );
+}
+
+void closeApp(AppState& state) {
+    ImGui::SFML::Shutdown();
+    state.tesseractApi->End();
+    unregisterHotkeys();
 }
