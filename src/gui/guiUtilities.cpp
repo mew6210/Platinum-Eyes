@@ -72,61 +72,38 @@ void createItemBox(std::string id, Item& item) {
 	endItemBox();
 }
 
+namespace {
+ 	void itemBoxChance(float& percentage) {
+		std::string chanceString = "Chance: " + std::format("{:.2f}%%", percentage);
+		ImGui::Text(chanceString.c_str());
+	}
+}
 void createRelicItemBox(RelicItem& item,ImVec2& screenSize){
 
+	auto bgColor = getRarityColor(item.itemDetails.rarity);
+	auto flags = setItemBoxStyles(item.itemDetails.rarity);
+	ImGui::BeginChild(item.rawName.c_str(), ImVec2(screenSize.x/4, screenSize.y/3.5), ImGuiChildFlags_Border, flags);
 
-	ImVec4 bgColor = { 0,0,0,1 };
-	switch (item.itemDetails.rarity) {
-	case Rarity::level::Common:bgColor = { 189,145,119,128 }; break;
-	case Rarity::level::Uncommon: bgColor = { 209,208,209,128 }; break;
-	case Rarity::level::Rare: bgColor = { 236,225,117,128 }; break;
-	default: bgColor = { 0,0,0,255 }; break;
-	}
-
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-	window_flags |= ImGuiWindowFlags_MenuBar;
-	window_flags |= ImGuiWindowFlags_HorizontalScrollbar;
-	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-	ImGui::BeginChild(item.rawName.c_str(), ImVec2(screenSize.x/4, screenSize.y/3.5), ImGuiChildFlags_Border, window_flags);
-
-
-
-	if (ImGui::BeginMenuBar()){
-		if (ImGui::BeginMenu(item.rawName.c_str())){
-
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-
-	std::string averagePrice = "Average price: ";
-	std::string formattedPrice = std::format("{:.2f}", item.itemDetails.averagePrice);
-	ImGui::Text((averagePrice+formattedPrice).c_str());
-	ImGui::SameLine();
-
-	std::string chanceString = "Chance: " + std::format("{:.2f}%%", item.percentage);
-	ImGui::Text(chanceString.c_str());
-
-
-	std::string latestString = "Lowest: " + getFormatedAveragePrices(item.itemDetails.lowestPrices);
-	ImGui::Text(latestString.c_str());
+	itemBoxName(item.preparedName);
+	itemBoxChance(item.percentage);
+	itemBoxLowestOrders(item.itemDetails.lowestPrices);
 
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();
 }
 
-void generateImGuiTable(AppState& state) {
 
-	if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
-		
+namespace {
+
+	
+	//TODO: REFACTOR
+	void generateFissureItemsBoxes(AppState& state){
 		int itemCount = state.items.size();
 
-		if (itemCount != 0&& state.items[0].rawName != "placeholder") {
+		if (itemCount != 0 && state.items[0].rawName != "placeholder") {
 
 			ImGui::Dummy(ImVec2(50.0, 0.0));
-
 			int it = 0;
 			for (auto& item : state.items) {
 				createItemBox(std::to_string(it), item);
@@ -136,35 +113,35 @@ void generateImGuiTable(AppState& state) {
 					ImGui::Dummy(ImVec2(50.0, 0.0));
 					ImGui::SameLine();
 				}
-
 				it++;
 			}
 		}
-		else if (itemCount==1&& state.items[0].rawName =="placeholder") {
+		else if (itemCount == 1 && state.items[0].rawName == "placeholder") {
 			ImGui::Text("Waiting for your input...");
 		}
 		else {
 			ImGui::Text("Couldn't find requested text on screen:(\nLook to console for more info");
 		}
 	}
-	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
-		if (state.currentRelic.name != "" && state.currentRelic.relicPrice!=0.0) {
-		ImVec2 screenSize = ImGui::GetWindowSize();
-		int count=state.currentRelic.items.size();
+	//TODO: REFACTOR
+	void generateRelicItemsBoxes(AppState& state) {
+		if (state.currentRelic.name != "" && state.currentRelic.relicPrice != 0.0) {
+			ImVec2 screenSize = ImGui::GetWindowSize();
+			int count = state.currentRelic.items.size();
 
-		int it = 1;
+			int it = 1;
 
-		for (auto& item : state.currentRelic.items) {
-			createRelicItemBox(item,screenSize);
-			if (it != 3&&it!=count) {
-				
-				ImGui::SameLine();
-				ImGui::Dummy({ screenSize.x / 20,0 });
-				ImGui::SameLine();
+			for (auto& item : state.currentRelic.items) {
+				createRelicItemBox(item, screenSize);
+				if (it != 3 && it != count) {
+
+					ImGui::SameLine();
+					ImGui::Dummy({ screenSize.x / 20,0 });
+					ImGui::SameLine();
+				}
+				it++;
 			}
-			it++;
-		}
-		
+
 			std::string relicName = "Relic name: " + state.currentRelic.name;
 			ImGui::Text(relicName.c_str());
 			std::string averageRelicPrice = "Average relic price: " + std::format("{:.2f}", state.currentRelic.relicPrice);
@@ -173,6 +150,14 @@ void generateImGuiTable(AppState& state) {
 		else {
 			ImGui::Text("Couldn't find relic title :(");
 		}
+	}
+}
+void generateImGuiTable(AppState& state) {
+	if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
+		generateFissureItemsBoxes(state);
+	}
+	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
+		generateRelicItemsBoxes(state);
 	}
 }
 
@@ -256,7 +241,6 @@ void createImGuiWindow(bool& isRunning,AppState& state) {
 }
 
 void handleBetweenFrameImGuiUpdates(AppState& state) {
-
 	if (state.shouldUpdateFonts) {
 		setNewFont(state.config);
 		state.shouldUpdateFonts = false;
@@ -284,8 +268,6 @@ void updateFps(AppState& state) {
 		newHiddenFps = 30;
 	}
 	
-
-
 	if (state.isVisible) {
 		state.window->setFramerateLimit(newVisibleFps);
 	}
