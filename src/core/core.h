@@ -472,8 +472,8 @@ struct AppState {
 };
 
 const std::vector<Item> exampleItems = {
-	Item("someItemName1","someItemName1",ItemDetails(5,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
-	Item("someItemName2","someItemName2",ItemDetails(6,std::vector<int>({1,1,1,1,1}),Rarity::level::Uncommon)),
+	Item("Mesa Prime Neuroptics","Mesa Prime Neuroptics",ItemDetails(5,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),
+	Item("Blah blah blah mesa prime neuroptics","Blah blah blah mesa prime neuroptics",ItemDetails(6,std::vector<int>({1,1,1,1,1}),Rarity::level::Uncommon)),
 	Item("someItemName3","someItemName3",ItemDetails(7,std::vector<int>({1,1,1,1,1}),Rarity::level::Rare)),
 	Item("someItemName4","someItemName4",ItemDetails(8,std::vector<int>({1,1,1,1,1}),Rarity::level::Undefined)),
 	Item("someItemName5","someItemName5",ItemDetails(9,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),

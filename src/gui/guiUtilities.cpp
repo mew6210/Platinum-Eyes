@@ -1,60 +1,75 @@
 #include "gui.h"
 
-std::map<int, std::string> createIntStringMap(std::map<std::string, ItemDetails> items) {
+using std::string;
 
-	std::map<int, std::string> intstringmap;
+std::map<int, string> createIntStringMap(std::map<string, ItemDetails> items) {
+
+	std::map<int, string> intstringmap;
 
 	int it = 0;
 	for (auto& p : items) {
-		intstringmap.insert(std::pair<int, std::string>(it, p.first));
+		intstringmap.insert(std::pair<int, string>(it, p.first));
 		it++;
 	}
 
 	return intstringmap;
 }
 
-void createItemBox(Item& item) {
 
-	const float TEXT_BASE_WIDTH = ImGui::CalcTextSize(item.preparedName.c_str()).x;
+namespace {
 
-	ImVec4 bgColor = { 0,0,0,1 };
-	switch (item.itemDetails.rarity) {
-	case Rarity::level::Common:bgColor = {189,145,119,128}; break;
-	case Rarity::level::Uncommon: bgColor = {209,208,209,128}; break;
-	case Rarity::level::Rare: bgColor = {236,225,117,128}; break;
-	default: bgColor = { 0,0,0,255 }; break;
-	}
-	
-	ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-	window_flags |= ImGuiWindowFlags_MenuBar;
-	ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-	ImGui::BeginChild(item.preparedName.c_str(), ImVec2(TEXT_BASE_WIDTH + 50, 100), ImGuiChildFlags_Border, window_flags);
-
-	
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu(item.preparedName.c_str()))
-		{
-
-			ImGui::EndMenu();
+	ImVec4 getRarityColor(Rarity::level rarity) {
+		switch (rarity) {
+		case Rarity::level::Common: return { 69, 56, 49,255 }; break;
+		case Rarity::level::Uncommon:  return { 66, 66, 66,255 }; break;
+		case Rarity::level::Rare:  return { 94, 89, 33,255 }; break;
+		default: return { 0,0,0,255 }; break;
 		}
-		ImGui::EndMenuBar();
 	}
+
+ 	ImGuiWindowFlags setItemBoxStyles(Rarity::level rarity){
+		auto bgColor = getRarityColor(rarity);
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+		//window_flags |= ImGuiWindowFlags_MenuBar;
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+		return window_flags;
+	}
+
+	void itemBoxName(string& itemName) {
+		static ImVec2 topPadding = { 0,3 };
+		ImGui::Dummy(topPadding);
+		ImGui::TextWrapped(itemName.c_str());
+	}
+
+
+	void itemBoxAvgPrice(float& averagePrice) {
+		ImGui::Text("Average price: ");
+		ImGui::SameLine();
+		string formattedPrice = std::format("{:.2f}", averagePrice);
+		ImGui::Text(formattedPrice.c_str());
+	}
+
+	void itemBoxLowestOrders(std::vector<int>& lowestPrices) {
+		ImGui::Text(getFormatedAveragePrices(lowestPrices).c_str());
+	}
+
+	void endItemBox() {
+		ImGui::EndChild();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleVar();
+	}
+
+}
+void createItemBox(std::string id, Item& item) {
 	
-
-
-	ImGui::Text("Average price: ");
-	ImGui::SameLine();
-
-
-	std::string formattedPrice = std::format("{:.2f}", item.itemDetails.averagePrice); 
-	ImGui::Text(formattedPrice.c_str());
-	ImGui::Text(getFormatedAveragePrices(item.itemDetails.lowestPrices).c_str());
-
-	ImGui::EndChild();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar();
+	ImGuiWindowFlags flags = setItemBoxStyles(item.itemDetails.rarity);
+	ImGui::BeginChild(id.c_str(), ImVec2(200, 100), ImGuiChildFlags_Border, flags);
+	
+	itemBoxName(item.preparedName);
+	itemBoxAvgPrice(item.itemDetails.averagePrice);
+	itemBoxLowestOrders(item.itemDetails.lowestPrices);
+	endItemBox();
 }
 
 void createRelicItemBox(RelicItem& item,ImVec2& screenSize){
@@ -114,7 +129,7 @@ void generateImGuiTable(AppState& state) {
 
 			int it = 0;
 			for (auto& item : state.items) {
-				createItemBox(item);
+				createItemBox(std::to_string(it), item);
 				ImGui::SameLine();
 
 				if (it != state.items.size() - 1) {
@@ -191,12 +206,11 @@ void setNewFont(ToolConfig& config) {
 
 void setImGuiStyle(ToolConfig& config) {
 	ImGuiStyle& style = ImGui::GetStyle();
-	style.WindowRounding = 20.0f;
+	//style.WindowRounding = 20.0f;
 	style.ChildRounding = 20.0f;
-	style.WindowBorderSize = 1.0f;
+	//style.WindowBorderSize = 1.0f;
 	style.ChildBorderSize = 0.0f;
 	
-
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->Clear(); 
 	std::string filename = "assets/fonts/" + config["fontFile"];
@@ -211,8 +225,11 @@ void createImGuiWindow(bool& isRunning,AppState& state) {
 	int heightDiff = state.sfmlSize.height - state.imguiSize.height;
 	int widthDiff = state.sfmlSize.width - state.imguiSize.width;
 
-	ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar;
+	ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+	flags |= ImGuiWindowFlags_NoTitleBar;
 	flags |= ImGuiWindowFlags_HorizontalScrollbar;
+	flags |= ImGuiWindowFlags_NoResize;
+	flags |= ImGuiWindowFlags_NoMove;
 	ImGuiCond cond = ImGuiCond_Once;
 	ImGui::SetNextWindowBgAlpha(0.7);
 	if (state.shouldReSizeImGui) {
