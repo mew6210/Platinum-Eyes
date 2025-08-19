@@ -96,32 +96,40 @@ void createRelicItemBox(RelicItem& item,ImVec2& screenSize){
 
 namespace {
 
-	
-	//TODO: REFACTOR
-	void generateFissureItemsBoxes(AppState& state){
-		int itemCount = state.items.size();
+	bool isVecNotEmptyAndNotPlaceholder(std::vector<Item>& items) {
+		return (items.size() != 0 && items[0].rawName != "placeholder");
+	}
+	bool isVecPlaceholder(std::vector<Item>& items) {
+		return items.size() == 1 && items[0].rawName == "placeholder";
+	}
 
-		if (itemCount != 0 && state.items[0].rawName != "placeholder") {
+	void generateFissureItemsBoxesNormally(std::vector<Item>& items) {
+		
+		ImGui::Dummy(ImVec2(50.0, 0.0));
+		int it = 0;
+		for (auto& item : items) {
+			createItemBox(std::to_string(it), item);
+			ImGui::SameLine();
 
-			ImGui::Dummy(ImVec2(50.0, 0.0));
-			int it = 0;
-			for (auto& item : state.items) {
-				createItemBox(std::to_string(it), item);
+			if (it != items.size() - 1) {
+				ImGui::Dummy(ImVec2(50.0, 0.0));
 				ImGui::SameLine();
-
-				if (it != state.items.size() - 1) {
-					ImGui::Dummy(ImVec2(50.0, 0.0));
-					ImGui::SameLine();
-				}
-				it++;
 			}
+			it++;
 		}
-		else if (itemCount == 1 && state.items[0].rawName == "placeholder") {
+	}
+
+	void generateFissureItemsBoxes(AppState& state){
+
+		if (isVecPlaceholder(state.items)) {
 			ImGui::Text("Waiting for your input...");
+			return;
 		}
-		else {
-			ImGui::Text("Couldn't find requested text on screen:(\nLook to console for more info");
+		if (isVecNotEmptyAndNotPlaceholder(state.items)) {
+			generateFissureItemsBoxesNormally(state.items);
+			return;
 		}
+		ImGui::Text("Couldn't find requested text on screen:(\nLook to console for more info");
 	}
 	//TODO: REFACTOR
 	void generateRelicItemsBoxes(AppState& state) {

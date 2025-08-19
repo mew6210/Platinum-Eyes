@@ -174,6 +174,10 @@ int checkIfItemsAreValid(vector<string>& items, vector<string>& allItems) {
 */
 bool fixItems(vector<string>& items, vector<string>& allItems) {
 
+    if (items.size() == 1 && items[0] == "") {
+        return false;
+    }
+
     for (auto& item : items) {
         vector<pair<string, int>> fuzzySearchResults = fuzzy_search_weighted(item, allItems, fuzzy_threshold::THRESHOLD_HIGH);
 
