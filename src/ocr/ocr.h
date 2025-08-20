@@ -45,3 +45,4 @@ int checkIfItemsAreValid(std::vector<std::string>& items, std::vector<std::strin
 
 bool fixItems(std::vector<std::string>& items, std::vector<std::string>& allItems);
 void replaceAnds(std::string& s);
+std::string snakeToItem(const std::string& s);

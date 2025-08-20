@@ -269,6 +269,34 @@ vector<string> itemsToSnakeCase(const vector<string>& list) {
     return snakedItems;
 }
 
+string snakeToItem(const string& s) {
+    string result = s;
+
+    for (auto& ch : result) {
+        if (ch == '_') ch = ' ';
+    }
+
+    size_t pos = result.find(" and ");
+    while (pos != string::npos) {
+        result.replace(pos, 5, " & ");
+        pos = result.find(" and ", pos + 3);
+    }
+
+    bool capitalizeNext = true;
+    for (auto& ch : result) {
+        if (capitalizeNext && isalpha(ch)) {
+            ch = toupper(ch);
+            capitalizeNext = false;
+        }
+        else {
+            ch = tolower(ch);
+        }
+        if (ch == ' ') capitalizeNext = true;
+    }
+
+    return result;
+}
+
 
 string replaceChar(string s, char a, string b) {
 

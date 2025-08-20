@@ -37,9 +37,10 @@ namespace {
 	}
 
 	void itemBoxName(string& itemName) {
-		static ImVec2 topPadding = { 0,3 };
-		ImGui::Dummy(topPadding);
+		//static ImVec2 topPadding = { 0,3 };
+		//ImGui::Dummy(topPadding);
 		ImGui::TextWrapped(itemName.c_str());
+		ImGui::Dummy(ImVec2(0, 5));
 	}
 
 
@@ -102,7 +103,6 @@ namespace {
 	bool isVecPlaceholder(std::vector<Item>& items) {
 		return items.size() == 1 && items[0].rawName == "placeholder";
 	}
-
 	void generateFissureItemsBoxesNormally(std::vector<Item>& items) {
 		
 		ImGui::Dummy(ImVec2(50.0, 0.0));
@@ -131,29 +131,38 @@ namespace {
 		}
 		ImGui::Text("Couldn't find requested text on screen:(\nLook to console for more info");
 	}
-	//TODO: REFACTOR
-	void generateRelicItemsBoxes(AppState& state) {
-		if (state.currentRelic.name != "" && state.currentRelic.relicPrice != 0.0) {
-			ImVec2 screenSize = ImGui::GetWindowSize();
-			int count = state.currentRelic.items.size();
 
-			int it = 1;
+	bool isRelicNotNull(RelicInfo& relic) {
+		return (relic.name != "" && relic.relicPrice != 0.0);
+	}
+	void imGuiRelicInfo(RelicInfo& relic) {
+		std::string relicName = "Relic name: " + relic.name;
+		ImGui::Text(relicName.c_str());
+		std::string averageRelicPrice = "Average relic price: " + std::format("{:.2f}", relic.relicPrice);
+		ImGui::Text(averageRelicPrice.c_str());
+	}
+	void imGuiRelicItemsBoxes(RelicInfo& relic) {
+		ImVec2 screenSize = ImGui::GetWindowSize();
+		int count = relic.items.size();
 
-			for (auto& item : state.currentRelic.items) {
-				createRelicItemBox(item, screenSize);
-				if (it != 3 && it != count) {
+		int it = 1;
 
-					ImGui::SameLine();
-					ImGui::Dummy({ screenSize.x / 20,0 });
-					ImGui::SameLine();
-				}
-				it++;
+		for (auto& item : relic.items) {
+			createRelicItemBox(item, screenSize);
+			if (it != 3 && it != count) {
+
+				ImGui::SameLine();
+				ImGui::Dummy({ screenSize.x / 20,0 });
+				ImGui::SameLine();
 			}
+			it++;
+		}
+		imGuiRelicInfo(relic);
+	}
 
-			std::string relicName = "Relic name: " + state.currentRelic.name;
-			ImGui::Text(relicName.c_str());
-			std::string averageRelicPrice = "Average relic price: " + std::format("{:.2f}", state.currentRelic.relicPrice);
-			ImGui::Text(averageRelicPrice.c_str());
+	void generateRelicItemsBoxes(AppState& state) {
+		if (isRelicNotNull(state.currentRelic)) {
+			imGuiRelicItemsBoxes(state.currentRelic);
 		}
 		else {
 			ImGui::Text("Couldn't find relic title :(");
@@ -170,7 +179,6 @@ void generateImGuiTable(AppState& state) {
 }
 
 void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
-
 	w.setSize(sf::Vector2u( sfmlParameters.width, sfmlParameters.height ));
 	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
 }

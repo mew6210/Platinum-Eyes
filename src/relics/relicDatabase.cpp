@@ -969,7 +969,7 @@ RelicInfo fetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS
                 percentageString = item2.second;
             }
         }
-        relicItems.push_back(RelicItem(item.first, item.first, item.second, getPercantageFromString(percentageString)));    //TODO: rawname the same as preparedname, it shouldn't be like that but it is never used so ig its aight
+        relicItems.push_back(RelicItem(snakeToItem(item.first), item.first, item.second, getPercantageFromString(percentageString)));    //TODO: rawname the same as preparedname, it shouldn't be like that but it is never used so ig its aight
     }
 
     RelicInfo relic=RelicInfo(relicName,relicItems,0);
