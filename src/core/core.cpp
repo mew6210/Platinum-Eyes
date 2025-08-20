@@ -26,7 +26,6 @@ pair<int, int> getFps(ToolConfig& toolConfig) {
     }
 
     return { fpsVisible,fpsHidden };
-
 }
 
 
@@ -34,11 +33,9 @@ void loadDatabases(ToolConfig& toolConfig) {
 
     auto updateOrders = shouldUpdateDatabase(toolConfig);
 
-
     loadRelicDatabase(toolConfig,updateOrders);
 
     if(updateOrders.first) loadWFMD();
-    
 }
 
 

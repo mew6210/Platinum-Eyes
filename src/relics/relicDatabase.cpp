@@ -594,6 +594,12 @@ namespace {
         parseAllItemsToFile(inputFiles);
     }
 
+    void flushofStreams(std::unordered_map<string,ofstream>& outputFiles) {
+        for (auto& file : outputFiles) {
+            file.second.flush();
+        }
+    }
+
     void processRelicData(ifstream& inputFile, std::unordered_map<string, ofstream>& outputFiles) {
         string line = "";
         while (getline(inputFile, line)) {
@@ -604,6 +610,7 @@ namespace {
                 handleRelic(line, cursor, outputFiles);
             }
         }
+        flushofStreams(outputFiles);
     }
 }
 
