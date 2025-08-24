@@ -178,7 +178,6 @@ Date stringToDate(const string& s) {
         words[1].pop_back();
     }
 
-
     int day = std::stoi(words[0]);
     int month = -1;
     if (words[1].length() >= 3) {
@@ -191,25 +190,19 @@ Date stringToDate(const string& s) {
     int year = std::stoi(words[2]);
 
     return Date{ day,month,year };
-
 }
 
 void replaceAmp(string& s) {
 
-    const string amp = "&amp;";
-
+    static const string amp = "&amp;";
     size_t pos = s.find(amp);
-
     if (pos != string::npos)
         s.replace(pos, amp.length(), "&");
 }
 
 bool doesDatabaseExist() {
-
     ifstream txtDatabase;
-    
     txtDatabase.open("data/relictable_lith.txt");
-
     return txtDatabase.is_open();
 }
 
@@ -246,8 +239,6 @@ bool shouldUpdate(ToolConfig& config) {
         return true;
     }
     return true;
-
-
 }
 
 //first is if it should update, and second is how it should be updated
@@ -359,7 +350,6 @@ void handleSuccesfullDatabaseDownload(cpr::Response& r,ToolConfig& config,bool& 
         Date latestUpdateRecorded = stringToDate(config["data_LatestUpdate"]);
         Date droptable_raw_date = getNewestUpdateDate();
 
-
         config.setPropertyValue("data_LatestUpdate", dateToString(droptable_raw_date));
 
         if (latestUpdateRecorded < droptable_raw_date) {
@@ -378,7 +368,6 @@ void handleSuccesfullDatabaseDownload(cpr::Response& r,ToolConfig& config,bool& 
         else {
             successLog("Relic database is up to date!");
         }
-    
 }
 
 void handleUnSuccesfullDatabaseDownload(cpr::Response& r) {
@@ -408,9 +397,7 @@ void updateDatabase(ToolConfig& config,bool forced) {
 }
 
 void updateCurrentDate(ToolConfig& config) {
-
     Date currentDate = getCurrentDate();
-
     config.setPropertyValue("data_LastTimeLaunched", dateToString(currentDate));
     rewriteConfigFile(config);
 }
@@ -421,7 +408,6 @@ void loadRelicDatabase(ToolConfig& config,pair<bool,bool>& updateOrders) {
     if (updateOrders.first) {
         updateDatabase(config,updateOrders.second);
     }
-
     updateCurrentDate(config);
 }
 

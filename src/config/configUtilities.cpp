@@ -42,13 +42,9 @@ namespace screenShotParams{
         string imguiSize;
     };
 
-    screenConfig screen_1920x1080 = { "965","80","960,420","800,250","700,200" };
-    screenConfig screen_3440x1440 = {"1290","90","1720,570","1200,300","1100,250"};
+    screenConfig screen_1920x1080 = { "965","80","960,420","800,250","800,250" };
+    screenConfig screen_3440x1440 = {"1290","90","1720,570","1200,300","1200,300"};
     screenConfig screen_NotSpecified= { "---","---","---","---","---" };
-
-
-
-
 
     string getCurrentPath() {
 
@@ -79,15 +75,10 @@ namespace screenShotParams{
         case SCR_Size_1920x1080: return screen_1920x1080.centerCoordinates; break;
         case SCR_Size_3440x1440: return screen_3440x1440.centerCoordinates; break;
 
-
-
         case SCR_Size_NotSpecified:
         default:
             return screen_NotSpecified.centerCoordinates; break;
-
-
         }
-
     }
 
     string getWidth(int screenResolution){
@@ -96,16 +87,10 @@ namespace screenShotParams{
         case SCR_Size_1920x1080: return screen_1920x1080.screenShotWidth; break;
         case SCR_Size_3440x1440: return screen_3440x1440.screenShotWidth; break;
 
-
-
         case SCR_Size_NotSpecified:
         default:
             return screen_NotSpecified.screenShotWidth; break;
-
-
         }
-    
-    
     }
 
     string getHeight(int screenResolution){
@@ -114,13 +99,9 @@ namespace screenShotParams{
         case SCR_Size_1920x1080: return screen_1920x1080.screenShotHeight; break;
         case SCR_Size_3440x1440: return screen_3440x1440.screenShotHeight; break;
 
-
-
         case SCR_Size_NotSpecified:
         default:
             return screen_NotSpecified.screenShotHeight; break;
-
-
         }
     }
 
@@ -129,17 +110,10 @@ namespace screenShotParams{
         case SCR_Size_1920x1080: return screen_1920x1080.sfmlSize; break;
         case SCR_Size_3440x1440: return screen_3440x1440.sfmlSize; break;
 
-
-
         case SCR_Size_NotSpecified:
         default:
             return screen_NotSpecified.sfmlSize; break;
-
-
         }
-    
-    
-    
     }
 
     string getImGuiSize(int screenResolution){
@@ -148,17 +122,10 @@ namespace screenShotParams{
         case SCR_Size_1920x1080: return screen_1920x1080.imguiSize; break;
         case SCR_Size_3440x1440: return screen_3440x1440.imguiSize; break;
 
-
-
         case SCR_Size_NotSpecified:
         default:
             return screen_NotSpecified.imguiSize; break;
-
-
         }
-    
-    
-    
     }
 
 
