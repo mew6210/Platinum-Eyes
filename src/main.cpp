@@ -6,5 +6,4 @@ int main(){
     setImGuiStyle(state.config);
     mainLoop(state);
     closeApp(state);
-    return 0;
 }

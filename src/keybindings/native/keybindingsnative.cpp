@@ -39,10 +39,10 @@ void registerNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
 			MOD_ALT | MOD_NOREPEAT,
 			p.second.getKey()))
 		{
-			successLog("Successfully registered hotkey: Alt + ", VirtualKeyCodeToString(p.second.getKey()), " for: ", p.second.getDescription());
+			successLog("Successfully registered hotkey: Alt + ", VirtualKeyCodeToString(p.second.getKey()), " - ", p.second.getDescription());
 		}
 		else {
-			warningLog("Failed to register hotkey: Alt + ", VirtualKeyCodeToString(p.second.getKey()) + " for: ", p.second.getDescription());
+			warningLog("Failed to register hotkey: Alt + ", VirtualKeyCodeToString(p.second.getKey()) + " - ", p.second.getDescription());
 
 		}
 
