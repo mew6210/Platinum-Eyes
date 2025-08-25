@@ -112,7 +112,7 @@ AppState initApp() {
     MSG msg = { 0 };
 #endif
 #if __linux__
-    XEvent* msg;
+    XEvent msg;
 #endif
 
     bool settingsOpen = false;
