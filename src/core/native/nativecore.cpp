@@ -6,14 +6,17 @@
 
 void listenAndHandleEvents(AppState& state) {
 
-
+    if (state.eeLogTakeScreenshot.load(std::memory_order_relaxed)) {
+        state.items = readFissureRewardsScreen(state);
+        state.itemDisplayFlag = ITEMTYPE_fissureItems;
+        state.eeLogTakeScreenshot.store(false, std::memory_order_relaxed);
+    }
     if (PeekMessage(&state.msg, NULL, 0, 0, PM_REMOVE)) {
 
         handleEvents(state);
         TranslateMessage(&state.msg);
         DispatchMessage(&state.msg);
     }
-
 }
 
 
