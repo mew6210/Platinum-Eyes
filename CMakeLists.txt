@@ -108,7 +108,8 @@ add_executable (
         "src/clipboard/clipboard.cpp" 
         "src/clipboard/native/clipboardnative.cpp" 
         "src/core/native/nativecore.cpp"
- "src/eefilewatcher/eefilewatcher.cpp")
+        "src/eefilewatcher/eefilewatcher.cpp" 
+)
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

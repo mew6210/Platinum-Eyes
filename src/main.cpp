@@ -4,13 +4,7 @@ int main(){
     AppState state = initApp();
     customizeWindow(state);
     setImGuiStyle(state.config);
-    std::thread watchEEthread([&state]() {
-        while (state.running) {
-            listen(state);
-        }
-        });
+    listenToEELog(state);
     mainLoop(state);
-    watchEEthread.join();
-
     closeApp(state);
 }

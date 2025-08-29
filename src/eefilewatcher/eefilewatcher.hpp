@@ -5,4 +5,4 @@
 #include <thread>
 #include <fstream>
 
-int listen(AppState& state);
+int listenToEELog(AppState& state);
