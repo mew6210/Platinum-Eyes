@@ -97,7 +97,7 @@ add_executable (
         "src/ocr/ocr.h" 
         "src/config/config.h" 
         "src/utilities/utilities.h" 
-        "src/gui/gui.h" 
+        "src/gui/gui.h"
         "src/keybindings/keybindings.h" 
         "src/relics/relics.h" 
         "src/core/core.cpp" 
@@ -108,7 +108,7 @@ add_executable (
         "src/clipboard/clipboard.cpp" 
         "src/clipboard/native/clipboardnative.cpp" 
         "src/core/native/nativecore.cpp"
-        "src/eefilewatcher/eefilewatcher.cpp" 
+        "src/eelogwatcher/eelogwatcher.cpp" 
 )
 
 

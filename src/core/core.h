@@ -523,7 +523,7 @@ public:
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
 #include "../clipboard/clipboard.hpp"
-#include "../eefilewatcher/eefilewatcher.hpp"
+#include "../eelogwatcher/eelogwatcher.hpp"
 
 
 

@@ -4,7 +4,7 @@ int main(){
     AppState state = initApp();
     customizeWindow(state);
     setImGuiStyle(state.config);
-    listenToEELog(state);
+    EELogWatcher eeLogWatcher = listenToEELog(state);
     mainLoop(state);
     closeApp(state);
 }

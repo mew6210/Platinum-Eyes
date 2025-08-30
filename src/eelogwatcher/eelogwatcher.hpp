@@ -1,22 +1,17 @@
-#define BUFFER_SIZE 1024
+#pragma once
+#include "../core/core.h"
+
+#include <filesystem>
+#include <chrono>
+#include <thread>
+#include <fstream>
 #include "efsw/efsw.hpp"
-#include "eefilewatcher.hpp"
-#include "wood.h"
 
 
 const std::filesystem::path WATCHEDFILEPATH = "C:\\Users\\costam\\AppData\\Local\\Warframe";
 const std::string FILENAME = "EE.log";
 
-std::vector<std::string> loadFileContents(const std::string& path) {
-    std::vector<std::string> lines;
-    std::ifstream file(path);
-    std::string line;
-    while (std::getline(file, line)) {
-        lines.push_back(line);
-    }
-    return lines;
-}
-
+std::vector<std::string> loadFileContents(const std::string& path);
 
 class UpdateListener : public efsw::FileWatchListener {
 public:
@@ -34,7 +29,6 @@ public:
         efsw::Action action,
         std::string oldFilename) override {
         if (action == efsw::Actions::Modified) {
-            std::cout << "Modified " << filename << std::endl;
 
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -47,32 +41,25 @@ public:
 
             int linesAdded = static_cast<int>(newFileState.size() - currentFileState.size());
 
-            infoLog("----------------");
-            infoLog("lines added: ", linesAdded);
-
             if (linesAdded > 0) {
-                // iterate forward to preserve line order
                 for (size_t i = currentFileState.size(); i < newFileState.size(); i++) {
                     const std::string& line = newFileState[i];
                     if (line.find("GetVoidProjectionRewards") != std::string::npos) {
-                        successLog("Fissure rewards automatically detected");
+                        successLog("Fissure rewards automatically detected, taking a screenshot");
                         state.eeLogTakeScreenshot.store(true, std::memory_order_relaxed);
                     }
                 }
             }
-
             currentFileState = std::move(newFileState);
-            infoLog("----------------");
         }
     }
 };
 
+class EELogWatcher {
+public:
+    UpdateListener listener;
+    efsw::FileWatcher fileWatcher{ true };
+    EELogWatcher(AppState& state) :listener(state) {}
+};
 
-int listenToEELog(AppState& state) {
-    efsw::FileWatcher* fileWatcher = new efsw::FileWatcher(true);
-    UpdateListener* listener = new UpdateListener(state);
-    efsw::WatchID watchID3 = fileWatcher->addWatch(WATCHEDFILEPATH.string(), listener, false, {});
-    fileWatcher->watch();
-
-    return 0;
-}
+EELogWatcher listenToEELog(AppState& state);
