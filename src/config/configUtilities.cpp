@@ -31,6 +31,9 @@ int getNativeScreenResolution() {
 
 }
 
+std::filesystem::path getEELogPath() {
+    return getNativeEELogPath();
+}
 
 namespace screenShotParams{
 
@@ -241,18 +244,15 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "clipboardWatermark") {
             configFile<<"yes";
         }
+        else if (configProperty == "eeLogShouldTakeScreenshot") {
+            configFile << "yes";
+        }
+        else if (configProperty == "eeLogPath") {
+            configFile << getEELogPath().string();
+        }
     
-    
-
-
-
         configFile << "\n";
-
-
-
     }
-    
-
 }
 
 

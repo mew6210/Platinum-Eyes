@@ -113,7 +113,11 @@ const std::string CONFIGPROPERTIES[] = {
 	"fpsHidden",
 
 	"clipboardCopy",
-	"clipboardWatermark"
+	"clipboardWatermark",
+
+	
+	"eeLogShouldTakeScreenshot",
+	"eeLogPath"
 
 
 };

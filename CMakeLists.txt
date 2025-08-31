@@ -109,7 +109,7 @@ add_executable (
         "src/clipboard/native/clipboardnative.cpp" 
         "src/core/native/nativecore.cpp"
         "src/eelogwatcher/eelogwatcher.cpp" 
-)
+ "src/config/native/nativeconfig.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

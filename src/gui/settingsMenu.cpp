@@ -136,6 +136,12 @@ void clipboardSettings(string& s1, string& s2) {
 
 }
 
+void eeLogWatcherSettings(string& s1, string& s2) {
+	renderConfigParams({
+		{s1,"eeLogShouldTakeScreenshot"},
+		{s2,"eeLogPath"}
+		},23);
+}
 
 struct SettingsSection {
 	string title;
@@ -262,6 +268,10 @@ void showSettingsMenu(bool* p_open,AppState& state)
 	
 	INITREVERTVAR(clipboardCopy);
 	INITREVERTVAR(clipboardWatermark);
+	INITREVERTVAR(eeLogShouldTakeScreenshot);
+	INITREVERTVAR(eeLogPath);
+
+
 
 
 
@@ -296,6 +306,8 @@ void showSettingsMenu(bool* p_open,AppState& state)
 
 	INITCONFIGVAR(clipboardCopy);
 	INITCONFIGVAR(clipboardWatermark);
+	INITCONFIGVAR(eeLogShouldTakeScreenshot);
+	INITCONFIGVAR(eeLogPath);
 	
 
 	sections = {
@@ -323,9 +335,11 @@ void showSettingsMenu(bool* p_open,AppState& state)
 		
 		{"Clipboard",
 		"Here you specify with 'yes' or 'no' whether you want your results to be copied to clipboard, and whether you want this app's watermark in this clipboard result. I hope you leave the watermark on though, it helps this app to be recognizable. Of course if you really dont want it, you can turn it off.",
-		[]() { clipboardSettings(clipboardCopy,clipboardWatermark); }}
+		[]() { clipboardSettings(clipboardCopy,clipboardWatermark); }},
 		
-
+		{"EE Log Watcher",
+		"description blah blah",
+		[]() {eeLogWatcherSettings(eeLogShouldTakeScreenshot,eeLogPath);}}
 
 
 	};
@@ -368,6 +382,9 @@ void showSettingsMenu(bool* p_open,AppState& state)
 				REVERT(fpsHidden);
 				REVERT(clipboardCopy);
 				REVERT(clipboardWatermark);
+				REVERT(eeLogShouldTakeScreenshot);
+				REVERT(eeLogPath);
+
 				
 			}
 			ImGui::SameLine();
@@ -395,7 +412,8 @@ void showSettingsMenu(bool* p_open,AppState& state)
 				SAVE(fpsHidden);
 				SAVE(clipboardCopy);
 				SAVE(clipboardWatermark);
-
+				SAVE(eeLogShouldTakeScreenshot);
+				SAVE(eeLogPath);
 
 
 				handleConfigChanges(newConfig, state);

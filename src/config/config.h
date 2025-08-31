@@ -1,5 +1,6 @@
 #pragma once
 #include "../core/core.h"
+#include "native/nativeconfig.hpp"
 
 
 
@@ -60,6 +61,13 @@ const std::vector<std::string> clipboardNames = {
 
 	"clipboardCopy",
 	"clipboardWatermark"
+
+};
+
+const std::vector<std::string> eeLogNames = {
+
+	"eeLogShouldTakeScreenshot",
+	"eeLogPath"
 
 };
 

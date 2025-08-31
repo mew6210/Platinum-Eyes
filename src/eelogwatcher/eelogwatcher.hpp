@@ -8,20 +8,19 @@
 #include "efsw/efsw.hpp"
 
 
-const std::filesystem::path WATCHEDFILEPATH = "C:\\Users\\costam\\AppData\\Local\\Warframe";
-const std::string FILENAME = "EE.log";
-
 std::vector<std::string> loadFileContents(const std::string& path);
+
+void testEELogPath(const std::filesystem::path& eeLogFilePath);
 
 class UpdateListener : public efsw::FileWatchListener {
 public:
     std::vector<std::string> currentFileState;
     AppState& state;
+    bool shouldTakeScreenshot;
+    std::filesystem::path eeLogPath;
+    std::filesystem::path eeLogFilePath;
 
-    UpdateListener(AppState& c_state)
-        : currentFileState(loadFileContents((WATCHEDFILEPATH / FILENAME).string())),
-        state(c_state) {
-    }
+    UpdateListener(AppState& c_state);
 
     void handleFileAction(efsw::WatchID watchid,
         const std::string& dir,
@@ -30,9 +29,13 @@ public:
         std::string oldFilename) override {
         if (action == efsw::Actions::Modified) {
 
+            if (!shouldTakeScreenshot) {
+                return;
+            }
+
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-            std::vector<std::string> newFileState = loadFileContents((WATCHEDFILEPATH / FILENAME).string());
+            std::vector<std::string> newFileState = loadFileContents((eeLogFilePath).string());
 
             if (newFileState.size() < currentFileState.size()) {
                 infoLog("File truncated or rotated, resetting state");
@@ -59,7 +62,8 @@ class EELogWatcher {
 public:
     UpdateListener listener;
     efsw::FileWatcher fileWatcher{ true };
-    EELogWatcher(AppState& state) :listener(state) {}
+    EELogWatcher(AppState& state) :listener(state) {
+    }
 };
 
 EELogWatcher listenToEELog(AppState& state);
