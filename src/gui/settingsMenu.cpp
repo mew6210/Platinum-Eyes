@@ -153,10 +153,10 @@ struct SettingsSection {
 void handleConfigChanges(ToolConfig& newConfig, AppState& state) {
 
 	if (newConfig == state.config) {
-		std::cout << "You haven't changed anything\n";
+		infoLog("You haven't changed anything");
 	}
 	else {
-		std::cout << "New configuration detected\n";
+		infoLog("New configuration detected");
 		std::vector<string> differences = state.config.getDifferenceList(newConfig);
 
 
@@ -182,6 +182,10 @@ void handleConfigChanges(ToolConfig& newConfig, AppState& state) {
 		if (fpsChanged(differences)) {
 			updateFps(state);
 		}
+		if (eeLogWatcherChanged(differences)) {
+			warningLog("Settings changed regarding EELogWatcher will be applied AFTER restarting the app");
+		}
+		
 
 
 	}
@@ -330,7 +334,9 @@ void showSettingsMenu(bool* p_open,AppState& state)
 		{"Item Database",
 		"Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet."
 		,[]() {itemDatabaseSettings(updatingType); } },
-		{"Fps","Sets a desired fps limit, both for when window is visible, and when its hidden. 1-whatever, but when its hidden it usually doesnt need to go above 10",[]() {fpsSettings(fpsVisible,fpsHidden); }},
+		{"Fps",
+		"Sets a desired fps limit, both for when window is visible, and when its hidden. 1-whatever, but when its hidden it usually doesnt need to go above 10",
+		[]() {fpsSettings(fpsVisible,fpsHidden); }},
 		
 		
 		{"Clipboard",
@@ -338,7 +344,7 @@ void showSettingsMenu(bool* p_open,AppState& state)
 		[]() { clipboardSettings(clipboardCopy,clipboardWatermark); }},
 		
 		{"EE Log Watcher",
-		"description blah blah",
+		"eeLogPath - directory where ee.log is in\neeLogShouldTakeScreenshot - when app finds that fissure rewards appeared on a screen, should it take screenshot automatically ('yes'/'no')",
 		[]() {eeLogWatcherSettings(eeLogShouldTakeScreenshot,eeLogPath);}}
 
 

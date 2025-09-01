@@ -39,3 +39,9 @@ bool fpsChanged(std::vector<std::string> differences) {
 	return contains(fpsNames,differences);
 
 }
+
+bool eeLogWatcherChanged(std::vector<std::string> differences) {
+
+	return contains(eeLogNames, differences);
+
+}
