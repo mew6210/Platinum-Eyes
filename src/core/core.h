@@ -113,7 +113,11 @@ const std::string CONFIGPROPERTIES[] = {
 	"fpsHidden",
 
 	"clipboardCopy",
-	"clipboardWatermark"
+	"clipboardWatermark",
+
+	
+	"eeLogShouldTakeScreenshot",
+	"eeLogPath"
 
 
 };
@@ -396,6 +400,9 @@ struct WFMItem {
 
 struct AppState {
 
+	std::atomic<bool> eeLogTakeScreenshot = false;
+
+
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	MSG msg;
 #endif
@@ -403,7 +410,6 @@ struct AppState {
 #if __linux__
 		XEvent msg;
 #endif
-
 
 	std::vector<Item> items;
 	ToolConfig config;
@@ -521,6 +527,7 @@ public:
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
 #include "../clipboard/clipboard.hpp"
+#include "../eelogwatcher/eelogwatcher.hpp"
 
 
 

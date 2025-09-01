@@ -1,5 +1,6 @@
 #pragma once
 #include "../core/core.h"
+#include "native/nativeconfig.hpp"
 
 
 
@@ -63,12 +64,20 @@ const std::vector<std::string> clipboardNames = {
 
 };
 
+const std::vector<std::string> eeLogNames = {
+
+	"eeLogShouldTakeScreenshot",
+	"eeLogPath"
+
+};
+
 
 bool contains(std::vector<std::string> targets, std::vector<std::string> differences);
 bool keyBindsChanged(std::vector<std::string> differences);
 bool windowSizesChanged(std::vector<std::string> differences);
 bool fontsChanged(std::vector<std::string> differences);
 bool fpsChanged(std::vector<std::string> differences);
+bool eeLogWatcherChanged(std::vector<std::string> differences);
 
 
 void copyConfigToOldFile();
