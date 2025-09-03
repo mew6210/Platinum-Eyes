@@ -1,8 +1,6 @@
 #include "../config/config.h"
 
-
-
-bool contains(std::vector<std::string> targets, std::vector<std::string> differences) {
+bool contains(const std::vector<std::string>& targets, const std::vector<std::string>& differences) {
 
 	for (auto& target : targets) {
 		for (auto& difference : differences) {
@@ -16,31 +14,29 @@ bool contains(std::vector<std::string> targets, std::vector<std::string> differe
 }
 
 
-bool keyBindsChanged(std::vector<std::string> differences) {
+bool keyBindsChanged(const std::vector<std::string>& differences) {
 
 	return contains(keyBindNames, differences);
 
 }
 
-bool windowSizesChanged(std::vector<std::string> differences) {
+bool windowSizesChanged(const std::vector<std::string>& differences) {
 
 	return contains(windowSizesNames, differences);
 
 }
 
-
-
-bool fontsChanged(std::vector<std::string> differences) {
+bool fontsChanged(const std::vector<std::string>& differences) {
 	return contains(fontNames, differences);
 }
 
-bool fpsChanged(std::vector<std::string> differences) {
+bool fpsChanged(const std::vector<std::string>& differences) {
 
 	return contains(fpsNames,differences);
 
 }
 
-bool eeLogWatcherChanged(std::vector<std::string> differences) {
+bool eeLogWatcherChanged(const std::vector<std::string>& differences) {
 
 	return contains(eeLogNames, differences);
 

@@ -72,12 +72,12 @@ const std::vector<std::string> eeLogNames = {
 };
 
 
-bool contains(std::vector<std::string> targets, std::vector<std::string> differences);
-bool keyBindsChanged(std::vector<std::string> differences);
-bool windowSizesChanged(std::vector<std::string> differences);
-bool fontsChanged(std::vector<std::string> differences);
-bool fpsChanged(std::vector<std::string> differences);
-bool eeLogWatcherChanged(std::vector<std::string> differences);
+bool contains(const std::vector<std::string>& targets, const std::vector<std::string>& differences);
+bool keyBindsChanged(const std::vector<std::string>& differences);
+bool windowSizesChanged(const std::vector<std::string>& differences);
+bool fontsChanged(const std::vector<std::string>& differences);
+bool fpsChanged(const std::vector<std::string>& differences);
+bool eeLogWatcherChanged(const std::vector<std::string>& differences);
 
 
 void copyConfigToOldFile();
