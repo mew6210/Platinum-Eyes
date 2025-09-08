@@ -1,10 +1,10 @@
 #pragma once
+#include "toolconfig.hpp"
 #include "../core/core.h"
 #include "native/nativeconfig.hpp"
 
 
 
-//should be included in configproperties[] in core.h
 const std::vector<std::string> screenshotParametersNames = {
 	"screenShotFilePath",
 	"coordinatesOfScreenShotCenter",
@@ -12,14 +12,11 @@ const std::vector<std::string> screenshotParametersNames = {
 	"screenShotHeight"
 };
 
-//should be included in configproperties[] in core.h
 const std::vector<std::string> windowSizesNames = {
 	"sfmlSize",
 	"imguiSize"
 };
 
-
-//should be included in configproperties[] in core.h
 const std::vector<std::string> keyBindNames = {
 	"keyBind_ReadItemsFromScreen",
 	"keyBind_EscapeProgram",
@@ -30,19 +27,16 @@ const std::vector<std::string> keyBindNames = {
 	"keyBind_ReadRelicTitle"
 };
 
-//should be included in configproperties[] in core.h
 const std::vector<std::string> fontNames = {
 	"fontFile",
 	"fontSize"
 };
 
-//should be included in configproperties[] in core.h
 const std::vector<std::string> dataNames = {
 	"data_LastTimeLaunched",
 	"data_LatestUpdate"
 };
 
-//should be included in configproperties[] in core.h
 const std::vector<std::string> databaseNames = {
 
 	"updatingType"
@@ -70,6 +64,25 @@ const std::vector<std::string> eeLogNames = {
 	"eeLogPath"
 
 };
+
+/*
+should be a sum of vectors above
+its default property should also be coded in fillOutConfigFile
+it should also probably have its own representation in settingsMenu
+*/
+const std::vector<std::string> CONFIGPROPERTIES = [] {
+	std::vector<std::string> result;
+	result.insert(result.end(), screenshotParametersNames.begin(), screenshotParametersNames.end());
+	result.insert(result.end(), windowSizesNames.begin(), windowSizesNames.end());
+	result.insert(result.end(), keyBindNames.begin(), keyBindNames.end());
+	result.insert(result.end(), fontNames.begin(), fontNames.end());
+	result.insert(result.end(), dataNames.begin(), dataNames.end());
+	result.insert(result.end(), databaseNames.begin(), databaseNames.end());
+	result.insert(result.end(), fpsNames.begin(), fpsNames.end());
+	result.insert(result.end(), clipboardNames.begin(), clipboardNames.end());
+	result.insert(result.end(), eeLogNames.begin(), eeLogNames.end());
+	return result;
+	}();
 
 
 bool contains(const std::vector<std::string>& targets, const std::vector<std::string>& differences);

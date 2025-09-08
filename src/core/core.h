@@ -44,58 +44,6 @@ using json = nlohmann::json;
 #define ITEMTYPE_fissureItems true
 #define ITEMTYPE_relicItems false
 
-/* 
-should be a sum of vectors in config.h
-its default property should also be coded in fillOutConfigFile
-it should also probably have its own representation in settingsMenu
-*/
-const std::string CONFIGPROPERTIES[] = {
-
-	"screenShotFilePath",
-	"coordinatesOfScreenShotCenter",
-	"screenShotWidth",
-	"screenShotHeight",
-
-
-	"sfmlSize",
-	"imguiSize",
-
-
-
-	"keyBind_ReadItemsFromScreen",
-	"keyBind_EscapeProgram",
-	"keyBind_ReadPreviousItems",
-	"keyBind_WindowVisibility",
-	"keyBind_BackupConfig",
-	"keyBind_ExampleItems",
-	"keyBind_ReadRelicTitle",
-
-
-
-	"fontFile",
-	"fontSize",
-
-
-
-
-	"data_LastTimeLaunched",
-	"data_LatestUpdate",
-
-
-	"updatingType",
-
-	"fpsVisible",
-	"fpsHidden",
-
-	"clipboardCopy",
-	"clipboardWatermark",
-
-	
-	"eeLogShouldTakeScreenshot",
-	"eeLogPath"
-
-
-};
 
 namespace Rarity {
 
@@ -172,84 +120,9 @@ public:
 		};
 		rarity = Rarity::level::Undefined;
 	}
-
-
 };
 
-class ToolConfig {
-	std::map<std::string, std::string> properties;
-
-	std::string getPropertyValue(std::string key) {
-
-
-		if (properties.count(key) > 0) {
-
-			std::string propertyValue = properties[key];
-			trim(propertyValue);
-			return propertyValue;
-		}
-		else {
-			errorLog(false,"Not found property in config: ",key);
-			return "not found";
-		}
-
-
-	}
-public:
-	void setPropertyValue(std::string key, std::string value) {
-
-		if (properties.count(key) > 0) {
-			trim(value);
-			properties[key] = value;
-		}
-		else {
-			errorLog(false,"Couldnt find ",key," key in ToolConfig");
-			return;
-		}
-	}
-
-	ToolConfig() {
-		for (std::string property_key : CONFIGPROPERTIES) {
-			properties.insert(std::pair<std::string, std::string>(property_key, "undefined"));
-		}
-	}
-
-	std::string operator[](std::string s) {
-		return getPropertyValue(s);
-	}
-
-	bool operator==(ToolConfig& otherConfig) {
-
-		for (auto& property : properties) {
-			if (otherConfig[property.first] != property.second) return false;
-		}
-		return true;
-	}
-
-	ToolConfig operator=(ToolConfig& config) {
-		properties = config.properties;
-		return config;
-	}
-
-	std::vector<std::string> getDifferenceList(ToolConfig& otherConfig) {
-		std::vector<std::string> differenceList;
-		for (auto& property : properties) {
-
-			if (otherConfig[property.first] != property.second) differenceList.push_back(property.first);
-
-		}
-		return differenceList;
-	}
-
-	void printConfig() {
-		for (auto& property : properties) {
-
-			std::cout << property.first + ": ";
-			std::cout << property.second << std::endl;
-		}
-	}
-};
-
+#include "../config/toolconfig.hpp"
 
 struct WindowParameters {
 	int width=0;
