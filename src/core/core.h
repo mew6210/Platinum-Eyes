@@ -39,35 +39,10 @@
 #endif
 #endif
 
-
-
-
-
 using json = nlohmann::json;
-#define ASSERTION_ERROR 499
-
-
 
 #define ITEMTYPE_fissureItems true
 #define ITEMTYPE_relicItems false
-
-
-
-void myAssert(bool stmt,std::string s);
-
-const std::string CONFIG_FILENAME = "tool_config.txt";
-const std::string COPY_FILENAME = "tool_config_old.txt";
-
-
-
-
-const int SFMLWINDOWSIZEX = 1200;
-const int SFMLWINDOWSIZEY = 300;
-
-const int IMGUIWINDOWSIZEX = SFMLWINDOWSIZEX - 100;
-const int IMGUIWINDOWSIZEY = SFMLWINDOWSIZEY - 100;
-
-
 
 /* 
 should be a sum of vectors in config.h
@@ -133,7 +108,6 @@ namespace Rarity {
 
 }
 
-
 class Point {
 public:
  	int x = 0;
@@ -153,12 +127,7 @@ public:
 
 };
 
-
-
-
 class Timer {
-
-
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
@@ -181,10 +150,7 @@ public:
 
 };
 
-
-
 class ItemDetails{
-
 public:
 
 	float averagePrice = 0;
@@ -211,10 +177,7 @@ public:
 };
 
 class ToolConfig {
-
 	std::map<std::string, std::string> properties;
-
-
 
 	std::string getPropertyValue(std::string key) {
 
@@ -232,27 +195,18 @@ class ToolConfig {
 
 
 	}
-
-
-
 public:
-
 	void setPropertyValue(std::string key, std::string value) {
 
 		if (properties.count(key) > 0) {
 			trim(value);
-
 			properties[key] = value;
-
-
 		}
 		else {
 			errorLog(false,"Couldnt find ",key," key in ToolConfig");
 			return;
 		}
-
 	}
-
 
 	ToolConfig() {
 		for (std::string property_key : CONFIGPROPERTIES) {
@@ -264,22 +218,16 @@ public:
 		return getPropertyValue(s);
 	}
 
-
 	bool operator==(ToolConfig& otherConfig) {
 
 		for (auto& property : properties) {
-
 			if (otherConfig[property.first] != property.second) return false;
-
 		}
-
 		return true;
-
 	}
+
 	ToolConfig operator=(ToolConfig& config) {
-
 		properties = config.properties;
-
 		return config;
 	}
 
@@ -290,30 +238,20 @@ public:
 			if (otherConfig[property.first] != property.second) differenceList.push_back(property.first);
 
 		}
-
 		return differenceList;
-
 	}
 
-
 	void printConfig() {
-
 		for (auto& property : properties) {
 
 			std::cout << property.first + ": ";
 			std::cout << property.second << std::endl;
-
 		}
-
-
 	}
-
-
 };
 
 
 struct WindowParameters {
-
 	int width=0;
 	int height=0;
 
@@ -324,7 +262,6 @@ struct WindowParameters {
 
 class Item {
 public:
-
 	std::string preparedName = "";
 	std::string rawName = "";
 	ItemDetails itemDetails;
@@ -342,7 +279,7 @@ public:
 class RelicItem : public Item {
 public:
 	float percentage;
-
+	
 	RelicItem(std::string prepared = "Undefined", std::string raw = "undefined", ItemDetails details = ItemDetails(), float perc = 0.0f)
 		: Item(prepared, raw, details), percentage(perc) {
 	}
@@ -353,12 +290,12 @@ public:
 	std::string name;
 	std::vector<RelicItem> items;
 	float relicPrice;
-	RelicInfo(std::string m_name, 
-		std::vector<RelicItem> m_items,
+	RelicInfo(std::string name, 
+		std::vector<RelicItem> items,
 		float price):
 
-		name(m_name),
-		items(m_items),
+		name(name),
+		items(items),
 		relicPrice(price)
 	{}
 
@@ -384,24 +321,20 @@ public:
 
 		}
 		relicPrice = price;
-
 	}
 
 };
 
 struct WFMItem {
-
 	std::string slug = "";
 	std::vector<std::string> tags = {};
 	int ducats = 0;
-
 };
 
 
 struct AppState {
 
 	std::atomic<bool> eeLogTakeScreenshot = false;
-
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	MSG msg;
@@ -416,7 +349,6 @@ struct AppState {
 	std::unique_ptr<sf::RenderWindow> window;
 	bool running;
 	bool isVisible;
-	
 	WindowParameters sfmlSize;
 	WindowParameters imguiSize;
 	bool settingsVisible;
@@ -513,8 +445,6 @@ public:
 	std::string getDescription() {
 		return description;
 	}
-
-
 };
 
 
@@ -528,8 +458,6 @@ public:
 #include "../wfmd/wfmd.hpp"
 #include "../clipboard/clipboard.hpp"
 #include "../eelogwatcher/eelogwatcher.hpp"
-
-
 
 void mainLoop(AppState& state);
 std::pair<int, int> getFps(ToolConfig& toolConfig);

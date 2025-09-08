@@ -11,6 +11,9 @@
 
 using std::string, std::vector;
 
+const std::string CONFIG_FILENAME = "tool_config.txt";
+const std::string COPY_FILENAME = "tool_config_old.txt";
+
 
 int getScreenResolution(int screenWidth, int screenHeight) {
     int screenResolution = SCR_Size_NotSpecified;
