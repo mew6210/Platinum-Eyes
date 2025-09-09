@@ -720,10 +720,10 @@ float getPercantageFromString(std::string s) {
 
 std::string rarityToString(Rarity::level r) {
     switch (r) {
-    case Rarity::Common:return "Common";
-    case Rarity::Uncommon:return "Uncommon";
-    case Rarity::Rare:return "Rare";
-    case Rarity::Undefined:return "Undefined";
+    case Rarity::level::Common:return "Common";
+    case Rarity::level::Uncommon:return "Uncommon";
+    case Rarity::level::Rare:return "Rare";
+    case Rarity::level::Undefined:return "Undefined";
     default: return "Should never happen";
     }
 }
@@ -740,13 +740,13 @@ void compareRaritiesToPercentages(RelicItem& item,const vector<float>& percantag
 
 
     if (compareWithRoundingErrors(item.percentage, percantages[0])) {
-        item.itemDetails.rarity = Rarity::Common;
+        item.itemDetails.rarity = Rarity::level::Common;
     }
     if (compareWithRoundingErrors(item.percentage, percantages[1])) {
-        item.itemDetails.rarity = Rarity::Uncommon;
+        item.itemDetails.rarity = Rarity::level::Uncommon;
     }
     if (compareWithRoundingErrors(item.percentage, percantages[2])) {
-        item.itemDetails.rarity = Rarity::Rare;
+        item.itemDetails.rarity = Rarity::level::Rare;
     }
 }
 

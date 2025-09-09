@@ -47,7 +47,7 @@ using json = nlohmann::json;
 
 namespace Rarity {
 
-	enum level {
+	enum class level {
 		Common=1,
 		Uncommon=2,
 		Rare=3,
