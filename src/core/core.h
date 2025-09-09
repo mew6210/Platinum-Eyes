@@ -29,9 +29,11 @@
 
 using json = nlohmann::json;
 
-#define ITEMTYPE_fissureItems true
-#define ITEMTYPE_relicItems false
-
+enum class ItemDisplayMode {
+	FissureDisplay = 1,
+	RelicDisplay = 2,
+	StartingScreenDisplay = 3
+};
 
 namespace Rarity {
 
@@ -173,7 +175,7 @@ struct AppState {
 	bool settingsVisible;
 	std::unique_ptr<tesseract::TessBaseAPI> tesseractApi;
 	bool shouldReSizeImGui;
-	bool itemDisplayFlag;
+	ItemDisplayMode itemDisplayMode;
 	RelicInfo currentRelic;
 	bool shouldUpdateFonts;
 	std::vector<std::string> allAvalibleItems;
@@ -199,7 +201,7 @@ struct AppState {
 		bool sv,
 		std::unique_ptr<tesseract::TessBaseAPI> t,
 		bool sri,
-		bool idf,
+		ItemDisplayMode idm,
 		RelicInfo cr,
 		bool suf,
 		std::vector<std::string> aai,
@@ -219,7 +221,7 @@ struct AppState {
 		settingsVisible(sv),
 		tesseractApi(std::move(t)),
 		shouldReSizeImGui(sri),
-		itemDisplayFlag(idf),
+		itemDisplayMode(idm),
 		currentRelic(cr),
 		shouldUpdateFonts(suf),
 		allAvalibleItems(std::move(aai)),

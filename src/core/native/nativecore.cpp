@@ -9,7 +9,7 @@ void listenAndHandleEvents(AppState& state) {
     if (state.eeLogTakeScreenshot.load(std::memory_order_relaxed)) {
         state.items = readFissureRewardsScreen(state);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        state.itemDisplayFlag = ITEMTYPE_fissureItems;
+        state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
         state.eeLogTakeScreenshot.store(false, std::memory_order_relaxed);
     }
     if (PeekMessage(&state.msg, NULL, 0, 0, PM_REMOVE)) {
@@ -47,14 +47,14 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
         case KB_ReadItemsFromScreen:
         {
             state.items = readFissureRewardsScreen(state);
-            state.itemDisplayFlag = ITEMTYPE_fissureItems;
+            state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
         }
         break;
         case KB_EscapeProgram: state.running = false;
             break;
         case KB_ReadPreviousItems: {
             state.items = readPreviousFissureRewardsScreen(state);
-            state.itemDisplayFlag = ITEMTYPE_fissureItems;
+            state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
 
         }
                                  break;
@@ -74,15 +74,15 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
         break;
         case KB_BackupConfig: copyConfigToOldFile(); break;
         case KB_ExampleItems: {
-            if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
-                state.items = exampleItems;
+            switch (state.itemDisplayMode) {
+            case ItemDisplayMode::StartingScreenDisplay:
+                state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
+                state.items = exampleItems; break;
+            case ItemDisplayMode::FissureDisplay: 
+                state.items = exampleItems; break;
+            case ItemDisplayMode::RelicDisplay: 
+                state.currentRelic = fetchRelicItemPrices("Lith A1 Relic (Intact)"); break;
             }
-            else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
-                state.currentRelic = fetchRelicItemPrices("Lith A1 Relic (Intact)");
-            }
-
-
-
         }
                             break;
         case KB_ReadRelicTitle: {
@@ -99,7 +99,7 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
             printRelic(state.currentRelic);
 
 
-            state.itemDisplayFlag = ITEMTYPE_relicItems;
+            state.itemDisplayMode = ItemDisplayMode::RelicDisplay;
 
 
             break;

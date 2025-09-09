@@ -98,11 +98,9 @@ void createRelicItemBox(RelicItem& item,ImVec2& screenSize){
 namespace {
 
 	bool isVecNotEmptyAndNotPlaceholder(std::vector<Item>& items) {
-		return (items.size() != 0 && items[0].rawName != "placeholder");
+		return (items.size() != 0);
 	}
-	bool isVecPlaceholder(std::vector<Item>& items) {
-		return items.size() == 1 && items[0].rawName == "placeholder";
-	}
+
 	void generateFissureItemsBoxesNormally(std::vector<Item>& items) {
 		
 		ImGui::Dummy(ImVec2(50.0, 0.0));
@@ -121,15 +119,13 @@ namespace {
 
 	void generateFissureItemsBoxes(AppState& state){
 
-		if (isVecPlaceholder(state.items)) {
-			ImGui::Text("Waiting for your input...");
-			return;
-		}
 		if (isVecNotEmptyAndNotPlaceholder(state.items)) {
 			generateFissureItemsBoxesNormally(state.items);
 			return;
 		}
-		ImGui::Text("Couldn't find requested text on screen:(\nLook to console for more info");
+		else {
+			ImGui::Text("Couldn't find requested text on screen:(\nLook to console for more info");
+		}
 	}
 
 	bool isRelicNotNull(RelicInfo& relic) {
@@ -170,11 +166,10 @@ namespace {
 	}
 }
 void generateImGuiTable(AppState& state) {
-	if (state.itemDisplayFlag == ITEMTYPE_fissureItems) {
-		generateFissureItemsBoxes(state);
-	}
-	else if (state.itemDisplayFlag == ITEMTYPE_relicItems) {
-		generateRelicItemsBoxes(state);
+	switch (state.itemDisplayMode) {
+	case ItemDisplayMode::StartingScreenDisplay:ImGui::Text("Waiting for your input..."); break;
+	case ItemDisplayMode::FissureDisplay:generateFissureItemsBoxes(state); break;
+	case ItemDisplayMode::RelicDisplay:generateRelicItemsBoxes(state); break;
 	}
 }
 

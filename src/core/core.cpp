@@ -81,7 +81,6 @@ void mainLoop(AppState& state) {
 AppState initApp() {
 
     vector<Item> currentFissureItems;
-    currentFissureItems.push_back(Item("placeholder", "placeholder", ItemDetails()));
 
     RelicInfo currentRelic=RelicInfo("",{},0);
 
@@ -96,7 +95,7 @@ AppState initApp() {
 
     vector<string> allAvalibleItems = loadAllAvalibleItemsToVector();
 
-    auto  tesseractapi = std::make_unique<tesseract::TessBaseAPI>();
+    auto tesseractapi = std::make_unique<tesseract::TessBaseAPI>();
     tesseractInit(*tesseractapi);
 
     auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode({
@@ -117,7 +116,7 @@ AppState initApp() {
 
     bool settingsOpen = false;
     bool shouldReSizeImGui = false;
-    bool itemDisplayFlag = ITEMTYPE_fissureItems;
+    ItemDisplayMode itemDisplayMode = ItemDisplayMode::StartingScreenDisplay;
     bool shouldUpdateFonts = false;
     auto fps = getFps(toolConfig);
 
@@ -134,7 +133,7 @@ AppState initApp() {
         settingsOpen,
         std::move(tesseractapi),
         shouldReSizeImGui,
-        itemDisplayFlag,
+        itemDisplayMode,
         currentRelic,
         shouldUpdateFonts,
         std::move(allAvalibleItems),
