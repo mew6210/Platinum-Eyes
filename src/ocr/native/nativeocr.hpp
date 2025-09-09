@@ -1,6 +1,7 @@
 #include <string>
-#include "../../core/core.h"
-
+#include "../point/point.hpp"
+#include "../../utilities/timer/timer.hpp"
+#include "../../core/native/nativeheaders.hpp"
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 
@@ -8,7 +9,8 @@ void takeNativeScreenshotAndSaveToFile(const int width, const int height, const 
 void takeNativeScreenshotAndSaveToFile(const int width, const int height, const int px, const int py, std::string& fileName);
 HBITMAP takeScreenshot(int imageWidth, int imageHeight, int offsetX, int offsetY);
 HBITMAP takeScreenshot(int imageWidth, int imageHeight, Point);
-void SaveHBITMAPToFile();
+BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
+
 
 
 #endif

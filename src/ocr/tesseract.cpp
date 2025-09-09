@@ -1,6 +1,4 @@
-//#include "../core.h"
 #include "ocr.h"
-#include <sstream>
 
 using std::vector, std::string, std::pair;
 

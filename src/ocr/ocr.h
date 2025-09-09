@@ -1,6 +1,9 @@
 #pragma once
+#include "../utilities/timer/timer.hpp"
 #include "../core/core.h"
+#include "point/point.hpp"
 #include "native/nativeocr.hpp"
+#include <sstream>
 #include <optional>
 
 namespace fuzzy_threshold {

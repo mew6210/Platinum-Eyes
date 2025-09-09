@@ -7,7 +7,6 @@ void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings, ToolConfig& c
 void registerNativeHotkeys(std::map<int, KeyBind>& keyBindings);
 void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings);
 std::string VirtualKeyCodeToString(UCHAR virtualKey);
-BOOL SaveHBITMAPToFile(HBITMAP hBitmap, LPCTSTR lpszFileName);
 
 
 #endif

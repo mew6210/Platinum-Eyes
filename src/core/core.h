@@ -25,19 +25,7 @@
 #include "wood.h"
 
 
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-#include <Windows.h>
-#include <dwmapi.h>
-#endif
-
-
-#if __linux__
-#include <X11/Xlib.h>
-#ifdef None
-#undef None
-#endif
-#endif
+#include "native/nativeheaders.hpp"
 
 using json = nlohmann::json;
 
@@ -55,48 +43,6 @@ namespace Rarity {
 	};
 
 }
-
-class Point {
-public:
- 	int x = 0;
-	int y = 0;
-
-
-
-	Point(int a,int b) {
-
-		x = a;
-		y=b;
-	}
-	Point() {
-
-	}
-
-
-};
-
-class Timer {
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-public:
-	void start() {
-		begin = std::chrono::steady_clock::now();
-	}
-	void stop() {
-		end = std::chrono::steady_clock::now();
-	}
-
-	void print(std::string s) {
-		std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms] " << s << std::endl;
-	}
-
-	void stop(const std::string& s) {
-		end = std::chrono::steady_clock::now();
-		std::cout << "[" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms] " << s << std::endl;
-	}
-
-};
 
 class ItemDetails{
 public:

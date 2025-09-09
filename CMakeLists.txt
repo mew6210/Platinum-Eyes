@@ -111,7 +111,7 @@ add_executable (
         "src/eelogwatcher/eelogwatcher.cpp" 
         "src/config/native/nativeconfig.cpp" 
         "src/config/toolconfig.cpp"
-)
+ "src/utilities/timer/timer.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
