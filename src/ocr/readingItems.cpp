@@ -1,7 +1,7 @@
 #include "ocr.h"
 
 using std::string, std::vector, std::pair;
-
+using json = nlohmann::json;
 
 //should never be used outside readingItems.cpp
 namespace {

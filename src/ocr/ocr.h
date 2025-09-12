@@ -16,7 +16,7 @@ namespace fuzzy_threshold {
 std::string itemToSnakeCase(const std::string& s);
 std::vector<std::string> itemsToSnakeCase(const std::vector<std::string>&);
 std::string replaceChar(std::string s, char a, std::string b);
-ItemDetails getAveragePrice(const json& list);
+ItemDetails getAveragePrice(const nlohmann::json& list);
 std::vector<Item> getItemPricesMap(std::vector<std::string>& preparedItems);
 std::string getFormatedAveragePrices(std::vector<int>& lowestPrices);
 void printItemPrices(std::vector<Item>& itemPrices);

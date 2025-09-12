@@ -25,8 +25,6 @@
 
 #include "native/nativeheaders.hpp"
 
-using json = nlohmann::json;
-
 enum class ItemDisplayMode {
 	FissureDisplay = 1,
 	RelicDisplay = 2,
@@ -78,7 +76,6 @@ struct WindowParameters {
 	WindowParameters() {};
 };
 
-
 class Item {
 public:
 	std::string preparedName = "";
@@ -92,8 +89,6 @@ public:
 	}
 	Item() : preparedName(""), rawName(""), itemDetails(ItemDetails()) {};
 };
-
-
 
 class RelicItem : public Item {
 public:
@@ -149,7 +144,6 @@ struct WFMItem {
 	std::vector<std::string> tags = {};
 	int ducats = 0;
 };
-
 
 struct AppState {
 

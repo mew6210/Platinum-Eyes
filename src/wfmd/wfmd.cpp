@@ -1,7 +1,7 @@
 #include "wfmd.hpp"
 
 using std::vector, std::string;
-
+using json = nlohmann::json;
 int getDucatsFromSlug(const string& slug) {
 
 	std::ifstream file("data/wfmItems.txt");
@@ -14,11 +14,7 @@ int getDucatsFromSlug(const string& slug) {
 			string ducatsString = line.substr(doubleCommaPos+1);
 			return std::stoi(ducatsString);
 		}
-
 	}
-
-
-
 }
 
 json fetchJsonBlobWFMAllItems() {
