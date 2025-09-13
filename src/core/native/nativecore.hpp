@@ -1,6 +1,6 @@
 #pragma once
 #include "../core.h"
-
+#include "../../keybindings/keybind/keybind.hpp"
 
 const std::vector<Item> exampleItems = {
 	Item("Mesa Prime Neuroptics","Mesa Prime Neuroptics",ItemDetails(5,std::vector<int>({1,1,1,1,1}),Rarity::level::Common)),

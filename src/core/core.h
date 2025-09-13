@@ -222,25 +222,6 @@ struct AppState {
 
 };
 
-class KeyBind {
-
-	int key;
-	std::string description;
-
-public:
-	KeyBind(int k, std::string s) {
-		key = k;
-		description = s;
-	}
-
-	int getKey() {
-		return key;
-	}
-	std::string getDescription() {
-		return description;
-	}
-};
-
 #include "native/nativecore.hpp"
 #include "../ocr/ocr.h"
 #include "../utilities/utilities.h"

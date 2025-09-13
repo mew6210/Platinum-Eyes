@@ -12,6 +12,20 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 
 
+int StringToVirtualKeyCode(std::string s) {
+
+	for (auto& c : s) {
+		c = std::tolower(c);
+	}
+
+	if (s == "esc") {
+		return VK_ESCAPE;
+	}
+
+	HKL keyboard = LoadKeyboardLayoutA("00000409", KLF_ACTIVATE);        //primary english US keyboard layout
+
+	return VkKeyScanEx(s[0], keyboard);
+}
 
 void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings, ToolConfig& config) {
 
@@ -94,23 +108,6 @@ std::string VirtualKeyCodeToString(UCHAR virtualKey)
 			"WinAPI Error occured.");
 	return szName;
 }
-
-
-int StringToVirtualKeyCode(std::string s) {
-
-	for (auto& c : s) {
-		c = std::tolower(c);
-	}
-
-	if (s == "esc") {
-		return VK_ESCAPE;
-	}
-
-	HKL keyboard = LoadKeyboardLayoutA("00000409", KLF_ACTIVATE);        //primary english US keyboard layout
-
-	return VkKeyScanEx(s[0], keyboard);
-}
-
 
 
 #endif
