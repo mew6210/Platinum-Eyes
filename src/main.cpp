@@ -1,4 +1,5 @@
 ﻿#include "core/core.h"
+#include "eelogwatcher/eelogwatcher.hpp"
 
 int main(){
     AppState state = initApp();

@@ -1,10 +1,16 @@
 #pragma once
+#include <tesseract/baseapi.h>
 #include "../utilities/timer/timer.hpp"
+#include "../utilities/trim/trim.hpp"
 #include "../core/core.h"
 #include "point/point.hpp"
 #include "native/nativeocr.hpp"
 #include <sstream>
 #include <optional>
+#include <cpr/cpr.h>
+#include "../clipboard/clipboard.hpp"
+#include "../relics/relics.h"
+#include "../wfmd/wfmd.hpp"
 
 namespace fuzzy_threshold {
 	const int THRESHOLD_LOW = 5;

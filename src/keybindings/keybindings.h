@@ -1,5 +1,6 @@
 #pragma once
 #include "../core/core.h"
+#include "../core/native/nativecore.hpp"
 #include "native/keybindingsnative.hpp"
 
 

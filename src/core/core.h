@@ -1,15 +1,10 @@
 ﻿#pragma once
 
 #define NOMINMAX
-#include <iostream>
 #include <string>
 #include <vector>
-#include <thread>
 #include <chrono>
-#include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
-#include <ranges>
-#include "../utilities/trim.cpp"
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -19,9 +14,7 @@
 #include <leptonica/allheaders.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
-#include <filesystem>
 #include "wood.h"
-
 
 #include "native/nativeheaders.hpp"
 
@@ -222,16 +215,10 @@ struct AppState {
 
 };
 
-#include "native/nativecore.hpp"
 #include "../ocr/ocr.h"
 #include "../utilities/utilities.h"
-#include "../keybindings/keybindings.h"
 #include "../gui/gui.h"
 #include "../config/config.h"
-#include "../relics/relics.h"
-#include "../wfmd/wfmd.hpp"
-#include "../clipboard/clipboard.hpp"
-#include "../eelogwatcher/eelogwatcher.hpp"
 
 void mainLoop(AppState& state);
 std::pair<int, int> getFps(ToolConfig& toolConfig);

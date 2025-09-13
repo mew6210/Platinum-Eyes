@@ -1,6 +1,7 @@
 #pragma once
 #include "../core/core.h"
-
+#include <cpr/cpr.h>
+#include "../utilities/trim/trim.hpp"
 
 int parseRelicData();
 std::array<std::string, 6> getRelicRawItems(std::string relic);

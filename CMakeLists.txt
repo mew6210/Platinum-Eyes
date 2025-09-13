@@ -85,7 +85,7 @@ add_executable (
         "src/main.cpp" 
         "src/core/core.h" 
         "src/utilities/functions.cpp" 
-        "src/utilities/trim.cpp" 
+         
         "src/gui/guiUtilities.cpp" 
         "src/keybindings/keyBindings.cpp" 
         "src/config/configUtilities.cpp" 
@@ -111,7 +111,7 @@ add_executable (
         "src/eelogwatcher/eelogwatcher.cpp" 
         "src/config/native/nativeconfig.cpp" 
         "src/config/toolconfig.cpp"
- "src/utilities/timer/timer.cpp")
+ "src/utilities/timer/timer.cpp" "src/utilities/trim/trim.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
