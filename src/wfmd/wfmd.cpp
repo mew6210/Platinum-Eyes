@@ -112,9 +112,6 @@ void saveWFMItemsToFile(const vector<WFMItem>& items) {
 		file << item.ducats;
 		file << "\n";
 	}
-
-
-
 }
 
 void loadWFMD() {

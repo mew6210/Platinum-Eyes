@@ -132,11 +132,6 @@ public:
 
 };
 
-struct WFMItem {
-	std::string slug = "";
-	std::vector<std::string> tags = {};
-	int ducats = 0;
-};
 
 struct AppState {
 
