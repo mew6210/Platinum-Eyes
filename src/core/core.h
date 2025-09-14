@@ -15,6 +15,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui.hpp>
 #include "wood.h"
+#include <atomic>
 
 #include "native/nativeheaders.hpp"
 

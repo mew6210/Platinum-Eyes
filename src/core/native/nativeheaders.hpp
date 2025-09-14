@@ -10,4 +10,7 @@
 #ifdef None
 #undef None
 #endif
+#ifdef Status
+#undef Status
+#endif
 #endif
