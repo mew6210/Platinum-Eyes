@@ -41,32 +41,32 @@ struct WindowParameters {
 
 struct AppState {
 
-	std::atomic<bool> eeLogTakeScreenshot = false;
+	std::atomic<bool> eeLogTakeScreenshot = false;		//idk
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	MSG msg;
 #endif
 
 #if __linux__
-		XEvent msg;
+		XEvent msg;		//idk
 #endif
 
-	std::vector<Item> items;
-	ToolConfig config;
-	std::unique_ptr<sf::RenderWindow> window;
-	bool running;
-	bool isVisible;
-	WindowParameters sfmlSize;
-	WindowParameters imguiSize;
-	bool settingsVisible;
-	std::unique_ptr<tesseract::TessBaseAPI> tesseractApi;
-	bool shouldReSizeImGui;
-	ItemDisplayMode itemDisplayMode;
-	RelicInfo currentRelic;
-	bool shouldUpdateFonts;
-	std::vector<std::string> allAvalibleItems;
-	int fpsVisible;
-	int fpsHidden;
+	std::vector<Item> items;	//data
+	ToolConfig config;			//settings
+	std::unique_ptr<sf::RenderWindow> window;	//graphic
+	bool running;	//idk
+	bool isVisible;	//graphic
+	WindowParameters sfmlSize;	//graphic
+	WindowParameters imguiSize;	//graphic
+	bool settingsVisible;	//graphic
+	std::unique_ptr<tesseract::TessBaseAPI> tesseractApi; //ocr
+	bool shouldReSizeImGui;	//graphic
+	ItemDisplayMode itemDisplayMode;	//graphic
+	RelicInfo currentRelic;		//data
+	bool shouldUpdateFonts;		//graphic
+	std::vector<std::string> allAvalibleItems; //data
+	int fpsVisible;	//graphic
+	int fpsHidden;	//graphic
 
 
 	AppState(
