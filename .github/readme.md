@@ -22,6 +22,8 @@ Overlay app for Warframe. Provides a quick, realtime lookup of prices for the it
 
 ![Fissure rewards screenshot](relicTitleScreenshot2.png "4")
 
+- [x] Automatic screenshot-taking on fissure rewards screen 
+
 - [ ] Serial relic scanning
 
 - [ ] Inventory scanning
