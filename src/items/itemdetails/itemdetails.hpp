@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <chrono>
 
 namespace Rarity {
 
@@ -19,6 +20,7 @@ public:
 	float averagePrice = 0;
 	std::vector<int> lowestPrices;
 	Rarity::level rarity;
+	std::chrono::time_point<std::chrono::system_clock> timestamp;
 
 	ItemDetails() : averagePrice(0), lowestPrices({ 0, 0, 0, 0, 0 }), rarity(Rarity::level::Undefined) {}
 
