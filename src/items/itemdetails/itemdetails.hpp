@@ -22,13 +22,15 @@ public:
 	Rarity::level rarity;
 	std::chrono::time_point<std::chrono::system_clock> timestamp;
 
-	ItemDetails() : averagePrice(0), lowestPrices({ 0, 0, 0, 0, 0 }), rarity(Rarity::level::Undefined) {}
+	ItemDetails() : averagePrice(0), lowestPrices({ 0, 0, 0, 0, 0 }), rarity(Rarity::level::Undefined)	{
+		timestamp = std::chrono::system_clock::now();
+	}
 
 	ItemDetails(float avg, std::vector<int> lowestprices, Rarity::level r) {
 		averagePrice = avg;
 		lowestPrices = lowestprices;
 		rarity = r;
-
+		timestamp = std::chrono::system_clock::now();
 	}
 	ItemDetails(float avg, int lowestprices) {
 		averagePrice = 0;
@@ -36,5 +38,6 @@ public:
 		0,0,0,0,0
 		};
 		rarity = Rarity::level::Undefined;
+		timestamp = std::chrono::system_clock::now();
 	}
 };
