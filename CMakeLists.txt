@@ -111,7 +111,11 @@ add_executable (
         "src/eelogwatcher/eelogwatcher.cpp" 
         "src/config/native/nativeconfig.cpp" 
         "src/config/toolconfig.cpp"
- "src/utilities/timer/timer.cpp" "src/utilities/trim/trim.cpp"  "src/relics/relicinfo/relicinfo.cpp")
+        "src/utilities/timer/timer.cpp" 
+        "src/utilities/trim/trim.cpp"  
+        "src/relics/relicinfo/relicinfo.cpp" 
+        "src/items/itemcache/itemcache.cpp"
+)
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
