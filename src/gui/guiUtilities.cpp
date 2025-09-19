@@ -52,7 +52,7 @@ namespace {
 	}
 
 	void itemBoxLowestOrders(std::vector<int>& lowestPrices) {
-		ImGui::Text(getFormatedAveragePrices(lowestPrices).c_str());
+		ImGui::Text(getFormatedLowestPrices(lowestPrices).c_str());
 	}
 
 	void endItemBox() {

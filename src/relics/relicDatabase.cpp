@@ -987,7 +987,7 @@ void printRelic(RelicInfo& relic) {
 
             std::cout << "Name: " << item.rawName;
             std::cout << " Chance for drop: " << item.percentage;
-            std::cout << " prices: " << getFormatedAveragePrices(item.itemDetails.lowestPrices);
+            std::cout << " prices: " << getFormatedLowestPrices(item.itemDetails.lowestPrices);
             std::cout << "rarity: " << rarityToString(item.itemDetails.rarity) << "\n";
         }
         std::cout << "Average relic price: " << relic.relicPrice;

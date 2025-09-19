@@ -393,15 +393,13 @@ ItemDetails fetchItemPrice(const string& item) {
 }
 
 
-vector<Item> getItemPricesMap(vector<string>& preparedItems) {
+vector<Item> getItemPrices(vector<string>& preparedItems) {
 
 
     vector<Item> itemPrices;
     vector<std::future<Item>> futures;
 
-
-
-    for (string item : preparedItems) {
+    for (string& item : preparedItems) {
        
         //skip items that dont need displaying, like '' or 'forma_blueprint'
         if (item=="") continue;     
@@ -423,8 +421,7 @@ vector<Item> getItemPricesMap(vector<string>& preparedItems) {
     return itemPrices;
 }
 
-//change naming later
-string getFormatedAveragePrices(vector<int>& lowestPrices) {
+string getFormatedLowestPrices(const vector<int>& lowestPrices) {
 
     string s;
     s.append("(");
@@ -453,7 +450,7 @@ void printItemPrices(vector<Item>& itemPrices) {
             std::cout << item.preparedName<< ": " << "COULDNT FIND ITEM ON THE MARKET" << std::endl;
         }
         else {
-            std::cout << item.preparedName<< ": " << item.itemDetails.averagePrice<< getFormatedAveragePrices(item.itemDetails.lowestPrices) << std::endl;
+            std::cout << item.preparedName<< ": " << item.itemDetails.averagePrice<< getFormatedLowestPrices(item.itemDetails.lowestPrices) << std::endl;
         }
     }
 }

@@ -491,7 +491,7 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
     preparedItems = itemsToSnakeCase(preparedItems);
 
     timer.start();
-    vector<Item> itemPrices = getItemPricesMap(preparedItems);
+    vector<Item> itemPrices = getItemPrices(preparedItems);
     timer.stop("Fetching item prices from warframe market");
 
 

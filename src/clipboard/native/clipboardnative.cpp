@@ -17,7 +17,7 @@ std::string getClipboardItemText(AppState& state, std::vector<Item>& items) {
 
         returnString += "] - ";
 
-        returnString += getFormatedAveragePrices(item.itemDetails.lowestPrices);
+        returnString += getFormatedLowestPrices(item.itemDetails.lowestPrices);
 
         returnString += " ";
 
