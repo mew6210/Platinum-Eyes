@@ -11,6 +11,7 @@
 #include "../clipboard/clipboard.hpp"
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
+#include "../utilities/utilities.h"
 
 namespace fuzzy_threshold {
 	const int THRESHOLD_LOW = 5;
@@ -24,7 +25,6 @@ std::vector<std::string> itemsToSnakeCase(const std::vector<std::string>&);
 std::string replaceChar(std::string s, char a, std::string b);
 ItemDetails getAveragePrice(const nlohmann::json& list);
 std::vector<Item> getItemPrices(std::vector<std::string>& preparedItems);
-std::string getFormatedLowestPrices(const std::vector<int>& lowestPrices);
 void printItemPrices(std::vector<Item>& itemPrices);
 
 

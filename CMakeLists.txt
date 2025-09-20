@@ -84,7 +84,7 @@ add_executable (
     ${PROJECT_NAME} 
         "src/main.cpp" 
         "src/core/core.h" 
-        "src/utilities/functions.cpp" 
+        "src/utilities/utilities.cpp" 
          
         "src/gui/guiUtilities.cpp" 
         "src/keybindings/keyBindings.cpp" 

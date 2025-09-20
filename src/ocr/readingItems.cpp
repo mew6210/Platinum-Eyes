@@ -225,22 +225,18 @@ void replaceAnds(string& s) {
 
 void determineRarity(ItemDetails& details,const int& ducats) {
 
-
-
     Rarity::level r = Rarity::level::Undefined;
 
     switch (ducats) {
-    case 15: r = Rarity::level::Common; break;
-    case 25: r = Rarity::level::Common; break;
-    case 45: r = Rarity::level::Uncommon; break;
-    case 65: r = Rarity::level::Uncommon; break;
-    case 100: r = Rarity::level::Rare; break;
-    default: r = Rarity::level::Undefined; break;
+        case 15: r = Rarity::level::Common; break;
+        case 25: r = Rarity::level::Common; break;
+        case 45: r = Rarity::level::Uncommon; break;
+        case 65: r = Rarity::level::Uncommon; break;
+        case 100: r = Rarity::level::Rare; break;
+        default: r = Rarity::level::Undefined; break;
     }
 
-
     details.rarity = r;
-
 }
 
 
@@ -419,26 +415,6 @@ vector<Item> getItemPrices(vector<string>& preparedItems) {
     }
 
     return itemPrices;
-}
-
-string getFormatedLowestPrices(const vector<int>& lowestPrices) {
-
-    string s;
-    s.append("(");
-    for (int i = 0; i < lowestPrices.size(); i++) {
-        if (i != lowestPrices.size() - 1) {
-            s.append(std::to_string(lowestPrices[i]) + ",");
-        }
-        else {
-            s.append(std::to_string(lowestPrices[i]));
-        }
-
-
-    }
-    s.append(")");
-
-    return s;
-
 }
 
 void printItemPrices(vector<Item>& itemPrices) {

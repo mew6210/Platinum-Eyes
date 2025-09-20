@@ -12,33 +12,6 @@ namespace {
 		return parts;
 	}
 
-	std::vector<int> stringToFormattedLowestPrices(const std::string& s) {
-		std::vector<int> prices;
-
-		if (s.size() < 2 || s.front() != '(' || s.back() != ')') {
-			return prices; // invalid format, return empty
-		}
-
-		std::string content = s.substr(1, s.size() - 2); // remove '(' and ')'
-		std::stringstream ss(content);
-		std::string token;
-
-		while (std::getline(ss, token, ',')) {
-			if (!token.empty()) {
-				prices.push_back(std::stoi(token));
-			}
-		}
-
-		return prices;
-	}
-
-
-	Rarity::level rarityFromString(const std::string& s) {
-		if (s == "Common")   return Rarity::level::Common;
-		if (s == "Uncommon") return Rarity::level::Uncommon;
-		if (s == "Rare")     return Rarity::level::Rare;
-		return Rarity::level::Undefined;
-	}
 	std::string floatToString(float value, int decimals = 2) {
 		std::ostringstream oss;
 		oss << std::fixed << std::setprecision(decimals) << value;

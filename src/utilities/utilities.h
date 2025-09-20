@@ -1,12 +1,13 @@
 #pragma once
 #include "../core/core.h"
+#include <vector>
+#include <string>
+#include <utility>
 
-
-
+std::vector<int> stringToFormattedLowestPrices(const std::string& s);
+std::string getFormatedLowestPrices(const std::vector<int>& lowestPrices);
 std::pair<int, int>stringToIntPair(std::string s);
-
-
-
+Rarity::level rarityFromString(const std::string& s);
 
 /*
     example usage:
