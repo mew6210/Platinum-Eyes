@@ -12,6 +12,7 @@
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
 #include "../utilities/utilities.h"
+#include "../items/itemcache/itemcache.hpp"
 
 namespace fuzzy_threshold {
 	const int THRESHOLD_LOW = 5;

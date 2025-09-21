@@ -1,5 +1,8 @@
 #include "itemcache.hpp"
 
+
+std::chrono::minutes expirationTime = std::chrono::minutes(15);
+
 namespace {
 	std::vector<std::string> splitBySemicolon(const std::string& line) {
 		std::vector<std::string> parts;
@@ -48,12 +51,43 @@ void saveToItemCache(const Item& item){
 		item.itemDetails.timestamp.time_since_epoch()
 	).count();
 	cacheFile << item.rawName << ";" << floatToString(item.itemDetails.averagePrice) << ";" << getFormatedLowestPrices(item.itemDetails.lowestPrices) <<";"<<rarityToString(item.itemDetails.rarity) << ";" << seconds<< "\n";
-	
+}
+void checkLineTimestamp(std::vector<std::string>& lines,std::string& line,const std::chrono::time_point<std::chrono::system_clock>& timestamp ) {
+	auto time_now = std::chrono::system_clock::now();
+	if(time_now - timestamp < expirationTime) lines.push_back(line);
+}
+
+void rewriteItemCache(const std::vector<std::string>& lines) {
+	std::ofstream cacheFile("data/itemcache.txt", std::ios_base::trunc);
+	for (const auto& line : lines) {
+		cacheFile << line << "\n";
+	}
+}
+
+void deleteOldCacheEntries(std::ifstream& cacheFile) {
+	std::vector<std::string> lines;
+	std::string line = "";
+	while (std::getline(cacheFile, line)) {
+		auto fields = splitBySemicolon(line);
+		if (fields.size() < 5) continue;
+		try {
+			auto timestamp = parseTimestamp(fields[4]);
+			checkLineTimestamp(lines, line, timestamp);
+		}
+		catch (...) {
+			errorLog(false,"failed to parse cache file");
+			continue;
+		}
+	}
+	cacheFile.close();
+	rewriteItemCache(lines);
 }
 
 std::optional<ItemDetails> readFromItemCache(const std::string& itemName){
 	
+	std::vector<std::string> lines;
 	std::ifstream cacheFile("data/itemcache.txt");
+	deleteOldCacheEntries(cacheFile);
 	std::string line = "";
 	while (std::getline(cacheFile, line)) {
 		auto fields = splitBySemicolon(line);

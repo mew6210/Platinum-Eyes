@@ -401,17 +401,24 @@ vector<Item> getItemPrices(vector<string>& preparedItems) {
         if (item=="") continue;     
         if (item == "forma_blueprint") continue;
 
-        futures.push_back(std::async(std::launch::async, [item]() -> Item {
-                return  Item(item,item, fetchItemPrice(item)) ;     //to change later
-            }
-        )
-        );
+        std::optional<ItemDetails> details = readFromItemCache(item);
+        if (details) {
+			itemPrices.push_back(Item(snakeToItem(item), item, details.value()));
+        }
+        else {
+            futures.push_back(std::async(std::launch::async, [item]() -> Item {
+                return  Item(snakeToItem(item), item, fetchItemPrice(item));
+                }
+            )
+            );
+        }
 
     }
 
     for (auto& future : futures) {
         auto result = future.get();
         itemPrices.push_back(result);
+        saveToItemCache(itemPrices.back());
     }
 
     return itemPrices;

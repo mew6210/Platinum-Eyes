@@ -897,8 +897,8 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
     return resultString;
 }
 
-std::map<string,ItemDetails> fetchRelicVectorPrices(vector<string> names) {
-
+std::map<string, ItemDetails> fetchRelicVectorPrices(vector<string> names) {         //TO REFACTOR LATER OMG
+    std::map<string, ItemDetails> results;
     vector<std::future<pair<string, ItemDetails>>> futures;
 
     Timer timer = Timer();
@@ -907,20 +907,25 @@ std::map<string,ItemDetails> fetchRelicVectorPrices(vector<string> names) {
         if (item == "") continue;
         if (item == "forma_blueprint") continue;
         if (item == "2x_forma_blueprint") continue;
-
-
-        futures.push_back(std::async(std::launch::async, [item]() -> pair<string, ItemDetails> {
-            return { item, fetchItemPrice(item) };
-            }
-        )
-        );
+        
+        std::optional<ItemDetails> details = readFromItemCache(item);
+        if (details) {
+            results.insert({ item, details.value() });
+        }
+        else {
+            futures.push_back(std::async(std::launch::async, [item]() -> pair<string, ItemDetails> {
+                return { item, fetchItemPrice(item) };
+                }
+            )
+            );
+        }
     }
 
-    std::map<string, ItemDetails> results;
 
     for (auto& future : futures) {
         auto result = future.get();
         results.insert(result);
+		//saveToItemCache(Item(result.first,result.first, result.second));
     }
     timer.stop();
     timer.print("Fetching relic item's prices from warframe market");
@@ -946,9 +951,6 @@ RelicInfo fetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS
         itemsWithDetails.push_back({item,items[i].second});
         i++;
     }
-
-    vector<std::future<pair<string, ItemDetails>>> futures;
-
 
     auto results = fetchRelicVectorPrices(itemNames);
     

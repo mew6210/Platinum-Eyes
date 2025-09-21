@@ -87,6 +87,7 @@ AppState initApp() {
     ToolConfig toolConfig = initConfig();
 
     std::filesystem::create_directory("data");
+	createItemCache();
     loadDatabases(toolConfig);
     registerHotkeys(toolConfig);
 
