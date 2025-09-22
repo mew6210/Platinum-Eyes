@@ -1,6 +1,6 @@
 #include "itemcache.hpp"
 
-
+std::filesystem::path cacheFilePath = "data/itemcache.txt";
 std::chrono::minutes expirationTime = std::chrono::minutes(15);
 
 namespace {
@@ -41,12 +41,12 @@ namespace {
 
 
 void createItemCache() {
-	std::ofstream cacheFile("data/itemcache.txt");
+	std::ofstream cacheFile(cacheFilePath,std::ios::app);
 }
 
 void saveToItemCache(const Item& item){
 	
-	std::ofstream cacheFile("data/itemcache.txt",std::ios_base::app);
+	std::ofstream cacheFile(cacheFilePath,std::ios_base::app);
 	auto seconds = std::chrono::duration_cast<std::chrono::seconds>(
 		item.itemDetails.timestamp.time_since_epoch()
 	).count();
@@ -58,13 +58,15 @@ void checkLineTimestamp(std::vector<std::string>& lines,std::string& line,const 
 }
 
 void rewriteItemCache(const std::vector<std::string>& lines) {
-	std::ofstream cacheFile("data/itemcache.txt", std::ios_base::trunc);
+	std::ofstream cacheFile(cacheFilePath, std::ios_base::trunc);
 	for (const auto& line : lines) {
 		cacheFile << line << "\n";
 	}
+	cacheFile.close();
 }
 
-void deleteOldCacheEntries(std::ifstream& cacheFile) {
+void deleteOldCacheEntries(const std::filesystem::path& cacheFilePath) {
+	std::ifstream cacheFile(cacheFilePath);
 	std::vector<std::string> lines;
 	std::string line = "";
 	while (std::getline(cacheFile, line)) {
@@ -86,8 +88,8 @@ void deleteOldCacheEntries(std::ifstream& cacheFile) {
 std::optional<ItemDetails> readFromItemCache(const std::string& itemName){
 	
 	std::vector<std::string> lines;
-	std::ifstream cacheFile("data/itemcache.txt");
-	deleteOldCacheEntries(cacheFile);
+	std::ifstream cacheFile(cacheFilePath);
+	deleteOldCacheEntries(cacheFilePath);
 	std::string line = "";
 	while (std::getline(cacheFile, line)) {
 		auto fields = splitBySemicolon(line);

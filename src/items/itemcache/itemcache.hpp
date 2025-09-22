@@ -5,6 +5,7 @@
 #include <fstream>
 #include "../../ocr/ocr.h"
 #include "../../utilities/utilities.h"
+#include <filesystem>
 
 void createItemCache();
 void saveToItemCache(const Item& item);

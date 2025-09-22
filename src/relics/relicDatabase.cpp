@@ -925,7 +925,7 @@ std::map<string, ItemDetails> fetchRelicVectorPrices(vector<string> names) {    
     for (auto& future : futures) {
         auto result = future.get();
         results.insert(result);
-		//saveToItemCache(Item(result.first,result.first, result.second));
+		saveToItemCache(Item(result.first,result.first, result.second));
     }
     timer.stop();
     timer.print("Fetching relic item's prices from warframe market");
