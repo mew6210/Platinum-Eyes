@@ -143,6 +143,13 @@ void eeLogWatcherSettings(string& s1, string& s2) {
 		},23);
 }
 
+void cacheSettings(string& s1, string& s2) {
+	renderConfigParams({
+		{s1,"Should cache"},
+		{s2,"Cache Duration"}
+		}, 25);
+}
+
 struct SettingsSection {
 	string title;
 	string description;
@@ -274,10 +281,8 @@ void showSettingsMenu(bool* p_open,AppState& state)
 	INITREVERTVAR(clipboardWatermark);
 	INITREVERTVAR(eeLogShouldTakeScreenshot);
 	INITREVERTVAR(eeLogPath);
-
-
-
-
+	INITREVERTVAR(shouldCache);
+	INITREVERTVAR(cacheDuration);
 
 
 
@@ -312,41 +317,65 @@ void showSettingsMenu(bool* p_open,AppState& state)
 	INITCONFIGVAR(clipboardWatermark);
 	INITCONFIGVAR(eeLogShouldTakeScreenshot);
 	INITCONFIGVAR(eeLogPath);
-	
+	INITCONFIGVAR(shouldCache);
+	INITCONFIGVAR(cacheDuration);
+
 
 	sections = {
-	{"Screenshot parameters"
-	,"Here u give the center of the screenshot, how wide and tall it should be.You also include the path where u want to store the screenshot the app will be taking",	
-		[]() {screenshotSettings(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); } },
+		{
+			"Screenshot parameters",
+			"Here u give the center of the screenshot, how wide and tall it should be.You also include the path where u want to store the screenshot the app will be taking",	
+			[]() {screenshotSettings(screenShotFilePath, coordinatesOfScreenShotCenter, screenShotWidth, screenShotHeight); } 
+		},
 
-	{"Window sizes",
-		"Here u give how big the window size should be. Both the sfml(the one more to the back), and imgui (the one on top)."
-		,[]() {windowSizesSettings(sfmlSize, imguiSize); } },
+		{
+			"Window sizes",
+			"Here u give how big the window size should be. Both the sfml(the one more to the back), and imgui (the one on top).",
+			[]() {windowSizesSettings(sfmlSize, imguiSize); } 
+		},
 
-		{"Keybindings",
-		"Keybindings, every keybind is treated as 'Alt + <keybind>'\nIt's important to remember, that keybinds should be 1 character in length, except esc.",
-		[]() {keybindingsSettings(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); } },
+		{
+			"Keybindings",
+			"Keybindings, every keybind is treated as 'Alt + <keybind>'\nIt's important to remember, that keybinds should be 1 character in length, except esc.",
+			[]() {keybindingsSettings(keyBind_ReadItemsFromScreen, keyBind_EscapeProgram, keyBind_ReadPreviousItems, keyBind_WindowVisibility, keyBind_BackupConfig, keyBind_ExampleItems,keyBind_ReadRelicTitle); } 
+		},
 
-		{"Fonts",
-		"All about fonts, fontFile is your path to the .tff file in fonts folder. \nfontSize is the size of the font u want to have",
-		[]() {fontsSettings(fontFile, fontSize); } },
+		{
+			"Fonts",
+			"All about fonts, fontFile is your path to the .tff file in fonts folder. \nfontSize is the size of the font u want to have",
+			[]() {fontsSettings(fontFile, fontSize); } 
+		},
 		
-		{"Item Database",
-		"Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet."
-		,[]() {itemDatabaseSettings(updatingType); } },
-		{"Fps",
-		"Sets a desired fps limit, both for when window is visible, and when its hidden. 1-whatever, but when its hidden it usually doesnt need to go above 10",
-		[]() {fpsSettings(fpsVisible,fpsHidden); }},
-		
-		
-		{"Clipboard",
-		"Here you specify with 'yes' or 'no' whether you want your results to be copied to clipboard, and whether you want this app's watermark in this clipboard result. I hope you leave the watermark on though, it helps this app to be recognizable. Of course if you really dont want it, you can turn it off.",
-		[]() { clipboardSettings(clipboardCopy,clipboardWatermark); }},
-		
-		{"EE Log Watcher",
-		"eeLogPath - directory where ee.log is in\neeLogShouldTakeScreenshot - when app finds that fissure rewards appeared on a screen, should it take screenshot automatically ('yes'/'no')",
-		[]() {eeLogWatcherSettings(eeLogShouldTakeScreenshot,eeLogPath);}}
+		{
+			"Item Database",
+			"Settings related to how the app should fetch items droppable from relics (and relics themself) from the internet.",
+			[]() {itemDatabaseSettings(updatingType); } 
+		},
 
+		{
+			"Fps",
+			"Sets a desired fps limit, both for when window is visible, and when its hidden. 1-whatever, but when its hidden it usually doesnt need to go above 10",
+			[]() {fpsSettings(fpsVisible,fpsHidden); }
+		},
+		
+		
+		{
+			"Clipboard",
+			"Here you specify with 'yes' or 'no' whether you want your results to be copied to clipboard, and whether you want this app's watermark in this clipboard result. I hope you leave the watermark on though, it helps this app to be recognizable. Of course if you really dont want it, you can turn it off.",
+			[]() { clipboardSettings(clipboardCopy,clipboardWatermark); }
+		},
+		
+		{
+			"EE Log Watcher",
+			"eeLogPath - directory where ee.log is in\neeLogShouldTakeScreenshot - when app finds that fissure rewards appeared on a screen, should it take screenshot automatically ('yes'/'no')",
+			[]() {eeLogWatcherSettings(eeLogShouldTakeScreenshot,eeLogPath);}
+		},
+		
+		{
+			"Cache",
+			"Should Cache - whether the app should save previously fetched data instead of downloading it again every time ('yes'/'no').\nCache Duration - how long (e.g: '1h 15m 20s') the cached data should be considered valid before refreshing it from the internet.",
+			[]() {cacheSettings(shouldCache,cacheDuration); }
+		}
 
 	};
 
@@ -390,7 +419,8 @@ void showSettingsMenu(bool* p_open,AppState& state)
 				REVERT(clipboardWatermark);
 				REVERT(eeLogShouldTakeScreenshot);
 				REVERT(eeLogPath);
-
+				REVERT(shouldCache);
+				REVERT(cacheDuration);
 				
 			}
 			ImGui::SameLine();
@@ -420,6 +450,8 @@ void showSettingsMenu(bool* p_open,AppState& state)
 				SAVE(clipboardWatermark);
 				SAVE(eeLogShouldTakeScreenshot);
 				SAVE(eeLogPath);
+				SAVE(shouldCache);
+				SAVE(cacheDuration);
 
 
 				handleConfigChanges(newConfig, state);

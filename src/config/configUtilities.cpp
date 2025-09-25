@@ -253,6 +253,12 @@ void fillOutConfigFile(std::ofstream& configFile) {
         else if (configProperty == "eeLogPath") {
             configFile << getEELogPath().string();
         }
+        else if (configProperty == "shouldCache") {
+            configFile << "yes";
+        }
+        else if (configProperty == "cacheDuration") {
+            configFile << "30m";
+        }
     
         configFile << "\n";
     }

@@ -1,6 +1,6 @@
 #pragma once
 #include "toolconfig.hpp"
-#include "../core/core.h"
+#include "../core/core.h"		//COULD BE REMOVED SOMEDAY
 #include "native/nativeconfig.hpp"
 
 
@@ -65,6 +65,12 @@ const std::vector<std::string> eeLogNames = {
 
 };
 
+const std::vector<std::string> cacheNames = {
+
+	"shouldCache",
+	"cacheDuration"
+
+};
 /*
 should be a sum of vectors above
 its default property should also be coded in fillOutConfigFile
@@ -81,6 +87,7 @@ const std::vector<std::string> CONFIGPROPERTIES = [] {
 	result.insert(result.end(), fpsNames.begin(), fpsNames.end());
 	result.insert(result.end(), clipboardNames.begin(), clipboardNames.end());
 	result.insert(result.end(), eeLogNames.begin(), eeLogNames.end());
+	result.insert(result.end(), cacheNames.begin(), cacheNames.end());
 	return result;
 	}();
 
