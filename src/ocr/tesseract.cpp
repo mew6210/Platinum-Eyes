@@ -1,4 +1,6 @@
 #include "ocr.h"
+#include "../items/itemcache/itemcache.hpp"
+
 
 using std::vector, std::string, std::pair;
 
@@ -374,10 +376,9 @@ std::tuple<int, int, int> calculatePositionAndWidth(int width, int height) {
 
 
 //your mom
-RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
+RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api,const CacheOptions& cacheOpt) {
 
     Timer timer;
-
 
     int px, py;
 
@@ -386,22 +387,17 @@ RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api) {
 
     auto [coordinatex, coordinatey, titleWidth] = calculatePositionAndWidth(screenWidth, screenHeight);
 
-    
     px = coordinatex;
     py = coordinatey;
 
     string fileName = "relicTitleScreenshot.bmp";
     takeNativeScreenshotAndSaveToFile(titleWidth,40,px-5,py-5,fileName);
 
-
-
     string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
     string relicParsed = relicMenuTitleStringToRelicString(relicRead);
-    RelicInfo relic = fetchRelicItemPrices(relicParsed);
+    RelicInfo relic = fetchRelicItemPrices(relicParsed,cacheOpt);
 
     return relic;
-
-
 }
 
 
@@ -419,7 +415,7 @@ int calculateShiftWidth(int width, int height) {
 }
 
 
-RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
+RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api, const CacheOptions& cacheOpt) {
 
 
     Timer timer;
@@ -449,7 +445,7 @@ RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api) {
 
     string relicRead = readRelicTitleTesseract(api, fileName.c_str(), false);
     string relicParsed = relicMenuTitleStringToRelicString(relicRead);
-    RelicInfo relic = fetchRelicItemPrices(relicParsed);
+    RelicInfo relic = fetchRelicItemPrices(relicParsed,cacheOpt);
 
     return relic;
 
@@ -490,8 +486,10 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 
     preparedItems = itemsToSnakeCase(preparedItems);
 
+    CacheOptions cacheOpt = CacheOptions(configStringToBool(state.config["shouldCache"]),state.config["cacheDuration"]);
+
     timer.start();
-    vector<Item> itemPrices = getItemPrices(preparedItems);
+    vector<Item> itemPrices = getItemPrices(preparedItems,cacheOpt);
     timer.stop("Fetching item prices from warframe market");
 
 

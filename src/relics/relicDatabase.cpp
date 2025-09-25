@@ -1,6 +1,7 @@
 #include "relics.h"
 #include <regex>
 #include <ctime>
+#include "../items/itemcache/itemcache.hpp"
 
 using std::vector, std::string, std::pair,std::ofstream,std::ifstream;
 
@@ -897,35 +898,38 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
     return resultString;
 }
 
-std::map<string, ItemDetails> fetchRelicVectorPrices(vector<string> names) {         //TO REFACTOR LATER OMG
+std::map<string, ItemDetails> fetchRelicVectorPrices(vector<string> names,const CacheOptions& cacheOpt) {         //TO REFACTOR LATER OMG
     std::map<string, ItemDetails> results;
     vector<std::future<pair<string, ItemDetails>>> futures;
 
     Timer timer = Timer();
     timer.start();
     for (auto& item : names) {
-        if (item == "") continue;
+        if (item.empty()) continue;
         if (item == "forma_blueprint") continue;
         if (item == "2x_forma_blueprint") continue;
-        
-        std::optional<ItemDetails> details = readFromItemCache(item);
-        if (details) {
-            results.insert({ item, details.value() });
+
+        if (cacheOpt.shouldCache) {
+            std::optional<ItemDetails> details = readFromItemCache(item, cacheOpt.cacheDuration);
+            if (details) {
+                results.insert({ item, *details });
+                continue; // skip fetching
+            }
         }
-        else {
-            futures.push_back(std::async(std::launch::async, [item]() -> pair<string, ItemDetails> {
-                return { item, fetchItemPrice(item) };
-                }
-            )
-            );
-        }
+
+        // if no cache (or disabled), fetch async
+        futures.push_back(std::async(std::launch::async, [item]() -> pair<string, ItemDetails> {
+            return { item, fetchItemPrice(item) };
+            }));
     }
 
 
     for (auto& future : futures) {
         auto result = future.get();
         results.insert(result);
-		saveToItemCache(Item(result.first,result.first, result.second));
+        if (cacheOpt.shouldCache) {
+            saveToItemCache(Item(result.first, result.first, result.second));
+        }
     }
     timer.stop();
     timer.print("Fetching relic item's prices from warframe market");
@@ -933,7 +937,7 @@ std::map<string, ItemDetails> fetchRelicVectorPrices(vector<string> names) {    
 }
 
 
-RelicInfo fetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS TO BE REFACTORED LATER LIKE OMFG WHAT IS HAPPENING HERE
+RelicInfo fetchRelicItemPrices(std::string relicName,const CacheOptions& cacheOpt) {         //TODO: THIS HAS TO BE REFACTORED LATER LIKE OMFG WHAT IS HAPPENING HERE
 
     if (relicName == "nullRelic")  return RelicInfo("nullRelic",{},0);
     
@@ -952,7 +956,7 @@ RelicInfo fetchRelicItemPrices(std::string relicName) {         //TODO: THIS HAS
         i++;
     }
 
-    auto results = fetchRelicVectorPrices(itemNames);
+    auto results = fetchRelicVectorPrices(itemNames,cacheOpt);
     
     vector<RelicItem> relicItems;
 

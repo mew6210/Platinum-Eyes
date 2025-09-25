@@ -1,27 +1,31 @@
 #include "itemcache.hpp"
 
 std::filesystem::path cacheFilePath = "data/itemcache.txt";
-std::chrono::minutes expirationTime = std::chrono::minutes(15);
+
+using std::chrono::time_point, std::chrono::system_clock;
+using std::filesystem::path;
+using std::string;
 
 namespace {
-	std::vector<std::string> splitBySemicolon(const std::string& line) {
-		std::vector<std::string> parts;
-		std::stringstream ss(line);
-		std::string token;
 
-		while (std::getline(ss, token, ';')) {
+	std::vector<string> splitByDelimeter(const string& line,const char& c) {
+		std::vector<string> parts;
+		std::stringstream ss(line);
+		string token;
+
+		while (std::getline(ss, token, c)) {
 			parts.push_back(token);
 		}
 		return parts;
 	}
 
-	std::string floatToString(float value, int decimals = 2) {
+	string floatToString(float value, int decimals = 2) {
 		std::ostringstream oss;
 		oss << std::fixed << std::setprecision(decimals) << value;
 		return oss.str();
 	}
 
-	float stringToFloat(const std::string& s) {
+	float stringToFloat(const string& s) {
 		try {
 			return std::stof(s);
 		}
@@ -32,13 +36,56 @@ namespace {
 			return 0.0f; // same here
 		}
 	}
-	std::chrono::time_point<std::chrono::system_clock> parseTimestamp(const std::string& s) {
+	time_point<system_clock> parseTimestamp(const string& s) {
 		long long seconds = std::stoll(s);
-		return std::chrono::system_clock::time_point{ std::chrono::seconds(seconds) };
+		return system_clock::time_point{ std::chrono::seconds(seconds) };
 	}
 
+
+	std::chrono::seconds processTimeToken(const string& token) {
+
+		if (token.size() < 2) {
+			errorLog(false, "timeToken should have at least 2 characters");
+			return std::chrono::seconds{ 0 };
+		}
+
+		long long value = 0;
+		try {
+			value = std::stoll(token.substr(0, token.size() - 1));
+		}
+		catch (...) {
+			errorLog(false, "failed to parse timeToken, remember a token should have a 1-letter modifier at the end e.g '15m' or '12s'");
+			return std::chrono::seconds{ 0 };
+		}
+
+		int multiplier = 0;
+		switch (token.back()) {
+		case 'd': multiplier = 86400; break;
+		case 'h': multiplier = 3600; break;
+		case 'm': multiplier = 60; break;
+		case 's': multiplier = 1; break;
+		default: multiplier = 0; break;
+		}
+
+		if (multiplier == 0) {
+			errorLog(false, "unidentified time modifier, avalible ones are : 'd' 'h' 'm' 's'");
+		}
+
+		return std::chrono::seconds{ value * multiplier };
+	}
 }
 
+
+std::chrono::seconds parseTimeString(const string& time) {
+
+	auto timeTokens = splitByDelimeter(time, ' ');
+	std::chrono::seconds timeSum{ 0 };
+	for (const auto& token : timeTokens) {
+		std::chrono::seconds time = processTimeToken(token);
+		timeSum += time;
+	}
+	return timeSum;
+}
 
 void createItemCache() {
 	std::ofstream cacheFile(cacheFilePath,std::ios::app);
@@ -52,12 +99,13 @@ void saveToItemCache(const Item& item){
 	).count();
 	cacheFile << item.rawName << ";" << floatToString(item.itemDetails.averagePrice) << ";" << getFormatedLowestPrices(item.itemDetails.lowestPrices) <<";"<<rarityToString(item.itemDetails.rarity) << ";" << seconds<< "\n";
 }
-void checkLineTimestamp(std::vector<std::string>& lines,std::string& line,const std::chrono::time_point<std::chrono::system_clock>& timestamp ) {
+
+void checkLineTimestamp(std::vector<string>& lines,string& line,const time_point<system_clock>& timestamp, const std::chrono::seconds& cacheDuration) {
 	auto time_now = std::chrono::system_clock::now();
-	if(time_now - timestamp < expirationTime) lines.push_back(line);
+	if(time_now - timestamp < cacheDuration) lines.push_back(line);
 }
 
-void rewriteItemCache(const std::vector<std::string>& lines) {
+void rewriteItemCache(const std::vector<string>& lines) {
 	std::ofstream cacheFile(cacheFilePath, std::ios_base::trunc);
 	for (const auto& line : lines) {
 		cacheFile << line << "\n";
@@ -65,16 +113,16 @@ void rewriteItemCache(const std::vector<std::string>& lines) {
 	cacheFile.close();
 }
 
-void deleteOldCacheEntries(const std::filesystem::path& cacheFilePath) {
+void deleteOldCacheEntries(const path& cacheFilePath,const std::chrono::seconds& cacheDuration) {
 	std::ifstream cacheFile(cacheFilePath);
-	std::vector<std::string> lines;
-	std::string line = "";
+	std::vector<string> lines;
+	string line = "";
 	while (std::getline(cacheFile, line)) {
-		auto fields = splitBySemicolon(line);
+		auto fields = splitByDelimeter(line,';');
 		if (fields.size() < 5) continue;
 		try {
 			auto timestamp = parseTimestamp(fields[4]);
-			checkLineTimestamp(lines, line, timestamp);
+			checkLineTimestamp(lines, line, timestamp,cacheDuration);
 		}
 		catch (...) {
 			errorLog(false,"failed to parse cache file");
@@ -85,14 +133,14 @@ void deleteOldCacheEntries(const std::filesystem::path& cacheFilePath) {
 	rewriteItemCache(lines);
 }
 
-std::optional<ItemDetails> readFromItemCache(const std::string& itemName){
+std::optional<ItemDetails> readFromItemCache(const string& itemName, const std::chrono::seconds& cacheDuration){
 	
-	std::vector<std::string> lines;
+	std::vector<string> lines;
 	std::ifstream cacheFile(cacheFilePath);
-	deleteOldCacheEntries(cacheFilePath);
-	std::string line = "";
+	deleteOldCacheEntries(cacheFilePath,cacheDuration);
+	string line = "";
 	while (std::getline(cacheFile, line)) {
-		auto fields = splitBySemicolon(line);
+		auto fields = splitByDelimeter(line,';');
 		if (fields.size() == 0) return std::nullopt;
 		if (fields[0] != itemName) continue;
 

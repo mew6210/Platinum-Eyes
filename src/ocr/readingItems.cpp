@@ -1,4 +1,5 @@
 #include "ocr.h"
+#include "../items/itemcache/itemcache.hpp"
 
 using std::string, std::vector, std::pair;
 using json = nlohmann::json;
@@ -389,7 +390,7 @@ ItemDetails fetchItemPrice(const string& item) {
 }
 
 
-vector<Item> getItemPrices(vector<string>& preparedItems) {
+vector<Item> getItemPrices(vector<string>& preparedItems,const CacheOptions& cacheOpt) {
 
 
     vector<Item> itemPrices;
@@ -401,24 +402,27 @@ vector<Item> getItemPrices(vector<string>& preparedItems) {
         if (item=="") continue;     
         if (item == "forma_blueprint") continue;
 
-        std::optional<ItemDetails> details = readFromItemCache(item);
-        if (details) {
-			itemPrices.push_back(Item(snakeToItem(item), item, details.value()));
+
+        if (cacheOpt.shouldCache) {
+            std::optional<ItemDetails> details = readFromItemCache(item, cacheOpt.cacheDuration);
+            if (details) {
+                itemPrices.push_back(Item(snakeToItem(item), item, *details));
+                continue; // skip async fetch
+            }
         }
-        else {
-            futures.push_back(std::async(std::launch::async, [item]() -> Item {
-                return  Item(snakeToItem(item), item, fetchItemPrice(item));
-                }
-            )
-            );
-        }
+
+        // if no cache, or shouldCache = false, fetch online
+        futures.push_back(std::async(std::launch::async, [item]() -> Item {
+            return Item(snakeToItem(item), item, fetchItemPrice(item));
+            }));
 
     }
 
     for (auto& future : futures) {
         auto result = future.get();
         itemPrices.push_back(result);
-        saveToItemCache(itemPrices.back());
+        
+        if(cacheOpt.shouldCache) saveToItemCache(itemPrices.back());
     }
 
     return itemPrices;
