@@ -3,12 +3,16 @@
 std::filesystem::path cacheFilePath = "data/itemcache.txt";
 std::chrono::minutes expirationTime = std::chrono::minutes(15);
 
+using std::chrono::time_point, std::chrono::system_clock;
+using std::filesystem::path;
+using std::string;
+
 namespace {
 
-	std::vector<std::string> splitByDelimeter(const std::string& line,const char& c) {
-		std::vector<std::string> parts;
+	std::vector<string> splitByDelimeter(const string& line,const char& c) {
+		std::vector<string> parts;
 		std::stringstream ss(line);
-		std::string token;
+		string token;
 
 		while (std::getline(ss, token, c)) {
 			parts.push_back(token);
@@ -16,13 +20,13 @@ namespace {
 		return parts;
 	}
 
-	std::string floatToString(float value, int decimals = 2) {
+	string floatToString(float value, int decimals = 2) {
 		std::ostringstream oss;
 		oss << std::fixed << std::setprecision(decimals) << value;
 		return oss.str();
 	}
 
-	float stringToFloat(const std::string& s) {
+	float stringToFloat(const string& s) {
 		try {
 			return std::stof(s);
 		}
@@ -33,13 +37,13 @@ namespace {
 			return 0.0f; // same here
 		}
 	}
-	std::chrono::time_point<std::chrono::system_clock> parseTimestamp(const std::string& s) {
+	time_point<system_clock> parseTimestamp(const string& s) {
 		long long seconds = std::stoll(s);
-		return std::chrono::system_clock::time_point{ std::chrono::seconds(seconds) };
+		return system_clock::time_point{ std::chrono::seconds(seconds) };
 	}
 
 
-	std::chrono::seconds processTimeToken(const std::string& token) {
+	std::chrono::seconds processTimeToken(const string& token) {
 
 		if (token.size() < 2) {
 			errorLog(false, "timeToken should have at least 2 characters");
@@ -71,7 +75,7 @@ namespace {
 		return std::chrono::seconds{ value * multiplier };
 	}
 
-	std::chrono::seconds parseTimeString(const std::string& time) {
+	std::chrono::seconds parseTimeString(const string& time) {
 
 		auto timeTokens = splitByDelimeter(time, ' ');
 		std::chrono::seconds timeSum{ 0 };
@@ -95,12 +99,13 @@ void saveToItemCache(const Item& item){
 	).count();
 	cacheFile << item.rawName << ";" << floatToString(item.itemDetails.averagePrice) << ";" << getFormatedLowestPrices(item.itemDetails.lowestPrices) <<";"<<rarityToString(item.itemDetails.rarity) << ";" << seconds<< "\n";
 }
-void checkLineTimestamp(std::vector<std::string>& lines,std::string& line,const std::chrono::time_point<std::chrono::system_clock>& timestamp ) {
+
+void checkLineTimestamp(std::vector<string>& lines,string& line,const time_point<system_clock>& timestamp ) {
 	auto time_now = std::chrono::system_clock::now();
 	if(time_now - timestamp < expirationTime) lines.push_back(line);
 }
 
-void rewriteItemCache(const std::vector<std::string>& lines) {
+void rewriteItemCache(const std::vector<string>& lines) {
 	std::ofstream cacheFile(cacheFilePath, std::ios_base::trunc);
 	for (const auto& line : lines) {
 		cacheFile << line << "\n";
@@ -108,10 +113,10 @@ void rewriteItemCache(const std::vector<std::string>& lines) {
 	cacheFile.close();
 }
 
-void deleteOldCacheEntries(const std::filesystem::path& cacheFilePath) {
+void deleteOldCacheEntries(const path& cacheFilePath) {
 	std::ifstream cacheFile(cacheFilePath);
-	std::vector<std::string> lines;
-	std::string line = "";
+	std::vector<string> lines;
+	string line = "";
 	while (std::getline(cacheFile, line)) {
 		auto fields = splitByDelimeter(line,';');
 		if (fields.size() < 5) continue;
@@ -128,12 +133,12 @@ void deleteOldCacheEntries(const std::filesystem::path& cacheFilePath) {
 	rewriteItemCache(lines);
 }
 
-std::optional<ItemDetails> readFromItemCache(const std::string& itemName){
+std::optional<ItemDetails> readFromItemCache(const string& itemName){
 	
-	std::vector<std::string> lines;
+	std::vector<string> lines;
 	std::ifstream cacheFile(cacheFilePath);
 	deleteOldCacheEntries(cacheFilePath);
-	std::string line = "";
+	string line = "";
 	while (std::getline(cacheFile, line)) {
 		auto fields = splitByDelimeter(line,';');
 		if (fields.size() == 0) return std::nullopt;
