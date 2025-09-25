@@ -12,7 +12,6 @@
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
 #include "../utilities/utilities.h"
-#include "../items/itemcache/itemcache.hpp"
 
 namespace fuzzy_threshold {
 	const int THRESHOLD_LOW = 5;
@@ -20,12 +19,13 @@ namespace fuzzy_threshold {
 	const int THRESHOLD_HIGH = 20;
 };
 
+struct CacheOptions;
 
 std::string itemToSnakeCase(const std::string& s);
 std::vector<std::string> itemsToSnakeCase(const std::vector<std::string>&);
 std::string replaceChar(std::string s, char a, std::string b);
 ItemDetails getAveragePrice(const nlohmann::json& list);
-std::vector<Item> getItemPrices(std::vector<std::string>& preparedItems);
+std::vector<Item> getItemPrices(std::vector<std::string>& preparedItems, const CacheOptions& cacheOpt);
 void printItemPrices(std::vector<Item>& itemPrices);
 
 
@@ -45,8 +45,8 @@ void tesseractInit(tesseract::TessBaseAPI& api);
 ItemDetails fetchItemPrice(const std::string& item);
 std::string readRelicTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
 std::string readRelicTitleTesseract(tesseract::TessBaseAPI& api, const char* path, bool showImage);
-RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api);
-RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api);
+RelicInfo readItemsFromRelicTitleTesseract(tesseract::TessBaseAPI& api, const CacheOptions& cacheOpt);
+RelicInfo readItemsFromRelicTitleTesseractShifted(tesseract::TessBaseAPI& api, const CacheOptions& cacheOpt);
 
 
 int checkIfItemsAreValid(std::vector<std::string>& items, std::vector<std::string>& allItems);

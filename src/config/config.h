@@ -91,7 +91,7 @@ const std::vector<std::string> CONFIGPROPERTIES = [] {
 	return result;
 	}();
 
-
+bool configStringToBool(const std::string& input);
 bool contains(const std::vector<std::string>& targets, const std::vector<std::string>& differences);
 bool keyBindsChanged(const std::vector<std::string>& differences);
 bool windowSizesChanged(const std::vector<std::string>& differences);

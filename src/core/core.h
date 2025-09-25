@@ -38,7 +38,6 @@ struct WindowParameters {
 #include "../items/item/item.hpp"
 #include "../relics/relicinfo/relicinfo.hpp"
 
-
 struct AppState {
 
 	std::atomic<bool> eeLogTakeScreenshot = false;		//idk

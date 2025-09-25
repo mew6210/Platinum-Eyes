@@ -1,5 +1,5 @@
 #include "nativecore.hpp"
-
+#include "../../items/itemcache/itemcache.hpp"
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 
@@ -81,26 +81,23 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
             case ItemDisplayMode::FissureDisplay: 
                 state.items = exampleItems; break;
             case ItemDisplayMode::RelicDisplay: 
-                state.currentRelic = fetchRelicItemPrices("Lith A1 Relic (Intact)"); break;
+                state.currentRelic = fetchRelicItemPrices("Lith A1 Relic (Intact)",CacheOptions(false,"")); break;
             }
         }
                             break;
         case KB_ReadRelicTitle: {
 
-            state.currentRelic = readItemsFromRelicTitleTesseract(*state.tesseractApi);
-
-
+            CacheOptions cacheOpt = CacheOptions(configStringToBool(state.config["shouldCache"]), state.config["cacheDuration"]);
+            state.currentRelic = readItemsFromRelicTitleTesseract(*state.tesseractApi,cacheOpt);
 
             if (state.currentRelic.relicPrice == 0.0) {
                 warningLog("No relic name found in its designated area, shifting to right.(Maybe user is in a mission)");
-                state.currentRelic = readItemsFromRelicTitleTesseractShifted(*state.tesseractApi);
+                state.currentRelic = readItemsFromRelicTitleTesseractShifted(*state.tesseractApi,cacheOpt);
 
             }
             printRelic(state.currentRelic);
 
-
             state.itemDisplayMode = ItemDisplayMode::RelicDisplay;
-
 
             break;
         }

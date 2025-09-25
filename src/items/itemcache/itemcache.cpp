@@ -1,7 +1,6 @@
 #include "itemcache.hpp"
 
 std::filesystem::path cacheFilePath = "data/itemcache.txt";
-std::chrono::minutes expirationTime = std::chrono::minutes(15);
 
 using std::chrono::time_point, std::chrono::system_clock;
 using std::filesystem::path;
@@ -74,17 +73,18 @@ namespace {
 
 		return std::chrono::seconds{ value * multiplier };
 	}
+}
 
-	std::chrono::seconds parseTimeString(const string& time) {
 
-		auto timeTokens = splitByDelimeter(time, ' ');
-		std::chrono::seconds timeSum{ 0 };
-		for (const auto& token : timeTokens) {
-			std::chrono::seconds time = processTimeToken(token);
-			timeSum += time;
-		}
-		return timeSum;
+std::chrono::seconds parseTimeString(const string& time) {
+
+	auto timeTokens = splitByDelimeter(time, ' ');
+	std::chrono::seconds timeSum{ 0 };
+	for (const auto& token : timeTokens) {
+		std::chrono::seconds time = processTimeToken(token);
+		timeSum += time;
 	}
+	return timeSum;
 }
 
 void createItemCache() {
@@ -100,9 +100,9 @@ void saveToItemCache(const Item& item){
 	cacheFile << item.rawName << ";" << floatToString(item.itemDetails.averagePrice) << ";" << getFormatedLowestPrices(item.itemDetails.lowestPrices) <<";"<<rarityToString(item.itemDetails.rarity) << ";" << seconds<< "\n";
 }
 
-void checkLineTimestamp(std::vector<string>& lines,string& line,const time_point<system_clock>& timestamp ) {
+void checkLineTimestamp(std::vector<string>& lines,string& line,const time_point<system_clock>& timestamp, const std::chrono::seconds& cacheDuration) {
 	auto time_now = std::chrono::system_clock::now();
-	if(time_now - timestamp < expirationTime) lines.push_back(line);
+	if(time_now - timestamp < cacheDuration) lines.push_back(line);
 }
 
 void rewriteItemCache(const std::vector<string>& lines) {
@@ -113,7 +113,7 @@ void rewriteItemCache(const std::vector<string>& lines) {
 	cacheFile.close();
 }
 
-void deleteOldCacheEntries(const path& cacheFilePath) {
+void deleteOldCacheEntries(const path& cacheFilePath,const std::chrono::seconds& cacheDuration) {
 	std::ifstream cacheFile(cacheFilePath);
 	std::vector<string> lines;
 	string line = "";
@@ -122,7 +122,7 @@ void deleteOldCacheEntries(const path& cacheFilePath) {
 		if (fields.size() < 5) continue;
 		try {
 			auto timestamp = parseTimestamp(fields[4]);
-			checkLineTimestamp(lines, line, timestamp);
+			checkLineTimestamp(lines, line, timestamp,cacheDuration);
 		}
 		catch (...) {
 			errorLog(false,"failed to parse cache file");
@@ -133,11 +133,11 @@ void deleteOldCacheEntries(const path& cacheFilePath) {
 	rewriteItemCache(lines);
 }
 
-std::optional<ItemDetails> readFromItemCache(const string& itemName){
+std::optional<ItemDetails> readFromItemCache(const string& itemName, const std::chrono::seconds& cacheDuration){
 	
 	std::vector<string> lines;
 	std::ifstream cacheFile(cacheFilePath);
-	deleteOldCacheEntries(cacheFilePath);
+	deleteOldCacheEntries(cacheFilePath,cacheDuration);
 	string line = "";
 	while (std::getline(cacheFile, line)) {
 		auto fields = splitByDelimeter(line,';');

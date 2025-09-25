@@ -1,5 +1,5 @@
 #include "core.h"
-
+#include "../items/itemcache/itemcache.hpp"
 
 using std::pair, std::string, std::vector;
 

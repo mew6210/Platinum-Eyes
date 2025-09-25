@@ -38,6 +38,21 @@ std::filesystem::path getEELogPath() {
     return getNativeEELogPath();
 }
 
+bool configStringToBool(const std::string& input) {
+    std::string s = input;
+    std::transform(s.begin(), s.end(), s.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+
+    if (s == "yes" || s == "y" || s == "true") {
+        return true;
+    }
+    if (s == "no" || s == "n" || s == "false") {
+        return false;
+    }
+    return false; // default for unrecognized input
+}
+
+
 namespace screenShotParams{
 
     struct screenConfig {
