@@ -13,7 +13,6 @@ namespace Rarity {
 
 }
 
-
 class ItemDetails {
 public:
 

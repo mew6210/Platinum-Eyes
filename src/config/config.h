@@ -1,9 +1,11 @@
 #pragma once
+#include <fstream>
+#include <SFML/Window.hpp>
+
 #include "toolconfig.hpp"
-#include "../core/core.h"		//COULD BE REMOVED SOMEDAY
 #include "native/nativeconfig.hpp"
-
-
+#include "../utilities/utilities.h"
+#include "../utilities/trim/trim.hpp"
 
 const std::vector<std::string> screenshotParametersNames = {
 	"screenShotFilePath",

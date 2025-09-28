@@ -19,22 +19,8 @@
 
 #include "native/nativeheaders.hpp"
 
-enum class ItemDisplayMode {
-	FissureDisplay = 1,
-	RelicDisplay = 2,
-	StartingScreenDisplay = 3
-};
-
 #include "../config/toolconfig.hpp"
-
-struct WindowParameters {
-	int width=0;
-	int height=0;
-
-	WindowParameters(int width, int height) :width(width), height(height) {};
-	WindowParameters() {};
-};
-
+#include "../utilities/utilities.h"
 #include "../items/item/item.hpp"
 #include "../relics/relicinfo/relicinfo.hpp"
 
@@ -116,7 +102,6 @@ struct AppState {
 };
 
 #include "../ocr/ocr.h"
-#include "../utilities/utilities.h"
 #include "../gui/gui.h"
 #include "../config/config.h"
 

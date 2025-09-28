@@ -716,19 +716,6 @@ float getPercantageFromString(std::string s) {
 
 }
 
-
-
-
-std::string rarityToString(Rarity::level r) {
-    switch (r) {
-    case Rarity::level::Common:return "Common";
-    case Rarity::level::Uncommon:return "Uncommon";
-    case Rarity::level::Rare:return "Rare";
-    case Rarity::level::Undefined:return "Undefined";
-    default: return "Should never happen";
-    }
-}
-
 bool compareWithRoundingErrors(float number,float compareTo) {
     constexpr float EPSILON = 0.0001f;
     return std::abs(number - compareTo) < EPSILON;
@@ -736,9 +723,7 @@ bool compareWithRoundingErrors(float number,float compareTo) {
 
 void compareRaritiesToPercentages(RelicItem& item,const vector<float>& percantages) {
 
-
     if (percantages.size() != 3) errorLog(true,"wrong amount of percantages in compareRaritiesToPercantages");
-
 
     if (compareWithRoundingErrors(item.percentage, percantages[0])) {
         item.itemDetails.rarity = Rarity::level::Common;

@@ -52,6 +52,16 @@ Rarity::level rarityFromString(const std::string& s) {
     return Rarity::level::Undefined;
 }
 
+std::string rarityToString(Rarity::level r) {
+    switch (r) {
+    case Rarity::level::Common:return "Common";
+    case Rarity::level::Uncommon:return "Uncommon";
+    case Rarity::level::Rare:return "Rare";
+    case Rarity::level::Undefined:return "Undefined";
+    default: return "Should never happen";
+    }
+}
+
 
 std::pair<int,int> stringToIntPair(std::string s) {
 
