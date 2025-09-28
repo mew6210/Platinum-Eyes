@@ -2,6 +2,8 @@
 #include "../core/core.h"
 #include "../keybindings/keybindings.h"
 #include "native/guinative.hpp"
+#include "imgui.h"
+#include "imgui-SFML.h"
 
 void updateFps(AppState& state);
 void generateImGuiTable(AppState& state);

@@ -213,17 +213,6 @@ bool fixItems(vector<string>& items, vector<string>& allItems) {
 }
 
 
-
-void replaceAnds(string& s) {
-
-    int pos = s.find("&");
-
-    if (pos != string::npos)
-        s.replace(pos, 1, "and");
-}
-
-
-
 void determineRarity(ItemDetails& details,const int& ducats) {
 
     Rarity::level r = Rarity::level::Undefined;
@@ -239,83 +228,6 @@ void determineRarity(ItemDetails& details,const int& ducats) {
 
     details.rarity = r;
 }
-
-
-
-string itemToSnakeCase(const string& s) {
-    string snakedItem = replaceChar(s, ' ', "_");
-    replaceAnds(snakedItem);
-    for (auto& x : snakedItem) {
-        x = tolower(x);
-    }
-    return snakedItem;
-}
-
-/*
-
-
-
-*/
-vector<string> itemsToSnakeCase(const vector<string>& list) {
-
-    vector<string> snakedItems;
-    for (const string& item : list) {
-        string snakedItem = itemToSnakeCase(item);
-        snakedItems.push_back(snakedItem);
-    }
-    return snakedItems;
-}
-
-string snakeToItem(const string& s) {
-    string result = s;
-
-    for (auto& ch : result) {
-        if (ch == '_') ch = ' ';
-    }
-
-    size_t pos = result.find(" and ");
-    while (pos != string::npos) {
-        result.replace(pos, 5, " & ");
-        pos = result.find(" and ", pos + 3);
-    }
-
-    bool capitalizeNext = true;
-    for (auto& ch : result) {
-        if (capitalizeNext && isalpha(ch)) {
-            ch = toupper(ch);
-            capitalizeNext = false;
-        }
-        else {
-            ch = tolower(ch);
-        }
-        if (ch == ' ') capitalizeNext = true;
-    }
-
-    return result;
-}
-
-
-string replaceChar(string s, char a, string b) {
-
-    string newstring;
-
-
-    for (char c : s) {
-
-        if (c == a) {
-            newstring.append(b);
-        }
-        else {
-            newstring.append(1, c);
-        }
-
-
-    }
-
-    return newstring;
-
-}
-
 
 ItemDetails getAveragePrice(const json& list) {
     float sum = 0;

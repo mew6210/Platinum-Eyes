@@ -1,20 +1,9 @@
 ﻿#pragma once
 
 #define NOMINMAX
-#include <string>
 #include <vector>
-#include <chrono>
-#include <nlohmann/json.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "imgui.h"
-#include "imgui-SFML.h"
 #include <tesseract/baseapi.h>
-#include <leptonica/allheaders.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui.hpp>
-#include "wood.h"
 #include <atomic>
 
 #include "native/nativeheaders.hpp"

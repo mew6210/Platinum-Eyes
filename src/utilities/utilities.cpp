@@ -2,7 +2,7 @@
 #include <lzma.h>
 #include <stdexcept>
 
-
+using std::vector, std::string;
 
 std::vector<int> stringToFormattedLowestPrices(const std::string& s) {
     std::vector<int> prices;
@@ -61,6 +61,86 @@ std::string rarityToString(Rarity::level r) {
     default: return "Should never happen";
     }
 }
+
+void replaceAnds(string& s) {
+
+    int pos = s.find("&");
+
+    if (pos != string::npos)
+        s.replace(pos, 1, "and");
+}
+
+string replaceChar(string s, char a, string b) {
+
+    string newstring;
+
+
+    for (char c : s) {
+
+        if (c == a) {
+            newstring.append(b);
+        }
+        else {
+            newstring.append(1, c);
+        }
+
+
+    }
+
+    return newstring;
+
+}
+
+
+string itemToSnakeCase(const string& s) {
+    string snakedItem = replaceChar(s, ' ', "_");
+    replaceAnds(snakedItem);
+    for (auto& x : snakedItem) {
+        x = tolower(x);
+    }
+    return snakedItem;
+}
+
+
+vector<string> itemsToSnakeCase(const vector<string>& list) {
+
+    vector<string> snakedItems;
+    for (const string& item : list) {
+        string snakedItem = itemToSnakeCase(item);
+        snakedItems.push_back(snakedItem);
+    }
+    return snakedItems;
+}
+
+string snakeToItem(const string& s) {
+    string result = s;
+
+    for (auto& ch : result) {
+        if (ch == '_') ch = ' ';
+    }
+
+    size_t pos = result.find(" and ");
+    while (pos != string::npos) {
+        result.replace(pos, 5, " & ");
+        pos = result.find(" and ", pos + 3);
+    }
+
+    bool capitalizeNext = true;
+    for (auto& ch : result) {
+        if (capitalizeNext && isalpha(ch)) {
+            ch = toupper(ch);
+            capitalizeNext = false;
+        }
+        else {
+            ch = tolower(ch);
+        }
+        if (ch == ' ') capitalizeNext = true;
+    }
+
+    return result;
+}
+
+
 
 
 std::pair<int,int> stringToIntPair(std::string s) {

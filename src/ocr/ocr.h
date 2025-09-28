@@ -12,6 +12,8 @@
 #include "../relics/relics.h"
 #include "../wfmd/wfmd.hpp"
 #include "../utilities/utilities.h"
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui.hpp>
 
 namespace fuzzy_threshold {
 	const int THRESHOLD_LOW = 5;

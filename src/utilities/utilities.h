@@ -30,6 +30,16 @@ enum class ItemDisplayMode {
 };
 
 
+void replaceAnds(std::string& s);
+std::string replaceChar(std::string s, char a, std::string b);
+std::string itemToSnakeCase(const std::string& s);
+std::vector<std::string> itemsToSnakeCase(const std::vector<std::string>& list);
+std::string snakeToItem(const std::string& s);
+
+
+
+
+
 
 /*
     example usage:

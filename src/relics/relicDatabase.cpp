@@ -841,7 +841,6 @@ std::string relicMenuTitleStringToRelicString(std::string& s) {
         return "weird relic things";
     }
 
-
     //make a vector of words into a whole word
     std::string clearedString;
 

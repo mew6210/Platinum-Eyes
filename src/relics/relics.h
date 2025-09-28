@@ -1,7 +1,12 @@
 #pragma once
-#include "../core/core.h"
 #include <cpr/cpr.h>
+#include "../ocr/ocr.h"
 #include "../utilities/trim/trim.hpp"
+#include "../utilities/utilities.h"
+#include "../utilities/timer/timer.hpp"
+#include "../config/toolconfig.hpp"
+#include "../config/config.h"
+#include "relicinfo/relicinfo.hpp"
 
 struct CacheOptions;
 

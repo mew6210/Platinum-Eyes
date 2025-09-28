@@ -1,5 +1,7 @@
 #include "core.h"
 #include "../items/itemcache/itemcache.hpp"
+#include "imgui.h"
+#include "imgui-SFML.h"
 
 using std::pair, std::string, std::vector;
 
