@@ -50,9 +50,6 @@ namespace {
         return results;
     }
 
-
-
-
     int levenshtein_distance_weighted(const string& str1, const string& str2, int end_weight = 2, int begin_weight = 2) {
         int len_str1 = str1.length();
         int len_str2 = str2.length();
@@ -81,8 +78,6 @@ namespace {
         return matrix[len_str1][len_str2];
     }
 
-
-
     vector<pair<string, int>> fuzzy_search_weighted(const string& query, const vector<string>& string_list, int threshold = 3, int end_weight = 2, int begin_weight = 2) {
         vector<pair<string, int>> results;
 
@@ -95,8 +90,6 @@ namespace {
 
         return results;
     }
-
-
 
     /*
     -uses fuzzy search to find best match for needle item, in haystack allItems
@@ -126,8 +119,6 @@ namespace {
 
     }
 
-
-    
     int countItemsInsideAThreshold(const vector<int>& distances, int threshold) {
 
 
@@ -139,12 +130,7 @@ namespace {
         return inThresholdCounter;
 
     }
-
-
 }
-
-
-
 
 /*
 -checks how many items are 'close enough' to be recognized as a valid item string
@@ -167,7 +153,6 @@ int checkIfItemsAreValid(vector<string>& items, vector<string>& allItems) {
     return inThresholdCount;
 }
 
-
 /*
 - tries to find the closest items by fuzzy searching
 - returns true if it succeeded at least once
@@ -189,8 +174,6 @@ bool fixItems(vector<string>& items, vector<string>& allItems) {
             return left.second < right.second;
             });
 
-
-
         if (!fuzzySearchResults.empty()) {
             auto minElement = std::min_element(
                 fuzzySearchResults.begin(), 
@@ -200,8 +183,6 @@ bool fixItems(vector<string>& items, vector<string>& allItems) {
                 });
 
             item = minElement->first;
-            
-
         }
 
         else if (items.size() == 1 && fuzzySearchResults.empty()) {
@@ -211,7 +192,6 @@ bool fixItems(vector<string>& items, vector<string>& allItems) {
     }
     return true;
 }
-
 
 void determineRarity(ItemDetails& details,const int& ducats) {
 
@@ -266,19 +246,12 @@ ItemDetails getAveragePrice(const json& list) {
     }
     std::sort(lowestPricesVec.begin(), lowestPricesVec.end());
 
-
-    
-
-
     ItemDetails pricing = ItemDetails((sum / count), lowestPricesVec,rarity);
-
 
     return pricing;
 }
 
-
 ItemDetails fetchItemPrice(const string& item) {
-
 
     cpr::Response r = cpr::Get(cpr::Url{ "https://api.warframe.market/v2/orders/item/" + item},
         cpr::Header{{"User-Agent","PlatinumEyes/1.0"}}
@@ -300,7 +273,6 @@ ItemDetails fetchItemPrice(const string& item) {
 
     return price;
 }
-
 
 vector<Item> getItemPrices(vector<string>& preparedItems,const CacheOptions& cacheOpt) {
 
@@ -354,8 +326,6 @@ void printItemPrices(vector<Item>& itemPrices) {
     }
 }
 
-
-
 vector<Item> prepareItemsForRead(vector<Item>& items) {
 
     vector<Item> newList = {};
@@ -384,9 +354,6 @@ vector<Item> prepareItemsForRead(vector<Item>& items) {
         }
 
         capitalizedString.pop_back();
-
-
-
 
         newList.push_back(Item(capitalizedString, item.rawName,item.itemDetails));
     }
