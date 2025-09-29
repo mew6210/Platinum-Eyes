@@ -473,12 +473,12 @@ vector<Item> screenshotToItems(AppState& state,const string& fileName) {
 
     size_t itemCount = 4;
 
-    vector<string> readResults = readFissureItems(*state.tesseractApi, itemCount, fileName);
+    vector<string> readResults = readFissureItems(*state.ocr.tesseractApi, itemCount, fileName);
     vector<string> preparedItems = itemsToSnakeCase(readResults);
     
 
 
-    if (!fixItems(preparedItems, state.allAvalibleItems)) {
+    if (!fixItems(preparedItems, state.data.allItems)) {
         errorLog(false,"Could not find fissure rewards items on screen");
         return {};
     }

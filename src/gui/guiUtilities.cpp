@@ -15,7 +15,6 @@ std::map<int, string> createIntStringMap(std::map<string, ItemDetails> items) {
 	return intstringmap;
 }
 
-
 namespace {
 
 	ImVec4 getRarityColor(Rarity::level rarity) {
@@ -117,10 +116,10 @@ namespace {
 		}
 	}
 
-	void generateFissureItemsBoxes(AppState& state){
+	void generateFissureItemsBoxes(AppState& state){		//only data
 
-		if (isVecNotEmptyAndNotPlaceholder(state.items)) {
-			generateFissureItemsBoxesNormally(state.items);
+		if (isVecNotEmptyAndNotPlaceholder(state.data.items)) {
+			generateFissureItemsBoxesNormally(state.data.items);
 			return;
 		}
 		else {
@@ -156,17 +155,17 @@ namespace {
 		imGuiRelicInfo(relic);
 	}
 
-	void generateRelicItemsBoxes(AppState& state) {
-		if (isRelicNotNull(state.currentRelic)) {
-			imGuiRelicItemsBoxes(state.currentRelic);
+	void generateRelicItemsBoxes(AppState& state) {		//only data
+		if (isRelicNotNull(state.data.currentRelic)) {
+			imGuiRelicItemsBoxes(state.data.currentRelic);
 		}
 		else {
 			ImGui::Text("Couldn't find relic title :(");
 		}
 	}
 }
-void generateImGuiTable(AppState& state) {
-	switch (state.itemDisplayMode) {
+void generateImGuiTable(AppState& state) {		//only data?
+	switch (state.data.itemDisplayMode) {
 	case ItemDisplayMode::StartingScreenDisplay:ImGui::Text("Waiting for your input..."); break;
 	case ItemDisplayMode::FissureDisplay:generateFissureItemsBoxes(state); break;
 	case ItemDisplayMode::RelicDisplay:generateRelicItemsBoxes(state); break;
@@ -178,12 +177,12 @@ void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
 }
 
-void customizeWindow(AppState& state) {
-	sf::WindowHandle wHandle = state.window->getNativeHandle();
-	state.window->setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.sfmlSize.width+25), 25));
-	state.window->setFramerateLimit(state.fpsVisible);
+void customizeWindow(AppState& state) {		//only gui
+	sf::WindowHandle wHandle = state.gui.window->getNativeHandle();
+	state.gui.window->setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.gui.sfmlSize.width+25), 25));
+	state.gui.window->setFramerateLimit(state.gui.fpsVisible);
 	
-	if (!ImGui::SFML::Init(*state.window)) {
+	if (!ImGui::SFML::Init(*state.gui.window)) {
 		errorLog(true,"ImGui::SFML::Init() failed");
 	}
 
@@ -216,10 +215,10 @@ void setImGuiStyle(ToolConfig& config) {
 	ImGui::SFML::UpdateFontTexture(); 
 }
 
-void createImGuiWindow(bool& isRunning,AppState& state) {
+void createImGuiWindow(bool& isRunning,AppState& state) {		//only gui
 
-	int heightDiff = state.sfmlSize.height - state.imguiSize.height;
-	int widthDiff = state.sfmlSize.width - state.imguiSize.width;
+	int heightDiff = state.gui.sfmlSize.height - state.gui.imguiSize.height;
+	int widthDiff = state.gui.sfmlSize.width - state.gui.imguiSize.width;
 
 	ImGuiWindowFlags flags = ImGuiWindowFlags_None;
 	flags |= ImGuiWindowFlags_NoTitleBar;
@@ -228,15 +227,15 @@ void createImGuiWindow(bool& isRunning,AppState& state) {
 	flags |= ImGuiWindowFlags_NoMove;
 	ImGuiCond cond = ImGuiCond_Once;
 	ImGui::SetNextWindowBgAlpha(0.7);
-	if (state.shouldReSizeImGui) {
-		heightDiff = state.sfmlSize.height - state.imguiSize.height;
-		widthDiff = state.sfmlSize.width - state.imguiSize.width;
-		ImGui::SetNextWindowSize(ImVec2(state.imguiSize.width, state.imguiSize.height),ImGuiCond_Always);
+	if (state.gui.shouldResizeImGui) {
+		heightDiff = state.gui.sfmlSize.height - state.gui.imguiSize.height;
+		widthDiff = state.gui.sfmlSize.width - state.gui.imguiSize.width;
+		ImGui::SetNextWindowSize(ImVec2(state.gui.imguiSize.width, state.gui.imguiSize.height), ImGuiCond_Always);
 		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), ImGuiCond_Always);
-		state.shouldReSizeImGui = !state.shouldReSizeImGui;
+		state.gui.shouldResizeImGui = !state.gui.shouldResizeImGui;
 	}
 	else {
-		ImGui::SetNextWindowSize(ImVec2(state.imguiSize.width, state.imguiSize.height), cond);
+		ImGui::SetNextWindowSize(ImVec2(state.gui.imguiSize.width, state.gui.imguiSize.height), cond);
 		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), cond);
 	}
 		
@@ -244,24 +243,24 @@ void createImGuiWindow(bool& isRunning,AppState& state) {
 	
 
 	if (ImGui::SmallButton("Config")) {
-		state.settingsVisible= !state.settingsVisible; //flip the settingsOpen
+		state.gui.settingsVisible= !state.gui.settingsVisible; //flip the settingsOpen
 	}
-	if (state.settingsVisible == true) {
-		showSettingsMenu(&state.settingsVisible,state);
+	if (state.gui.settingsVisible == true) {
+		showSettingsMenu(&state.gui.settingsVisible,state);
 	}
 }
 
-void handleBetweenFrameImGuiUpdates(AppState& state) {
-	if (state.shouldUpdateFonts) {
+void handleBetweenFrameImGuiUpdates(AppState& state) {	//only gui and config
+	if (state.gui.shouldUpdateFonts) {
 		setNewFont(state.config);
-		state.shouldUpdateFonts = false;
+		state.gui.shouldUpdateFonts = false;
 	}
 }
 
-void updateFps(AppState& state) {
+void updateFps(AppState& state) {		//only gui and config
 
-	int newVisibleFps = state.fpsVisible;
-	int newHiddenFps = state.fpsHidden;
+	int newVisibleFps = state.gui.fpsVisible;
+	int newHiddenFps = state.gui.fpsHidden;
 	
 	try {
 		newVisibleFps = stoi(state.config["fpsVisible"]);
@@ -279,12 +278,12 @@ void updateFps(AppState& state) {
 		newHiddenFps = 30;
 	}
 	
-	if (state.isVisible) {
-		state.window->setFramerateLimit(newVisibleFps);
+	if (state.gui.isVisible) {
+		state.gui.window->setFramerateLimit(newVisibleFps);
 	}
 	else {
-		state.window->setFramerateLimit(newHiddenFps);
+		state.gui.window->setFramerateLimit(newHiddenFps);
 	}
-	state.fpsVisible = newVisibleFps;
-	state.fpsHidden = newHiddenFps;
+	state.gui.fpsVisible = newVisibleFps;
+	state.gui.fpsHidden = newHiddenFps;
 }

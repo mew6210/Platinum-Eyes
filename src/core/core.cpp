@@ -45,61 +45,55 @@ void mainLoop(AppState& state) {
 
     sf::Clock deltaClock;
 
-    while (state.running){
+    while (state.system->running){
         
         //handle keybinds
         listenAndHandleEvents(state);
 
-        while (const std::optional event = state.window->pollEvent()){
-            ImGui::SFML::ProcessEvent(*state.window,*event);
+        while (const std::optional event = state.gui.window->pollEvent()){
+            ImGui::SFML::ProcessEvent(*state.gui.window,*event);
 
             if (event->is<sf::Event::Closed>())
             {
                 // end the program
-                state.running = false;
+                state.system->running = false;
             }
             
         }
-        ImGui::SFML::Update(*state.window, deltaClock.restart());
+        ImGui::SFML::Update(*state.gui.window, deltaClock.restart());
 
 
-        createImGuiWindow(state.running, state);
+        createImGuiWindow(state.system->running, state);
         generateImGuiTable(state);
         //ImGui::ShowDemoWindow(&running);
 
         ImGui::End();
 
-        state.window->clear(sf::Color(0, 0, 0, 30));
+        state.gui.window->clear(sf::Color(0, 0, 0, 30));
 
-        ImGui::SFML::Render(*state.window);
-        state.window->display();
+        ImGui::SFML::Render(*state.gui.window);
+        state.gui.window->display();
 
         handleBetweenFrameImGuiUpdates(state);
 
     }
 }
 
-
-AppState initApp() {
+DataLayer initDataLayer() {
 
     vector<Item> currentFissureItems;
-
-    RelicInfo currentRelic=RelicInfo("",{},0);
-
-    ToolConfig toolConfig = initConfig();
-
-    std::filesystem::create_directory("data");
-	createItemCache();
-    loadDatabases(toolConfig);
-    registerHotkeys(toolConfig);
-
-    WindowParameters sfmlSize = getWindowSize("sfml", toolConfig);
-    WindowParameters imguiSize = getWindowSize("imgui", toolConfig);
-
+    RelicInfo currentRelic = RelicInfo("", {}, 0);
     vector<string> allAvalibleItems = loadAllAvalibleItemsToVector();
+    ItemDisplayMode itemDisplayMode = ItemDisplayMode::StartingScreenDisplay;
 
-    auto tesseractapi = std::make_unique<tesseract::TessBaseAPI>();
-    tesseractInit(*tesseractapi);
+    return DataLayer{ currentFissureItems, currentRelic,itemDisplayMode,std::move(allAvalibleItems) };
+}
+
+GraphicLayer initGraphicLayer(ToolConfig& config) {
+
+    WindowParameters sfmlSize = getWindowSize("sfml", config);
+    WindowParameters imguiSize = getWindowSize("imgui", config);
+
 
     auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode({
         static_cast<unsigned int>(sfmlSize.width),
@@ -107,8 +101,27 @@ AppState initApp() {
         "Warframe tool",
         sf::Style::None);
 
-    bool running = true;
     bool visible = true;
+    bool settingsOpen = false;
+    bool shouldReSizeImGui = false;
+    bool shouldUpdateFonts = false;
+    auto fps = getFps(config);
+
+
+    return GraphicLayer{
+        std::move(window),
+        visible,
+        sfmlSize,
+        imguiSize,
+        settingsOpen,
+        shouldReSizeImGui,
+        shouldUpdateFonts,
+        fps.first,
+        fps.second
+    };
+}
+
+std::unique_ptr<SystemLayer> initSystemLayer() {
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
     MSG msg = { 0 };
@@ -116,37 +129,43 @@ AppState initApp() {
 #if __linux__
     XEvent msg;
 #endif
+    
+    return std::make_unique<SystemLayer>(msg,true);
+}
 
-    bool settingsOpen = false;
-    bool shouldReSizeImGui = false;
-    ItemDisplayMode itemDisplayMode = ItemDisplayMode::StartingScreenDisplay;
-    bool shouldUpdateFonts = false;
-    auto fps = getFps(toolConfig);
+OcrLayer initOcrLayer() {
 
+    auto tesseractapi = std::make_unique<tesseract::TessBaseAPI>();
+    tesseractInit(*tesseractapi);
+
+    return OcrLayer{ std::move(tesseractapi) };
+}
+
+AppState initApp() {
+
+    auto dataLayer = initDataLayer();
+    ToolConfig toolConfig = initConfig();
+
+    std::filesystem::create_directory("data");
+	createItemCache();
+    loadDatabases(toolConfig);
+    registerHotkeys(toolConfig);
+
+    auto graphicLayer = initGraphicLayer(toolConfig);
+    auto systemLayer = initSystemLayer();
+    auto ocrLayer = initOcrLayer();
 
     return AppState(
-        msg,
-        std::move(currentFissureItems),
+        std::move(dataLayer),
         std::move(toolConfig),
-        std::move(window),
-        running,
-        visible,
-        sfmlSize,
-        imguiSize,
-        settingsOpen,
-        std::move(tesseractapi),
-        shouldReSizeImGui,
-        itemDisplayMode,
-        currentRelic,
-        shouldUpdateFonts,
-        std::move(allAvalibleItems),
-        fps.first,
-        fps.second
+        std::move(graphicLayer),
+        std::move(systemLayer),
+        std::move(ocrLayer)
     );
 }
 
 void closeApp(AppState& state) {
     ImGui::SFML::Shutdown();
-    state.tesseractApi->End();
+    state.ocr.tesseractApi->End();
     unregisterHotkeys();
 }
