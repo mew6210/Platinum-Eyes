@@ -12,7 +12,7 @@ std::vector<std::string> loadFileContents(const std::string& path);
 
 void testEELogPath(const std::filesystem::path& eeLogFilePath);
 
-class UpdateListener : public efsw::FileWatchListener {
+class UpdateListener : public efsw::FileWatchListener {     //only system
 public:
     std::vector<std::string> currentFileState;
     AppState& state;
@@ -49,7 +49,7 @@ public:
                     const std::string& line = newFileState[i];
                     if (line.find("GetVoidProjectionRewards") != std::string::npos) {
                         successLog("Fissure rewards automatically detected, taking a screenshot");
-                        state.eeLogTakeScreenshot.store(true, std::memory_order_relaxed);
+                        state.system->eeLogTakeScreenshot.store(true, std::memory_order_relaxed);
                     }
                 }
             }

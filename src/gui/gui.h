@@ -5,9 +5,9 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 
-void updateFps(AppState& state);
-void generateImGuiTable(AppState& state);
-void customizeWindow(AppState& state);
+void updateFps(ToolConfig& config, GraphicLayer& gui);
+void generateImGuiTable(DataLayer& data);
+void customizeWindow(GraphicLayer& data);
 void createImGuiWindow(bool& isRunning,AppState& state);
 void showSettingsMenu(bool* p_open, AppState& state);
 void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters);

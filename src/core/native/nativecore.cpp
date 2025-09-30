@@ -6,17 +6,17 @@
 
 void listenAndHandleEvents(AppState& state) {
 
-    if (state.eeLogTakeScreenshot.load(std::memory_order_relaxed)) {
-        state.items = readFissureRewardsScreen(state);
+    if (state.system->eeLogTakeScreenshot.load(std::memory_order_relaxed)) {
+        state.data.items = readFissureRewardsScreen(state);
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
-        state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
-        state.eeLogTakeScreenshot.store(false, std::memory_order_relaxed);
+        state.data.itemDisplayMode = ItemDisplayMode::FissureDisplay;
+        state.system->eeLogTakeScreenshot.store(false, std::memory_order_relaxed);
     }
-    if (PeekMessage(&state.msg, NULL, 0, 0, PM_REMOVE)) {
+    if (PeekMessage(&state.system->msg, NULL, 0, 0, PM_REMOVE)) {
 
         handleEvents(state);
-        TranslateMessage(&state.msg);
-        DispatchMessage(&state.msg);
+        TranslateMessage(&state.system->msg);
+        DispatchMessage(&state.system->msg);
     }
 }
 
@@ -31,10 +31,10 @@ void listenAndHandleEvents(AppState& state) {
 #define KB_ReadRelicTitle 7
 
 void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
-    if (state.msg.message == WM_HOTKEY) {
+    if (state.system->msg.message == WM_HOTKEY) {
 
         try {
-            KeyBind keybind = keyBindings.at(state.msg.wParam);
+            KeyBind keybind = keyBindings.at(state.system->msg.wParam);
             std::cout << "Alt + " << VirtualKeyCodeToString(keybind.getKey()) << "\n";
         }
         catch (std::out_of_range e) {
@@ -42,62 +42,62 @@ void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
         }
 
         //keybind logic
-        switch (state.msg.wParam) {
+        switch (state.system->msg.wParam) {
 
         case KB_ReadItemsFromScreen:
         {
-            state.items = readFissureRewardsScreen(state);
-            state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
+            state.data.items = readFissureRewardsScreen(state);
+            state.data.itemDisplayMode = ItemDisplayMode::FissureDisplay;
         }
         break;
-        case KB_EscapeProgram: state.running = false;
+        case KB_EscapeProgram: state.system->running = false;
             break;
         case KB_ReadPreviousItems: {
-            state.items = readPreviousFissureRewardsScreen(state);
-            state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
+            state.data.items = readPreviousFissureRewardsScreen(state);
+            state.data.itemDisplayMode = ItemDisplayMode::FissureDisplay;
 
         }
                                  break;
         case KB_WindowVisibility:
         {
-            state.isVisible = !state.isVisible;
-            state.window->setVisible(state.isVisible);
+            state.gui.isVisible = !state.gui.isVisible;
+            state.gui.window->setVisible(state.gui.isVisible);
 
-            if (state.isVisible) {
-                state.window->setFramerateLimit(state.fpsVisible);
+            if (state.gui.isVisible) {
+                state.gui.window->setFramerateLimit(state.gui.fpsVisible);
             }
             else {
-                state.window->setFramerateLimit(state.fpsHidden);
+                state.gui.window->setFramerateLimit(state.gui.fpsHidden);
             }
 
         }
         break;
         case KB_BackupConfig: copyConfigToOldFile(); break;
         case KB_ExampleItems: {
-            switch (state.itemDisplayMode) {
+            switch (state.data.itemDisplayMode) {
             case ItemDisplayMode::StartingScreenDisplay:
-                state.itemDisplayMode = ItemDisplayMode::FissureDisplay;
-                state.items = exampleItems; break;
+                state.data.itemDisplayMode = ItemDisplayMode::FissureDisplay;
+                state.data.items = exampleItems; break;
             case ItemDisplayMode::FissureDisplay: 
-                state.items = exampleItems; break;
+                state.data.items = exampleItems; break;
             case ItemDisplayMode::RelicDisplay: 
-                state.currentRelic = fetchRelicItemPrices("Lith A1 Relic (Intact)",CacheOptions(false,"")); break;
+                state.data.currentRelic = fetchRelicItemPrices("Lith A1 Relic (Intact)",CacheOptions(false,"")); break;
             }
         }
                             break;
         case KB_ReadRelicTitle: {
 
             CacheOptions cacheOpt = CacheOptions(configStringToBool(state.config["shouldCache"]), state.config["cacheDuration"]);
-            state.currentRelic = readItemsFromRelicTitleTesseract(*state.tesseractApi,cacheOpt);
+            state.data.currentRelic = readItemsFromRelicTitleTesseract(*state.ocr.tesseractApi,cacheOpt);
 
-            if (state.currentRelic.relicPrice == 0.0) {
+            if (state.data.currentRelic.relicPrice == 0.0) {
                 warningLog("No relic name found in its designated area, shifting to right.(Maybe user is in a mission)");
-                state.currentRelic = readItemsFromRelicTitleTesseractShifted(*state.tesseractApi,cacheOpt);
+                state.data.currentRelic = readItemsFromRelicTitleTesseractShifted(*state.ocr.tesseractApi,cacheOpt);
 
             }
-            printRelic(state.currentRelic);
+            printRelic(state.data.currentRelic);
 
-            state.itemDisplayMode = ItemDisplayMode::RelicDisplay;
+            state.data.itemDisplayMode = ItemDisplayMode::RelicDisplay;
 
             break;
         }

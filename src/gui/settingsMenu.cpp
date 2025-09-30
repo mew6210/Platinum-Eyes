@@ -157,7 +157,7 @@ struct SettingsSection {
 };
 
 
-void handleConfigChanges(ToolConfig& newConfig, AppState& state) {
+void handleConfigChanges(ToolConfig& newConfig, AppState& state) {	//gui only
 
 	if (newConfig == state.config) {
 		infoLog("You haven't changed anything");
@@ -176,18 +176,18 @@ void handleConfigChanges(ToolConfig& newConfig, AppState& state) {
 		}
 		if (windowSizesChanged(differences)) {
 			WindowParameters parameterssfml = getWindowSize("sfml", state.config);
-			reSizeSfmlWindow(*state.window, parameterssfml);
+			reSizeSfmlWindow(*state.gui.window, parameterssfml);
 			WindowParameters parametersimgui = getWindowSize("imgui", state.config);
 
-			state.sfmlSize = parameterssfml;
-			state.imguiSize = parametersimgui;
-			state.shouldReSizeImGui = true;
+			state.gui.sfmlSize = parameterssfml;
+			state.gui.imguiSize = parametersimgui;
+			state.gui.shouldResizeImGui = true;
 		}
 		if (fontsChanged(differences)) {
-			state.shouldUpdateFonts = true;
+			state.gui.shouldUpdateFonts = true;
 		}
 		if (fpsChanged(differences)) {
-			updateFps(state);
+			updateFps(state.config,state.gui);
 		}
 		if (eeLogWatcherChanged(differences)) {
 			warningLog("Settings changed regarding EELogWatcher will be applied AFTER restarting the app");
