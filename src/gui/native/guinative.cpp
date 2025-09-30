@@ -22,7 +22,7 @@ HRESULT setTransparency(HWND hWnd)
 
 
 
-void nativeWindowCustomization(AppState& state, sf::WindowHandle wHandle) {
+void nativeWindowCustomization(sf::WindowHandle wHandle) {
 
 	HWND hwnd = wHandle;
 	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -38,7 +38,7 @@ void nativeWindowCustomization(AppState& state, sf::WindowHandle wHandle) {
 
 #if __linux__
 
-void nativeWindowCustomization(AppState& state, sf::WindowHandle wHandle) {
+void nativeWindowCustomization(sf::WindowHandle wHandle) {
 	errorLog(true, "currently not implemented");
 
 }

@@ -64,7 +64,7 @@ void mainLoop(AppState& state) {
 
 
         createImGuiWindow(state.system->running, state);
-        generateImGuiTable(state);
+        generateImGuiTable(state.data);
         //ImGui::ShowDemoWindow(&running);
 
         ImGui::End();

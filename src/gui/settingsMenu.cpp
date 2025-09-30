@@ -187,7 +187,7 @@ void handleConfigChanges(ToolConfig& newConfig, AppState& state) {	//gui only
 			state.gui.shouldUpdateFonts = true;
 		}
 		if (fpsChanged(differences)) {
-			updateFps(state);
+			updateFps(state.config,state.gui);
 		}
 		if (eeLogWatcherChanged(differences)) {
 			warningLog("Settings changed regarding EELogWatcher will be applied AFTER restarting the app");

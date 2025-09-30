@@ -3,7 +3,7 @@
 
 int main(){
     AppState state = initApp();
-    customizeWindow(state);
+    customizeWindow(state.gui);
     setImGuiStyle(state.config);
     EELogWatcher eeLogWatcher = listenToEELog(state);
     mainLoop(state);

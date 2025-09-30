@@ -116,10 +116,10 @@ namespace {
 		}
 	}
 
-	void generateFissureItemsBoxes(AppState& state){		//only data
+	void generateFissureItemsBoxes(DataLayer& data){		
 
-		if (isVecNotEmptyAndNotPlaceholder(state.data.items)) {
-			generateFissureItemsBoxesNormally(state.data.items);
+		if (isVecNotEmptyAndNotPlaceholder(data.items)) {
+			generateFissureItemsBoxesNormally(data.items);
 			return;
 		}
 		else {
@@ -155,20 +155,20 @@ namespace {
 		imGuiRelicInfo(relic);
 	}
 
-	void generateRelicItemsBoxes(AppState& state) {		//only data
-		if (isRelicNotNull(state.data.currentRelic)) {
-			imGuiRelicItemsBoxes(state.data.currentRelic);
+	void generateRelicItemsBoxes(DataLayer& data) {
+		if (isRelicNotNull(data.currentRelic)) {
+			imGuiRelicItemsBoxes(data.currentRelic);
 		}
 		else {
 			ImGui::Text("Couldn't find relic title :(");
 		}
 	}
 }
-void generateImGuiTable(AppState& state) {		//only data?
-	switch (state.data.itemDisplayMode) {
+void generateImGuiTable(DataLayer& data) {
+	switch (data.itemDisplayMode) {
 	case ItemDisplayMode::StartingScreenDisplay:ImGui::Text("Waiting for your input..."); break;
-	case ItemDisplayMode::FissureDisplay:generateFissureItemsBoxes(state); break;
-	case ItemDisplayMode::RelicDisplay:generateRelicItemsBoxes(state); break;
+	case ItemDisplayMode::FissureDisplay:generateFissureItemsBoxes(data); break;
+	case ItemDisplayMode::RelicDisplay:generateRelicItemsBoxes(data); break;
 	}
 }
 
@@ -177,16 +177,16 @@ void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
 	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
 }
 
-void customizeWindow(AppState& state) {		//only gui
-	sf::WindowHandle wHandle = state.gui.window->getNativeHandle();
-	state.gui.window->setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (state.gui.sfmlSize.width+25), 25));
-	state.gui.window->setFramerateLimit(state.gui.fpsVisible);
+void customizeWindow(GraphicLayer& gui) {
+	sf::WindowHandle wHandle = gui.window->getNativeHandle();
+	gui.window->setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (gui.sfmlSize.width+25), 25));
+	gui.window->setFramerateLimit(gui.fpsVisible);
 	
-	if (!ImGui::SFML::Init(*state.gui.window)) {
+	if (!ImGui::SFML::Init(*gui.window)) {
 		errorLog(true,"ImGui::SFML::Init() failed");
 	}
 
-	nativeWindowCustomization(state,wHandle);
+	nativeWindowCustomization(wHandle);
 }
 
 void setNewFont(ToolConfig& config) {
@@ -215,7 +215,7 @@ void setImGuiStyle(ToolConfig& config) {
 	ImGui::SFML::UpdateFontTexture(); 
 }
 
-void createImGuiWindow(bool& isRunning,AppState& state) {		//only gui
+void createImGuiWindow(bool& isRunning,AppState& state) {		//only gui???
 
 	int heightDiff = state.gui.sfmlSize.height - state.gui.imguiSize.height;
 	int widthDiff = state.gui.sfmlSize.width - state.gui.imguiSize.width;
@@ -257,13 +257,13 @@ void handleBetweenFrameImGuiUpdates(AppState& state) {	//only gui and config
 	}
 }
 
-void updateFps(AppState& state) {		//only gui and config
+void updateFps(ToolConfig& config,GraphicLayer& gui) {		//only gui and config
 
-	int newVisibleFps = state.gui.fpsVisible;
-	int newHiddenFps = state.gui.fpsHidden;
+	int newVisibleFps = gui.fpsVisible;
+	int newHiddenFps = gui.fpsHidden;
 	
 	try {
-		newVisibleFps = stoi(state.config["fpsVisible"]);
+		newVisibleFps = stoi(config["fpsVisible"]);
 	}
 	catch (const std::exception& e) {
 		warningLog("visible fps inputted wrong, ",e.what()," defaulting to 30");
@@ -271,19 +271,19 @@ void updateFps(AppState& state) {		//only gui and config
 	}
 
 	try {
-		newHiddenFps = stoi(state.config["fpsHidden"]);
+		newHiddenFps = stoi(config["fpsHidden"]);
 	}
 	catch (const std::exception& e) {
 		warningLog("hidden fps inputted wrong, ", e.what(), " defaulting to 30");
 		newHiddenFps = 30;
 	}
 	
-	if (state.gui.isVisible) {
-		state.gui.window->setFramerateLimit(newVisibleFps);
+	if (gui.isVisible) {
+		gui.window->setFramerateLimit(newVisibleFps);
 	}
 	else {
-		state.gui.window->setFramerateLimit(newHiddenFps);
+		gui.window->setFramerateLimit(newHiddenFps);
 	}
-	state.gui.fpsVisible = newVisibleFps;
-	state.gui.fpsHidden = newHiddenFps;
+	gui.fpsVisible = newVisibleFps;
+	gui.fpsHidden = newHiddenFps;
 }
