@@ -7,7 +7,6 @@ using std::pair, std::string, std::vector;
 
 pair<int, int> getFps(ToolConfig& toolConfig) {
 
-
     int fpsVisible;
     try{
         fpsVisible = std::stoi(toolConfig["fpsVisible"]);
@@ -17,7 +16,6 @@ pair<int, int> getFps(ToolConfig& toolConfig) {
         warningLog("fpsVisible not a number, defaulting to 30");
     }
     
-
     int fpsHidden;
     try {
         fpsHidden = std::stoi(toolConfig["fpsHidden"]);
@@ -30,7 +28,6 @@ pair<int, int> getFps(ToolConfig& toolConfig) {
     return { fpsVisible,fpsHidden };
 }
 
-
 void loadDatabases(ToolConfig& toolConfig) {
 
     auto updateOrders = shouldUpdateDatabase(toolConfig);
@@ -39,7 +36,6 @@ void loadDatabases(ToolConfig& toolConfig) {
 
     if(updateOrders.first) loadWFMD();
 }
-
 
 void mainLoop(AppState& state) {
 
@@ -58,7 +54,6 @@ void mainLoop(AppState& state) {
                 // end the program
                 state.system->running = false;
             }
-            
         }
         ImGui::SFML::Update(*state.gui.window, deltaClock.restart());
 
@@ -75,7 +70,6 @@ void mainLoop(AppState& state) {
         state.gui.window->display();
 
         handleBetweenFrameImGuiUpdates(state);
-
     }
 }
 
@@ -94,7 +88,6 @@ GraphicLayer initGraphicLayer(ToolConfig& config) {
     WindowParameters sfmlSize = getWindowSize("sfml", config);
     WindowParameters imguiSize = getWindowSize("imgui", config);
 
-
     auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode({
         static_cast<unsigned int>(sfmlSize.width),
         static_cast<unsigned int>(sfmlSize.height) }),
@@ -106,7 +99,6 @@ GraphicLayer initGraphicLayer(ToolConfig& config) {
     bool shouldReSizeImGui = false;
     bool shouldUpdateFonts = false;
     auto fps = getFps(config);
-
 
     return GraphicLayer{
         std::move(window),
@@ -137,7 +129,6 @@ OcrLayer initOcrLayer() {
 
     auto tesseractapi = std::make_unique<tesseract::TessBaseAPI>();
     tesseractInit(*tesseractapi);
-
     return OcrLayer{ std::move(tesseractapi) };
 }
 
