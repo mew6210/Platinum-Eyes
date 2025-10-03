@@ -108,8 +108,6 @@ int monthToInt(const string& s) {
     }
 
     return -1;
-
-
 }
 
 struct Date {
@@ -138,7 +136,6 @@ struct Date {
         }
         return day > other.day;
     }
-
 };
 
 
@@ -713,7 +710,6 @@ float getPercantageFromString(std::string s) {
 
     float result = std::stof(perc);
     return result;
-
 }
 
 bool compareWithRoundingErrors(float number,float compareTo) {
