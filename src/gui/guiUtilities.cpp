@@ -42,6 +42,29 @@ namespace {
 		ImGui::Dummy(ImVec2(0, 5));
 	}
 
+	void itemTimestamp(const std::chrono::time_point<std::chrono::system_clock>& timestamp) {
+		using namespace std::chrono;
+
+		// compute elapsed time
+		auto now = system_clock::now();
+		auto diff = duration_cast<seconds>(now - timestamp).count();
+
+		std::string timeStr;
+		if (diff < 60) {
+			timeStr = std::format("{} seconds ago", diff);
+		}
+		else if (diff < 3600) {
+			timeStr = std::format("{} minutes ago", diff / 60);
+		}
+		else if (diff < 86400) {
+			timeStr = std::format("{} hours ago", diff / 3600);
+		}
+		else {
+			timeStr = std::format("{} days ago", diff / 86400);
+		}
+
+		ImGui::Text(timeStr.c_str());
+	}
 
 	void itemBoxAvgPrice(float& averagePrice) {
 		ImGui::Text("Average price: ");
@@ -69,6 +92,7 @@ void createItemBox(std::string id, Item& item) {
 	itemBoxName(item.preparedName);
 	itemBoxAvgPrice(item.itemDetails.averagePrice);
 	itemBoxLowestOrders(item.itemDetails.lowestPrices);
+	itemTimestamp(item.itemDetails.timestamp);
 	endItemBox();
 }
 
