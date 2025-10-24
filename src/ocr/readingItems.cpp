@@ -8,8 +8,8 @@ using json = nlohmann::json;
 namespace {
 
     int levenshtein_distance(const string& str1, const string& str2) {
-        int len_str1 = str1.length();
-        int len_str2 = str2.length();
+        size_t len_str1 = str1.length();
+        size_t len_str2 = str2.length();
 
         // Create a 2D matrix to store distances
         vector<vector<int>> matrix(len_str1 + 1, vector<int>(len_str2 + 1));
@@ -51,8 +51,8 @@ namespace {
     }
 
     int levenshtein_distance_weighted(const string& str1, const string& str2, int end_weight = 2, int begin_weight = 2) {
-        int len_str1 = str1.length();
-        int len_str2 = str2.length();
+        size_t len_str1 = str1.length();
+        size_t len_str2 = str2.length();
 
         // Create a 2D matrix to store distances
         vector<vector<int>> matrix(len_str1 + 1, vector<int>(len_str2 + 1));

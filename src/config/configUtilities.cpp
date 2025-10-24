@@ -293,12 +293,8 @@ void createConfigFile() {
 
 void resolveConfigLine(ToolConfig& toolConfig, const string& line, int it) {
 
-    int startingPoint = 0;
-
-
-    startingPoint = CONFIGPROPERTIES[it].length() + 1;
-
-    int whereEnds = line.find_last_of("\n");
+    size_t startingPoint = CONFIGPROPERTIES[it].length() + 1;
+    size_t whereEnds = line.find_last_of("\n");
 
     string configProperty = line.substr(startingPoint, whereEnds - 1);
 

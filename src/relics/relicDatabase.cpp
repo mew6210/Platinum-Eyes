@@ -453,7 +453,7 @@ vector<string> loadAllAvalibleItemsToVector() {
     
     ifstream inputFile("data/allItemsFile.txt");
     if (!inputFile.is_open()) {
-        errorLog(false, "failed to open all items file");
+        errorLog(false, "Failed to open all items file, maybe restart?");
         return {};
     }
     while (getline(inputFile, line)) {

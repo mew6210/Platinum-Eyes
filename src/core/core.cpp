@@ -133,13 +133,13 @@ OcrLayer initOcrLayer() {
 }
 
 AppState initApp() {
-
-    auto dataLayer = initDataLayer();
-    ToolConfig toolConfig = initConfig();
-
     std::filesystem::create_directory("data");
+    ToolConfig toolConfig = initConfig();
 	createItemCache();
     loadDatabases(toolConfig);
+
+    auto dataLayer = initDataLayer();
+
     registerHotkeys(toolConfig);
 
     auto graphicLayer = initGraphicLayer(toolConfig);

@@ -106,7 +106,7 @@ void createRelicItemBox(RelicItem& item,ImVec2& screenSize){
 
 	auto bgColor = getRarityColor(item.itemDetails.rarity);
 	auto flags = setItemBoxStyles(item.itemDetails.rarity);
-	ImGui::BeginChild(item.rawName.c_str(), ImVec2(screenSize.x/4, screenSize.y/3.5), ImGuiChildFlags_Border, flags);
+	ImGui::BeginChild(item.rawName.c_str(), ImVec2(screenSize.x/4.f, screenSize.y/3.5f), ImGuiChildFlags_Border, flags);
 
 	itemBoxName(item.preparedName);
 	itemBoxChance(item.percentage);
@@ -162,7 +162,7 @@ namespace {
 	}
 	void imGuiRelicItemsBoxes(RelicInfo& relic) {
 		ImVec2 screenSize = ImGui::GetWindowSize();
-		int count = relic.items.size();
+		size_t count = relic.items.size();
 
 		int it = 1;
 
@@ -220,7 +220,9 @@ void setNewFont(ToolConfig& config) {
 	float size_pixels = std::stof(config["fontSize"]);
 	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 
-	ImGui::SFML::UpdateFontTexture();
+	if (!ImGui::SFML::UpdateFontTexture()) {
+		warningLog("failed to update font texture");
+	}
 }
 
 void setImGuiStyle(ToolConfig& config) {
@@ -236,7 +238,10 @@ void setImGuiStyle(ToolConfig& config) {
 	float size_pixels = std::stof(config["fontSize"]);
 	io.Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 	
-	ImGui::SFML::UpdateFontTexture(); 
+	
+	if (!ImGui::SFML::UpdateFontTexture()) {
+		warningLog("failed to update font texture");
+	}
 }
 
 void createImGuiWindow(bool& isRunning,AppState& state) {		//only gui???
@@ -250,17 +255,37 @@ void createImGuiWindow(bool& isRunning,AppState& state) {		//only gui???
 	flags |= ImGuiWindowFlags_NoResize;
 	flags |= ImGuiWindowFlags_NoMove;
 	ImGuiCond cond = ImGuiCond_Once;
-	ImGui::SetNextWindowBgAlpha(0.7);
+	ImGui::SetNextWindowBgAlpha(0.7f);
 	if (state.gui.shouldResizeImGui) {
 		heightDiff = state.gui.sfmlSize.height - state.gui.imguiSize.height;
 		widthDiff = state.gui.sfmlSize.width - state.gui.imguiSize.width;
-		ImGui::SetNextWindowSize(ImVec2(state.gui.imguiSize.width, state.gui.imguiSize.height), ImGuiCond_Always);
-		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(
+			ImVec2(
+				static_cast<float>(state.gui.imguiSize.width), 
+				static_cast<float>(state.gui.imguiSize.height)), 
+			ImGuiCond_Always
+		);
+		ImGui::SetNextWindowPos(
+			ImVec2(
+				static_cast<float>(widthDiff / 2), 
+				static_cast<float> (heightDiff / 2)), 
+			ImGuiCond_Always
+		);
 		state.gui.shouldResizeImGui = !state.gui.shouldResizeImGui;
 	}
 	else {
-		ImGui::SetNextWindowSize(ImVec2(state.gui.imguiSize.width, state.gui.imguiSize.height), cond);
-		ImGui::SetNextWindowPos(ImVec2(widthDiff / 2, heightDiff / 2), cond);
+		ImGui::SetNextWindowSize(
+			ImVec2(
+				static_cast<float>(state.gui.imguiSize.width), 
+				static_cast<float>(state.gui.imguiSize.height)), 
+			cond
+		);
+		ImGui::SetNextWindowPos(
+			ImVec2(
+				static_cast<float>(widthDiff / 2), 
+				static_cast<float>(heightDiff / 2)), 
+			cond
+		);
 	}
 		
 	ImGui::Begin("Warframe tool-main", &isRunning, flags);
