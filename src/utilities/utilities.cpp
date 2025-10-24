@@ -64,7 +64,7 @@ std::string rarityToString(Rarity::level r) {
 
 void replaceAnds(string& s) {
 
-    int pos = s.find("&");
+    size_t pos = s.find("&");
 
     if (pos != string::npos)
         s.replace(pos, 1, "and");
@@ -145,7 +145,7 @@ string snakeToItem(const string& s) {
 
 std::pair<int,int> stringToIntPair(std::string s) {
 
-    int middlePos = s.find(",");
+    size_t middlePos = s.find(",");
 
     std::string x = s.substr(0, middlePos);
     std::string y = s.substr(middlePos + 1, s.length() - x.length());

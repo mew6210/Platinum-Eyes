@@ -10,11 +10,12 @@ int getDucatsFromSlug(const string& slug) {
 	while (getline(file, line)) {
 
 		if (line.starts_with(slug)) {
-			int doubleCommaPos = line.find(":");
+			size_t doubleCommaPos = line.find(":");
 			string ducatsString = line.substr(doubleCommaPos+1);
 			return std::stoi(ducatsString);
 		}
 	}
+	return -1;
 }
 
 json fetchJsonBlobWFMAllItems() {
