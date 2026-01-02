@@ -20,15 +20,13 @@ void listenAndHandleEvents(AppState& state) {
     }
 }
 
-
-
-#define KB_ReadItemsFromScreen 1
-#define KB_EscapeProgram 2
-#define KB_ReadPreviousItems 3
-#define KB_WindowVisibility 4
-#define KB_BackupConfig 5
-#define KB_ExampleItems 6
-#define KB_ReadRelicTitle 7
+constexpr int KB_ReadItemsFromScreen = 1;
+constexpr int KB_EscapeProgram = 2;
+constexpr int KB_ReadPreviousItems = 3;
+constexpr int KB_WindowVisibility = 4;
+constexpr int KB_BackupConfig = 5;
+constexpr int KB_ExampleItems = 6;
+constexpr int KB_ReadRelicTitle = 7;
 
 void handleNativeEvents(AppState& state, std::map<int, KeyBind> keyBindings) {
     if (state.system->msg.message == WM_HOTKEY) {

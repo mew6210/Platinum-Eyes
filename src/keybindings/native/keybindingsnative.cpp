@@ -1,16 +1,14 @@
 #include "keybindingsnative.hpp"
 
-
-#define KB_ReadItemsFromScreen 1
-#define KB_EscapeProgram 2
-#define KB_ReadPreviousItems 3
-#define KB_WindowVisibility 4
-#define KB_BackupConfig 5
-#define KB_ExampleItems 6
-#define KB_ReadRelicTitle 7
+constexpr int KB_ReadItemsFromScreen = 1;
+constexpr int KB_EscapeProgram = 2;
+constexpr int KB_ReadPreviousItems = 3;
+constexpr int KB_WindowVisibility = 4;
+constexpr int KB_BackupConfig = 5;
+constexpr int KB_ExampleItems = 6;
+constexpr int KB_ReadRelicTitle = 7;
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-
 
 int StringToVirtualKeyCode(std::string s) {
 

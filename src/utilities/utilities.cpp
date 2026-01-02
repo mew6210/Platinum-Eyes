@@ -91,7 +91,6 @@ string replaceChar(string s, char a, string b) {
 
 }
 
-
 string itemToSnakeCase(const string& s) {
     string snakedItem = replaceChar(s, ' ', "_");
     replaceAnds(snakedItem);
@@ -100,7 +99,6 @@ string itemToSnakeCase(const string& s) {
     }
     return snakedItem;
 }
-
 
 vector<string> itemsToSnakeCase(const vector<string>& list) {
 
@@ -139,9 +137,6 @@ string snakeToItem(const string& s) {
 
     return result;
 }
-
-
-
 
 std::pair<int,int> stringToIntPair(std::string s) {
 
