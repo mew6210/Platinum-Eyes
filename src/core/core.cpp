@@ -11,7 +11,7 @@ pair<int, int> getFps(ToolConfig& toolConfig) {
     try{
         fpsVisible = std::stoi(toolConfig["fpsVisible"]);
     }
-    catch (const std::exception& e) {
+    catch (const std::exception&) {
         fpsVisible = 30;
         warningLog("fpsVisible not a number, defaulting to 30");
     }
@@ -20,7 +20,7 @@ pair<int, int> getFps(ToolConfig& toolConfig) {
     try {
         fpsHidden = std::stoi(toolConfig["fpsHidden"]);
     }
-    catch (const std::exception& e) {
+    catch (const std::exception&) {
         fpsHidden = 30;
         warningLog("fpsHidden not a number, defaulting to 30");
     }
