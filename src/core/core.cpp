@@ -58,8 +58,8 @@ void mainLoop(AppState& state) {
         ImGui::SFML::Update(*state.gui.window, deltaClock.restart());
 
 
-        createImGuiWindow(state.system->running, state);
-        generateImGuiTable(state.data);
+        createMainWindow(state.system->running, state);
+        drawData(state.data);
         //ImGui::ShowDemoWindow(&running);
 
         ImGui::End();

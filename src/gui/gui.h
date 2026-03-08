@@ -6,10 +6,10 @@
 #include "imgui-SFML.h"
 
 void updateFps(ToolConfig& config, GraphicLayer& gui);
-void generateImGuiTable(DataLayer& data);
+void drawData(DataLayer& data);
 void customizeWindow(GraphicLayer& data);
-void createImGuiWindow(bool& isRunning,AppState& state);
-void showSettingsMenu(bool* p_open, AppState& state);
+void createMainWindow(bool& isRunning,AppState& state);
+void showSettingsWindow(bool* p_open, AppState& state);
 void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters);
 void setImGuiStyle(ToolConfig& config);
 void setNewFont(ToolConfig& config);

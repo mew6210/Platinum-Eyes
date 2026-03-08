@@ -90,7 +90,7 @@ add_executable (
         "src/keybindings/keyBindings.cpp" 
         "src/config/configUtilities.cpp" 
         "src/ocr/readingItems.cpp" 
-        "src/gui/settingsMenu.cpp"
+        "src/gui/settingsWindow.cpp"
         "src/ocr/tesseract.cpp" 
         "src/gui/settingsChanges.cpp" 
         "src/relics/relicDatabase.cpp" 
@@ -115,7 +115,7 @@ add_executable (
         "src/utilities/trim/trim.cpp"  
         "src/relics/relicinfo/relicinfo.cpp" 
         "src/items/itemcache/itemcache.cpp"
-)
+ "src/gui/mainWindow.cpp" "src/gui/drawData.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})

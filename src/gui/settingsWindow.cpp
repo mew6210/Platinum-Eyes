@@ -246,7 +246,7 @@ void renderRightPanel(vector<SettingsSection>& sections, int& selected) {
 }
 
 
-void showSettingsMenu(bool* p_open,AppState& state){
+void showSettingsWindow(bool* p_open,AppState& state){
 	static vector<SettingsSection> sections;
 	static ToolConfig newConfig = state.config;
 
