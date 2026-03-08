@@ -244,53 +244,53 @@ void setImGuiStyle(ToolConfig& config) {
 	}
 }
 
+ImGuiWindowFlags getImGuiWindowFlags() {
+		return 
+		ImGuiWindowFlags_None
+		| ImGuiWindowFlags_NoTitleBar
+		| ImGuiWindowFlags_HorizontalScrollbar
+		| ImGuiWindowFlags_NoResize
+		| ImGuiWindowFlags_NoMove
+		| ImGuiWindowFlags_NoBringToFrontOnFocus;
+}
+
+void resizeImGuiWindow(GraphicLayer& gui){
+
+	auto heightDiff = gui.sfmlSize.height - gui.imguiSize.height;
+	auto widthDiff = gui.sfmlSize.width - gui.imguiSize.width;
+
+	ImGui::SetNextWindowSize(
+		ImVec2(
+			static_cast<float>(gui.imguiSize.width),
+			static_cast<float>(gui.imguiSize.height)),
+		ImGuiCond_Always
+	);
+
+	ImGui::SetNextWindowPos(
+		ImVec2(
+			static_cast<float>(widthDiff / 2),
+			static_cast<float>(heightDiff / 2)),
+		ImGuiCond_Always
+	);
+
+	gui.shouldResizeImGui = !gui.shouldResizeImGui;
+}
+
 void createImGuiWindow(bool& isRunning,AppState& state) {		//only gui???
 
 	int heightDiff = state.gui.sfmlSize.height - state.gui.imguiSize.height;
 	int widthDiff = state.gui.sfmlSize.width - state.gui.imguiSize.width;
 
-	ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-	flags |= ImGuiWindowFlags_NoTitleBar;
-	flags |= ImGuiWindowFlags_HorizontalScrollbar;
-	flags |= ImGuiWindowFlags_NoResize;
-	flags |= ImGuiWindowFlags_NoMove;
+	auto flags = getImGuiWindowFlags();
 	ImGuiCond cond = ImGuiCond_Once;
 	ImGui::SetNextWindowBgAlpha(0.7f);
+
 	if (state.gui.shouldResizeImGui) {
-		heightDiff = state.gui.sfmlSize.height - state.gui.imguiSize.height;
-		widthDiff = state.gui.sfmlSize.width - state.gui.imguiSize.width;
-		ImGui::SetNextWindowSize(
-			ImVec2(
-				static_cast<float>(state.gui.imguiSize.width), 
-				static_cast<float>(state.gui.imguiSize.height)), 
-			ImGuiCond_Always
-		);
-		ImGui::SetNextWindowPos(
-			ImVec2(
-				static_cast<float>(widthDiff / 2), 
-				static_cast<float> (heightDiff / 2)), 
-			ImGuiCond_Always
-		);
-		state.gui.shouldResizeImGui = !state.gui.shouldResizeImGui;
+		resizeImGuiWindow(state.gui);
 	}
-	else {
-		ImGui::SetNextWindowSize(
-			ImVec2(
-				static_cast<float>(state.gui.imguiSize.width), 
-				static_cast<float>(state.gui.imguiSize.height)), 
-			cond
-		);
-		ImGui::SetNextWindowPos(
-			ImVec2(
-				static_cast<float>(widthDiff / 2), 
-				static_cast<float>(heightDiff / 2)), 
-			cond
-		);
-	}
-		
+	
 	ImGui::Begin("Warframe tool-main", &isRunning, flags);
 	
-
 	if (ImGui::SmallButton("Config")) {
 		state.gui.settingsVisible= !state.gui.settingsVisible; //flip the settingsOpen
 	}

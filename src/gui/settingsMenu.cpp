@@ -246,8 +246,7 @@ void renderRightPanel(vector<SettingsSection>& sections, int& selected) {
 }
 
 
-void showSettingsMenu(bool* p_open,AppState& state)
-{
+void showSettingsMenu(bool* p_open,AppState& state){
 	static vector<SettingsSection> sections;
 	static ToolConfig newConfig = state.config;
 
@@ -381,8 +380,7 @@ void showSettingsMenu(bool* p_open,AppState& state)
 
 
 	ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
-	if (ImGui::Begin("Settings", p_open, ImGuiWindowFlags_MenuBar))
-	{
+	if (ImGui::Begin("Settings", p_open, ImGuiWindowFlags_MenuBar)){
 		// Left
 		static int selected = 0;
 		renderLeftPanel(sections,selected);
