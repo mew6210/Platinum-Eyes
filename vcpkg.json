@@ -1,0 +1,13 @@
+{
+  "dependencies": [
+    "cpr",
+    "nlohmann-json",
+    "sfml",
+    "imgui",
+    "imgui-sfml",
+    "tesseract",
+    "opencv4",
+    "termcolor",
+    "efsw"
+  ]
+}
