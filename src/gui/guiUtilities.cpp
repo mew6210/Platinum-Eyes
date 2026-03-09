@@ -15,12 +15,7 @@ std::map<int, string> createIntStringMap(std::map<string, ItemDetails> items) {
 	return intstringmap;
 }
 
-void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
-	w.setSize(sf::Vector2u( sfmlParameters.width, sfmlParameters.height ));
-	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
-}
-
-void customizeWindow(GraphicLayer& gui) {
+void customizeMainWindow(GraphicLayer& gui) {
 	sf::WindowHandle wHandle = gui.window->getNativeHandle();
 	gui.window->setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (gui.sfmlSize.width+25), 25));
 	gui.window->setFramerateLimit(gui.fpsVisible);
