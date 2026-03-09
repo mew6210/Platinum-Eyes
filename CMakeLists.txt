@@ -115,7 +115,7 @@ add_executable (
         "src/utilities/trim/trim.cpp"  
         "src/relics/relicinfo/relicinfo.cpp" 
         "src/items/itemcache/itemcache.cpp"
- "src/gui/mainWindow.cpp" "src/gui/drawData.cpp")
+ "src/gui/mainWindow.cpp" "src/gui/drawData.cpp" "src/eelogwatcher/updatelistener/updatelistener.cpp")
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBRARIES})
