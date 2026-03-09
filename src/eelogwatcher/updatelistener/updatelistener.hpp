@@ -5,7 +5,7 @@
 #include <vector>
 #include <filesystem>
 
-class UpdateListener : public efsw::FileWatchListener {     //only system
+class UpdateListener : public efsw::FileWatchListener {     //only system except config, but that could be done
 public:
     std::vector<std::string> currentFileState;
     AppState& state;

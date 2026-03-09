@@ -5,10 +5,11 @@
 #include "efsw/efsw.hpp"
 
 class EELogWatcher {
-public:
     UpdateListener listener;
     efsw::FileWatcher fileWatcher{ true };
     EELogWatcher(AppState& state) :listener(state) {}
+
+    friend EELogWatcher listenToEELog(AppState& state);
 };
 
 EELogWatcher listenToEELog(AppState& state);
