@@ -27,7 +27,6 @@ int StringToVirtualKeyCode(std::string s) {
 
 void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings, ToolConfig& config) {
 
-
     keyBindings = {
     { KB_ReadItemsFromScreen, KeyBind(StringToVirtualKeyCode(config["keyBind_ReadItemsFromScreen"]), "Read items from current screen") },
     { KB_EscapeProgram,KeyBind(StringToVirtualKeyCode(config["keyBind_EscapeProgram"]),"Escape program") },
@@ -57,15 +56,10 @@ void registerNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
 			warningLog("Failed to register hotkey: Alt + ", VirtualKeyCodeToString(p.second.getKey()) + " - ", p.second.getDescription());
 
 		}
-
 	}
-
-
-
 }
 
 void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
-
 
 	for (auto& p : keyBindings) {
 		if (UnregisterHotKey(NULL, p.first)) {
@@ -75,14 +69,9 @@ void unregisterNativeHotkeys(std::map<int, KeyBind>& keyBindings) {
 			errorLog(false, "Failed to unregister Alt + ", VirtualKeyCodeToString(p.second.getKey()));
 		}
 	}
-
-
-
 }
 
-
-std::string VirtualKeyCodeToString(UCHAR virtualKey)
-{
+std::string VirtualKeyCodeToString(UCHAR virtualKey){
 	UINT scanCode = MapVirtualKey(virtualKey, MAPVK_VK_TO_VSC);
 
 	CHAR szName[128];
@@ -107,9 +96,7 @@ std::string VirtualKeyCodeToString(UCHAR virtualKey)
 	return szName;
 }
 
-
 #endif
-
 
 #if __linux__
 void initializeKeyBindingsMap(std::map<int, KeyBind>& keyBindings, ToolConfig& config) {

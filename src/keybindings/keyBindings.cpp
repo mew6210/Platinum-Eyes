@@ -29,7 +29,6 @@ void reRegisterHotkeys(ToolConfig& config) {
 
     unregisterHotkeys();
     registerHotkeys(config);
-
 }
 
 void registerHotkeys(ToolConfig& config) {
@@ -43,11 +42,7 @@ void unregisterHotkeys() {
     unregisterNativeHotkeys(keyBindings);
 }
 
-
-
-
 void handleEvents(AppState& state) {
     
     handleNativeEvents(state,keyBindings);
-    
 }
