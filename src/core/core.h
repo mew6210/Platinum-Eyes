@@ -1,13 +1,8 @@
 ﻿#pragma once
-
 #define NOMINMAX
 
-
 #include "native/nativeheaders.hpp"
-
-
 #include "appstate/appstate.hpp"
-
 
 #include "../ocr/ocr.h"
 #include "../gui/gui.h"

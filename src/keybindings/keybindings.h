@@ -3,10 +3,8 @@
 #include "../core/native/nativecore.hpp"
 #include "native/keybindingsnative.hpp"
 
-
 void registerHotkeys(ToolConfig& config);
-
-void handleEvents(AppState& state);
 void unregisterHotkeys();
+void handleEvents(AppState& state);
 int StringToVirtualKeyCode(std::string s);
 void reRegisterHotkeys(ToolConfig& config);

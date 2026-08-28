@@ -2,9 +2,12 @@
 #include <functional>
 #include <imgui_stdlib.h>
 
-
 using std::string, std::vector, std::pair;
 
+void reSizeSfmlWindow(sf::RenderWindow& w, WindowParameters& sfmlParameters) {
+	w.setSize(sf::Vector2u(sfmlParameters.width, sfmlParameters.height));
+	w.setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().size.x - (sfmlParameters.width + 25), 25));
+}
 
 void configParameter(string& s,int counter,const char* label) {
 
@@ -246,8 +249,7 @@ void renderRightPanel(vector<SettingsSection>& sections, int& selected) {
 }
 
 
-void showSettingsMenu(bool* p_open,AppState& state)
-{
+void showSettingsWindow(bool* p_open,AppState& state){
 	static vector<SettingsSection> sections;
 	static ToolConfig newConfig = state.config;
 
@@ -381,8 +383,7 @@ void showSettingsMenu(bool* p_open,AppState& state)
 
 
 	ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
-	if (ImGui::Begin("Settings", p_open, ImGuiWindowFlags_MenuBar))
-	{
+	if (ImGui::Begin("Settings", p_open, ImGuiWindowFlags_MenuBar)){
 		// Left
 		static int selected = 0;
 		renderLeftPanel(sections,selected);
